@@ -17,7 +17,7 @@ headers = {
 response = requests.get(url, headers=headers)
 
 print(response.status_code)
-#print(response.text)
+# print(response.text)
 data = json.loads(response.content)
 
 for i in data["results"]:
