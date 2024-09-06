@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import requests
-
+import json
 load_dotenv()
 
 cle_api = os.environ.get("API_KEY")
@@ -17,4 +17,8 @@ headers = {
 response = requests.get(url, headers=headers)
 
 print(response.status_code)
-print(response.text)
+#print(response.text)
+data = json.loads(response.content)
+
+for i in data["results"]:
+    print(i["original_title"])
