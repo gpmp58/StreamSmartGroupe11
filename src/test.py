@@ -19,6 +19,10 @@ response = requests.get(url, headers=headers)
 print(response.status_code)
 # print(response.text)
 data = json.loads(response.content)
-
+"""
 for i in data["results"]:
     print(i["original_title"])
+"""
+#Exemple affichage d'un film
+exemple=data["results"][0]
+print(exemple)
