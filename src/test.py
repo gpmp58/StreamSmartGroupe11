@@ -7,7 +7,7 @@ load_dotenv()
 cle_api = os.environ.get("API_KEY")
 
 movie_name = "batman"
-url = "https://api.themoviedb.org/3/search/movie?query={movie_name}&include_adult=false&language=en-US&page=1"
+url = f"https://api.themoviedb.org/3/search/movie?query={movie_name}&include_adult=false&language=en-US&page=1"
 
 headers = {
     "accept": "application/json",
