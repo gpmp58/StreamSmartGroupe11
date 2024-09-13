@@ -17,7 +17,7 @@
         recherche_films["Recherche de films/séries"]
             rechercher_film["Rechercher un film/série"]
             voir_plateformes["Voir plateformes"]
-        gestion_criteres["Gestion des critères d'abonnement"]
+8        gestion_criteres["Gestion des critères d'abonnement"]
                 choisir_options["Choisir des options (pub, résolution)"]
         gestion_abonnements_complexes["Gestion des abonnements complexes"]
     administrateur[Administrateur]
