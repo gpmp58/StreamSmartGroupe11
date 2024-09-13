@@ -23,11 +23,9 @@ class Film():
         reponse = requests.get(url_recherche_film, headers=headers)
         data = json.loads(reponse.content)
         films_obtenus = data["results"]
-        print(films_obtenus)
         liste_films = dict()
-
-        for info_films in films_obtenus:
-            liste_films[films_obtenus[info_films]["id"]] = films_obtenus[info_films]["original_title"]
+        for i in range(len(films_obtenus)):
+            liste_films[films_obtenus[i]["id"]] = films_obtenus[i]["original_title"]
         print(liste_films)
 
 
