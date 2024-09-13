@@ -25,9 +25,12 @@ class Film():
         films_obtenus = data["results"]
         liste_films = dict()
         for i in range(len(films_obtenus)):
-            liste_films[films_obtenus[i]["id"]] = films_obtenus[i]["original_title"]
-        print(liste_films)
+            liste_films[films_obtenus[i]
+                        ["id"]] = films_obtenus[i]["original_title"]
+        return liste_films
 
+    def selectionner_film(self, liste_films: dict):
+        pass
 
 test = Film("batman")
 test.rechercher_film()
