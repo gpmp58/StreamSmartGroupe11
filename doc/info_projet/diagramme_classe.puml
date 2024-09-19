@@ -1,0 +1,63 @@
+@startuml
+
+class Utilisateur {
+    +id_utilisateur : str
+    +nom : str
+    +prenom : str
+    +adresse_mail : str
+    +mdp : str
+    +langue : str
+    +creer_compte() 
+    +supprimer_compte() 
+    +se_connecter() 
+    +se_deconnecter() 
+    +info_utilisateur()
+}
+
+class Film {
+    +id_film : str
+    +nom : str
+    +duree : int/float
+    +genre_film : str
+    +annee_de_sortie : int
+    +age_requis : int
+    +affiche : str
+    +rechercher_film() 
+    +liker_film()
+    +afficher_details() 
+    +recherche_plateforme_film() -> Df
+}
+
+class Watchlist {
+    +id_watchlist : str
+    +nom : str
+    +genre_watchlist : str
+    +liste_film : Df
+    +creer_nvl_watchlist()
+    +supprimer_watchlist() 
+    +ajouter_film()
+    +supprimer_film()
+}
+
+class PlateformeStreaming {
+    +id_plateforme : str
+    +nom : str
+    +abonnement : Df
+}
+
+class Abonnement {
+    +id_abonnement : str
+    +nom : str
+    +prix : int/float
+    +offre : str
+    +presence_pub : bool
+    +abonnement_adapté(film)
+}
+
+Utilisateur "1" --* "0..*" Watchlist : possède
+Utilisateur "1..*" --> "0..*" Film : rechercher
+Film "1" --> "0..*" Watchlist : être ajouté
+Film "1..*" --> "0..*" PlateformeStreaming : est sur
+PlateformeStreaming "1" --* "1..*" Abonnement : possède
+
+@enduml
