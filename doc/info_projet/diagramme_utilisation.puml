@@ -1,0 +1,55 @@
+@startuml
+
+skinparam backgroundColor #F5F5F5
+skinparam usecase {
+    BackgroundColor #d3f4ff
+    BorderColor #000080
+    ArrowColor #008080
+    FontName Arial
+    FontSize 14
+    FontColor #000080
+}
+
+actor Utilisateur
+actor Administrateur
+
+package "Cas d'utilisation Utilisateur" {
+    usecase "Créer un compte" as creer_compte
+    usecase "Se connecter" as se_connecter
+    usecase "Supprimer un compte" as supprimer_compte
+    usecase "Créer une watchlist" as creer_watchlist
+    usecase "Ajouter un film" as ajouter_film
+    usecase "Supprimer une watchlist" as supprimer_watchlist
+    usecase "Rechercher un film/série" as rechercher_film
+    usecase "Voir plateformes" as voir_plateformes
+    usecase "Choisir des options (pub, résolution)" as choisir_options
+}
+
+package "Cas d'utilisation Administrateur" {
+    usecase "Analyser la watchlist" as analyser_watchlist
+    usecase "Proposer un abonnement" as proposer_abonnement
+    usecase "Adapter recommandations selon pays" as adapter_recommandations
+    usecase "Gestion des abonnements complexes" as gestion_abonnements_complexes
+}
+
+Utilisateur --> creer_compte
+Utilisateur --> se_connecter
+Utilisateur --> supprimer_compte
+
+Utilisateur --> creer_watchlist
+Utilisateur --> ajouter_film
+Utilisateur --> supprimer_watchlist
+
+Utilisateur --> rechercher_film
+Utilisateur --> voir_plateformes
+
+Utilisateur --> choisir_options
+
+Administrateur --> analyser_watchlist
+Administrateur --> proposer_abonnement
+
+Administrateur --> adapter_recommandations
+
+Administrateur --> gestion_abonnements_complexes
+
+@enduml
