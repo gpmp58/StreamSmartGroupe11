@@ -1,4 +1,4 @@
-@startuml
+@startuml 2
 
 class Utilisateur {
     +id_utilisateur : str

@@ -1,4 +1,4 @@
-@startuml
+@startuml 3
 
 skinparam backgroundColor #F5F5F5
 skinparam usecase {
