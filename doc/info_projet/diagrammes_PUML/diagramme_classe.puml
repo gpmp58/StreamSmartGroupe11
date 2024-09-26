@@ -1,63 +1,141 @@
-@startuml 2
+@startuml
 
+skinparam class {
+    BackgroundColor lightgrey
+    BorderColor black
+    FontColor black
+}
+
+' Classe Utilisateur et ses services
 class Utilisateur {
-    +id_utilisateur : str
-    +nom : str
-    +prenom : str
-    +adresse_mail : str
+    +Nom : str
+    +Prénom : str
+    +Adresse_mail : str
+    +Pseudo : str
     +mdp : str
-    +langue : str
-    +creer_compte() 
-    +supprimer_compte() 
-    +se_connecter() 
-    +se_deconnecter() 
-    +info_utilisateur()
+}
+
+class UtilisateurService {
+    +Créer_compte(Nom, Prénom, Adresse_mail, Pseudo, mdp)
+    +supprimer_compte(id)
+    +se_connecter(id, mdp)
+    +se_déconnecter()
+    +afficher()
+}
+
+class UtilisateurDAO {
+    +créer_compte_DAO(Nom, Prénom, Adresse_mail, Pseudo, mdp)
+    +supprimer_compte_DAO(id)
+    +se_connecter_DAO()
+    +Afficher_DAO()
+    +Trouver_id()
 }
 
 class Film {
-    +id_film : str
-    +nom : str
-    +duree : int/float
-    +genre_film : str
-    +annee_de_sortie : int
-    +age_requis : int
-    +affiche : str
-    +rechercher_film() 
-    +liker_film()
-    +afficher_details() 
-    +recherche_plateforme_film() -> Df
+    +Nom : str
+    +Durée : int/float
+    +Genre : str
+    +id_film : none
+    +Age : int
+    +Année_sortie : int
+    +Affiche : str
+}
+
+class FilmService {
+    +Rechercher_film(nom): result
+    +Sélectionner_film(result): str
+    +Afficher_infos(id_film) : dict
+    +Disponibilité_film : str
+}
+
+class FilmView {
+    +Afficher_info(): None
+    +Effectuer_choix(): AbstractView
 }
 
 class Watchlist {
     +id_watchlist : str
-    +nom : str
-    +genre_watchlist : str
+    +Nom : str
     +liste_film : Df
-    +creer_nvl_watchlist()
-    +supprimer_watchlist() 
-    +ajouter_film()
-    +supprimer_film()
+    +pseudo : str
+}
+
+class WatchlistService {
+    +creer_nouvelle_watchlist(nom)
+    +supprimer_watchlist(nom)
+    +ajouter_film(id_film, id_watchlist)
+    +supprimer_film(id_film, id_watchlist)
+    +sauvegarder_watchlist(nom)
+}
+
+class WatchlistView {
+    +Afficher_info(): None
+    +Effectuer_choix(): AbstractView
+}
+
+abstract class AbstractView {
+    +afficher_info(): None
+    +Effectuer_choix(): AbstractView
+}
+
+class WelcomeView {
+    +afficher_info(): None
+    +effectuer_choix(): AbstractView
+}
+
+class UtilisateurView {
+    +afficher_info(): None
+    +effectuer_choix(): AbstractView
 }
 
 class PlateformeStreaming {
     +id_plateforme : str
-    +nom : str
-    +abonnement : Df
+    +nom_plateforme : str
+    +logo_plateforme : str
 }
 
 class Abonnement {
     +id_abonnement : str
-    +nom : str
+    +nom_abonnement : str
     +prix : int/float
-    +offre : str
-    +presence_pub : bool
-    +abonnement_adapté(film)
+    +détail_offre : str
 }
 
-Utilisateur "1" --* "0..*" Watchlist : possède
-Utilisateur "1..*" --> "0..*" Film : rechercher
-Film "1" --> "0..*" Watchlist : être ajouté
-Film "1..*" --> "0..*" PlateformeStreaming : est sur
-PlateformeStreaming "1" --* "1..*" Abonnement : possède
+class AbonnementService {
+    +sélectionner_critère(nom_critère)
+    +recherche_meilleur_abonnement(nom_critère, id_watchlist)
+}
+
+class Critère {
+    +recherche_meilleur_prix(id_watchlist)
+    +recherche_meilleur_ratio(id_watchlist)
+    +recherche_meilleur_pub(id_watchlist)
+}
+
+' Relations entre les classes et services
+
+Film "0..*" --> "0..*" PlateformeStreaming 
+PlateformeStreaming "1" --> "1..*" Abonnement : contient
+Abonnement --> AbonnementService
+AbonnementService --> Critère
+
+Film <|-- FilmService : <<Create>>
+FilmService --> FilmView : <<Use>>
+FilmView --> AbstractView
+
+WatchlistView --> AbstractView
+WelcomeView --> AbstractView
+UtilisateurView --> AbstractView
+
+Film "0..*" --> "0..*" Watchlist : Ajoute
+Watchlist <-- WatchlistService : <<Create>>
+WatchlistService --> WatchlistView : <<Use>>
+
+Film "0..*" <-- "0..*" Utilisateur : Recherche
+Utilisateur "1" --> "1..*" Watchlist : Possède
+
+Utilisateur <-- UtilisateurService : <<Create>>
+UtilisateurService --> UtilisateurDAO : <<Use>>
+UtilisateurService --> UtilisateurView : <<Use>>
 
 @enduml
