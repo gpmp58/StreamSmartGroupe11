@@ -3,10 +3,8 @@ import dotenv
 import psycopg2
 
 from psycopg2.extras import RealDictCursor
-from utils.singleton import Singleton
 
-
-class DBConnection(metaclass=Singleton):
+class DBConnection():
     """
     Classe de connexion à la base de données
     Elle permet de n'ouvrir qu'une seule et unique connexion

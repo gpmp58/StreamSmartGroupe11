@@ -1,17 +1,13 @@
-import logging
-
-from utils.singleton import Singleton
-from utils.log_decorator import log
 
 from dao.db_connection import DBConnection
 
 from business_object.utilisateur import Utilisateur
 
 
-class utilisateurDao(metaclass=Singleton):
-    """Classe contenant les méthodes pour accéder aux utilisateurs de la base de données"""
+class utilisateurDao():
+    """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
 
-    @log
+    
     def creer(self, utilisateur) -> bool:
         """Creation d'un joueur dans la base de données
 
@@ -28,122 +24,71 @@ class utilisateurDao(metaclass=Singleton):
 
         res = None
 
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "INSERT INTO joueur(pseudo, mdp, age, mail, fan_pokemon) VALUES        "
-                        "(%(pseudo)s, %(mdp)s, %(age)s, %(mail)s, %(fan_pokemon)s)             "
-                        "  RETURNING id_joueur;                                                ",
-                        {
-                            "pseudo": joueur.pseudo,
-                            "mdp": joueur.mdp,
-                            "age": joueur.age,
-                            "mail": joueur.mail,
-                            "fan_pokemon": joueur.fan_pokemon,
-                        },
-                    )
-                    res = cursor.fetchone()
-        except Exception as e:
-            logging.info(e)
+        
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO utilisateur(nom, prénom, adresse_mail, mdp) VALUES "
+                    "(%(nom)s, %(prénom)s, %(adresse_mail)s, %(pseudo)s, %(mdp)s) "
+                    "  RETURNING pseudo;",
+                    {
+                        "nom": utilisateur.nom,
+                        "prénom": utilisateur.prénom,
+                        "adresse_mail": utilisateur.adresse_mail,
+                        "mdp": utilisateur.mdp,
+                    },
+                )
+                res = cursor.fetchone()
 
         created = False
         if res:
-            joueur.id_joueur = res["id_joueur"]
+            pseudo = res["pseudo"]
             created = True
 
         return created
 
-    @log
-    def trouver_par_id(self, id_joueur) -> Joueur:
-        """trouver un joueur grace à son id
+    
+    def trouver_par_pseudo(self, pseudo) -> Utilisateur:
+        """trouver un utilisateur grace à son pseudo
 
         Parameters
         ----------
-        id_joueur : int
-            numéro id du joueur que l'on souhaite trouver
+        pseudo : str
+            pseudo de l'utilisateur id que l'on souhaite trouver
 
         Returns
         -------
-        joueur : Joueur
-            renvoie le joueur que l'on cherche par id
+        utilisateur : Utilisateur
+            renvoie l'utilisateur que l'on cherche par pseudo
         """
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT *                           "
-                        "  FROM joueur                      "
-                        " WHERE id_joueur = %(id_joueur)s;  ",
-                        {"id_joueur": id_joueur},
-                    )
-                    res = cursor.fetchone()
-        except Exception as e:
-            logging.info(e)
-            raise
-
-        joueur = None
+        
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT *                           "
+                    "  FROM utilisateur                      "
+                    " WHERE pseudo = %(pseudo)s;  ",
+                    {"pseudo": pseudo},
+                )
+                res = cursor.fetchone()
+        utilisateur = None
         if res:
-            joueur = Joueur(
+            utilisateur = Utilisateur(
                 pseudo=res["pseudo"],
-                age=res["age"],
-                mail=res["mail"],
-                fan_pokemon=res["fan_pokemon"],
-                id_joueur=res["id_joueur"],
+                nom=res["nom"],
+                prénom=res["prénom"],
+                adresse_mail=res["adresse_mail"],
             )
 
         return joueur
 
-    @log
-    def lister_tous(self) -> list[Joueur]:
-        """lister tous les joueurs
+    
+    def modifier(self, utilisateur) -> bool:
+        """Modification d'un utilisateur dans la base de données
 
         Parameters
         ----------
-        None
-
-        Returns
-        -------
-        liste_joueurs : list[Joueur]
-            renvoie la liste de tous les joueurs dans la base de données
-        """
-
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT *                              "
-                        "  FROM joueur;                        "
-                    )
-                    res = cursor.fetchall()
-        except Exception as e:
-            logging.info(e)
-            raise
-
-        liste_joueurs = []
-
-        if res:
-            for row in res:
-                joueur = Joueur(
-                    id_joueur=row["id_joueur"],
-                    pseudo=row["pseudo"],
-                    mdp=row["mdp"],
-                    age=row["age"],
-                    mail=row["mail"],
-                    fan_pokemon=row["fan_pokemon"],
-                )
-
-                liste_joueurs.append(joueur)
-
-        return liste_joueurs
-
-    @log
-    def modifier(self, joueur) -> bool:
-        """Modification d'un joueur dans la base de données
-
-        Parameters
-        ----------
-        joueur : Joueur
+        utilisateur : Utilisateur
 
         Returns
         -------
@@ -154,103 +99,114 @@ class utilisateurDao(metaclass=Singleton):
 
         res = None
 
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "UPDATE joueur                                      "
-                        "   SET pseudo      = %(pseudo)s,                   "
-                        "       mdp         = %(mdp)s,                      "
-                        "       age         = %(age)s,                      "
-                        "       mail        = %(mail)s,                     "
-                        "       fan_pokemon = %(fan_pokemon)s               "
-                        " WHERE id_joueur = %(id_joueur)s;                  ",
-                        {
-                            "pseudo": joueur.pseudo,
-                            "mdp": joueur.mdp,
-                            "age": joueur.age,
-                            "mail": joueur.mail,
-                            "fan_pokemon": joueur.fan_pokemon,
-                            "id_joueur": joueur.id_joueur,
-                        },
-                    )
-                    res = cursor.rowcount
-        except Exception as e:
-            logging.info(e)
+       
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE utilisateur                                      "
+                    "   SET mdp         = %(mdp)s,                      "
+                    "       nom         = %(nom)s,                      "
+                    "       prénom      = %(prénom)s,                     "
+                    "       adresse_mail = %(adresse_mail)s               "
+                    " WHERE pseudo = %(pseudo)s;                  ",
+                    {
+                        "mdp": utilisateur.mdp,
+                        "nom": utilisateur.nom,
+                        "prénom": utilisateur.prénom,
+                        "adresse_mail": utilisateur.adresse_mail,
+                        "pseudo": utilisateur.pseudo,
+                    },
+                )
+                res = cursor.rowcount
 
         return res == 1
 
-    @log
-    def supprimer(self, joueur) -> bool:
-        """Suppression d'un joueur dans la base de données
+    
+    def supprimer(self, utilsateur) -> bool:
+        """Suppression d'un utilisateur dans la base de données
 
         Parameters
         ----------
-        joueur : Joueur
-            joueur à supprimer de la base de données
+        utilisateur : Utilisateur
+            utilisateur à supprimer de la base de données
 
         Returns
         -------
-            True si le joueur a bien été supprimé
+            True si l'utilisateur a bien été supprimé
         """
 
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    # Supprimer le compte d'un joueur
-                    cursor.execute(
-                        "DELETE FROM joueur                  "
-                        " WHERE id_joueur=%(id_joueur)s      ",
-                        {"id_joueur": joueur.id_joueur},
-                    )
-                    res = cursor.rowcount
-        except Exception as e:
-            logging.info(e)
-            raise
+        
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM utilisateur             "
+                    " WHERE pseudo = %(pseudo)s      ",
+                    {"pseudo": Utilisateur.pseudo},
+                )
+                res = cursor.rowcount
 
         return res > 0
 
-    @log
-    def se_connecter(self, pseudo, mdp) -> Joueur:
+    def se_connecter(self, pseudo, mdp) -> Utilisateur:
         """se connecter grâce à son pseudo et son mot de passe
 
         Parameters
         ----------
         pseudo : str
-            pseudo du joueur que l'on souhaite trouver
+            pseudo d'utilisateur que l'on souhaite trouver
         mdp : str
-            mot de passe du joueur
+            mot de passe d'utilisateur
 
         Returns
         -------
-        joueur : Joueur
-            renvoie le joueur que l'on cherche
+        utilisateur : Utlisateur
+            renvoie l'utilisateur que l'on cherche
         """
         res = None
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT *                           "
-                        "  FROM joueur                      "
-                        " WHERE pseudo = %(pseudo)s         "
-                        "   AND mdp = %(mdp)s;              ",
-                        {"pseudo": pseudo, "mdp": mdp},
-                    )
-                    res = cursor.fetchone()
-        except Exception as e:
-            logging.info(e)
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT *                           "
+                    "  FROM utilisateur                 "
+                    " WHERE pseudo = %(pseudo)s         "
+                    "   AND mdp = %(mdp)s;              ",
+                    {"pseudo": pseudo, "mdp": mdp},
+                )
+                res = cursor.fetchone()
 
-        joueur = None
+
+        utilisateur = None
 
         if res:
-            joueur = Joueur(
+            utilisateur = Utilisateur(
                 pseudo=res["pseudo"],
                 mdp=res["mdp"],
-                age=res["age"],
-                mail=res["mail"],
-                fan_pokemon=res["fan_pokemon"],
-                id_joueur=res["id_joueur"],
+                nom=res["nom"],
+                prénom=res["prénom"],
+                adresse_mail=res["adresse_mail"]
             )
 
-        return joueur
+        return utilisateur
+    
+    def trouver_watchlist_correspondante(self,utilisateur) -> int:
+        """
+        description de la commande 
+        """
+        res = None
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id_watchlist                "
+                    "FROM utilisateur as u               "
+                    "JOIN utilisateur_watchlist as w"
+                    "ON u.pseudo = w.pseudo"
+                    "JOIN watchlist as wu"
+                    "ON wu.id_watchlist = w.id_watchlist",
+                    {"pseudo": utilisateur.pseudo},
+
+                )
+                res = cursor.fetchone()
+        if res :
+            return res[id_watchlist]
+        else :
+            return("C'est le temps de créer votre watchlist ! ")
