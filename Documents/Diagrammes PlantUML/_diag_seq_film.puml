@@ -1,0 +1,28 @@
+@startuml
+!theme plain
+
+actor Utilisateur as user
+boundary Interface as interface
+entity "Service " as filmService
+entity "API" as API
+entity "DAO" as dao
+database "BDD" as db
+
+title Diagramme de Séquence : Sélection de Film et Ajout à la Watchlist
+
+user -> interface : **Sélectionner** un film
+interface-->user : **Demande** d'entrer un nom de film
+user -> interface : Entre un nom de film
+
+interface->filmService: rechercher_film
+filmService -> API : **Requête HTML** : recherche par nom
+API --> filmService : liste_films
+filmService -> interface : **Afficher** liste_films
+interface -> user : **Demande** de sélection de film
+filmService -> API : Détails du film
+
+user -> interface : **Sélectionner** le film voulu
+interface--> filmService : selectionner_film
+
+
+@enduml
