@@ -1,8 +1,5 @@
-
-from dao.db_connection import DBConnection
-
 from business_object.utilisateur import Utilisateur
-
+from dao.db_connection import DBConnection
 
 class UtilisateurDAO():
     """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
