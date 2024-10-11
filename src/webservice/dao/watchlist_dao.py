@@ -99,7 +99,7 @@ class watchlistDao():
         return res > 0
     
 
-    def ajouter_film(self, id_watchlist, id_film) -> bool:
+    def supprimer_film(self, id_watchlist, id_film) -> bool:
         """Supprimer un film dans une watchlist dans la base de données
 
         Parameters
