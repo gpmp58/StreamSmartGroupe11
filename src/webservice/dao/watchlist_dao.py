@@ -69,3 +69,60 @@ class watchlistDao():
                 res = cursor.rowcount
 
         return res > 0
+
+    def ajouter_film(self, id_watchlist, id_film) -> bool:
+        """Ajoute un film à une watchlist dans la base de données
+
+        Parameters
+        ----------
+        id_watchlist : int
+            L'identifiant de la watchlist à laquelle le film doit être ajouté
+        id_film : int
+            L'identifiant du film à ajouter
+
+        Returns
+        -------
+        bool
+            True si le film a été ajouté avec succès
+            False sinon
+        """
+        res = None
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO film_watchlist(id_watchlist, id_film) VALUES "
+                    "(%(id_watchlist)s, %(id_film)s);",
+                    {"id_watchlist": id_watchlist, "id_film": id_film},
+                )
+                res = cursor.rowcount
+
+        return res > 0
+    
+
+    def ajouter_film(self, id_watchlist, id_film) -> bool:
+        """Supprimer un film dans une watchlist dans la base de données
+
+        Parameters
+        ----------
+        id_watchlist : int
+            L'identifiant de la watchlist à laquelle le film doit être supprimé
+        id_film : int
+            L'identifiant du film à supprimer
+
+        Returns
+        -------
+        bool
+            True si le film a été ajouté avec succès
+            False sinon
+        """
+        res = None
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM film_watchlist
+                    " WHERE id_watchlist = %(id_watchlist)s and id_film = %(id_film)s",
+                    {"id_watchlist": id_watchlist, "id_film": id_film},
+                )
+                res = cursor.rowcount
+
+        return res > 0
