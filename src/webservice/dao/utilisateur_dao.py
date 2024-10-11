@@ -4,11 +4,11 @@ from dao.db_connection import DBConnection
 from business_object.utilisateur import Utilisateur
 
 
-class utilisateurDao():
+class UtilisateurDAO():
     """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
 
     
-    def creer(self, utilisateur) -> bool:
+    def creer_compte_DAO(self, utilisateur) -> bool:
         """Creation d'un joueur dans la base de données
 
         Parameters
@@ -29,26 +29,28 @@ class utilisateurDao():
             with connection.cursor() as cursor:
                 cursor.execute(
                     "INSERT INTO utilisateur(nom, prénom, adresse_mail, mdp) VALUES "
-                    "(%(nom)s, %(prénom)s, %(adresse_mail)s, %(pseudo)s, %(mdp)s) "
-                    "  RETURNING pseudo;",
+                    "(%(pseudo)s,%(nom)s, %(prénom)s, %(adresse_mail)s, %(pseudo)s, %(mdp)s,%(langue)s) "
+                    "  RETURNING id_utilisateur;",
                     {
                         "nom": utilisateur.nom,
                         "prénom": utilisateur.prénom,
                         "adresse_mail": utilisateur.adresse_mail,
                         "mdp": utilisateur.mdp,
+                        "pseudo" : utilisateur.pseudo,
+                        "langue" : utilisateur.langue,
                     },
                 )
                 res = cursor.fetchone()
 
         created = False
         if res:
-            pseudo = res["pseudo"]
+            utilisateur.id_utilisateur= res["id_utilisateur"]
             created = True
 
         return created
 
     
-    def trouver_par_pseudo(self, pseudo) -> Utilisateur:
+    def trouver_par_id(self, id) -> Utilisateur:
         """trouver un utilisateur grace à son pseudo
 
         Parameters
@@ -67,23 +69,27 @@ class utilisateurDao():
                 cursor.execute(
                     "SELECT *                           "
                     "  FROM utilisateur                      "
-                    " WHERE pseudo = %(pseudo)s;  ",
-                    {"pseudo": pseudo},
+                    " WHERE id_utilisateur = %(id_utilisateur)s;  ",
+                    {"id_utilisateur": id},
                 )
                 res = cursor.fetchone()
         utilisateur = None
-        if res:
+        if res : 
             utilisateur = Utilisateur(
                 pseudo=res["pseudo"],
+                mdp=res["mdp"],
                 nom=res["nom"],
                 prénom=res["prénom"],
                 adresse_mail=res["adresse_mail"],
+                langue=res["langue"],
+                id_utilisateur=res["id_utilisateur"]
             )
 
-        return joueur
+
+        return utilisateur
 
     
-    def modifier(self, utilisateur) -> bool:
+    def modifier_DAO(self, utilisateur) -> bool:
         """Modification d'un utilisateur dans la base de données
 
         Parameters
@@ -122,7 +128,7 @@ class utilisateurDao():
         return res == 1
 
     
-    def supprimer(self, utilsateur) -> bool:
+    def supprimer_compte_DAO(self, utilsateur) -> bool:
         """Suppression d'un utilisateur dans la base de données
 
         Parameters
@@ -140,14 +146,14 @@ class utilisateurDao():
             with connection.cursor() as cursor:
                 cursor.execute(
                     "DELETE FROM utilisateur             "
-                    " WHERE pseudo = %(pseudo)s      ",
-                    {"pseudo": Utilisateur.pseudo},
+                    " WHERE id_utilisateur = %(id_utilisateur)s      ",
+                    {"id_utilisateur": utilisateur.id_utilisateur},
                 )
                 res = cursor.rowcount
 
         return res > 0
 
-    def se_connecter(self, pseudo, mdp) -> Utilisateur:
+    def se_connecter_DAO(self, pseudo, mdp) -> Utilisateur:
         """se connecter grâce à son pseudo et son mot de passe
 
         Parameters
@@ -168,9 +174,9 @@ class utilisateurDao():
                 cursor.execute(
                     "SELECT *                           "
                     "  FROM utilisateur                 "
-                    " WHERE pseudo = %(pseudo)s         "
+                    " WHERE id_utilisateur = %(id_utilisateur)s         "
                     "   AND mdp = %(mdp)s;              ",
-                    {"pseudo": pseudo, "mdp": mdp},
+                    {"id_utilisateur": id_utilisateur, "mdp": mdp},
                 )
                 res = cursor.fetchone()
 
@@ -183,30 +189,32 @@ class utilisateurDao():
                 mdp=res["mdp"],
                 nom=res["nom"],
                 prénom=res["prénom"],
-                adresse_mail=res["adresse_mail"]
+                adresse_mail=res["adresse_mail"],
+                langue=res["langue"],
+                id_utilisateur=res["id_utilisateur"]
             )
 
         return utilisateur
     
-    def trouver_watchlist_correspondante(self,utilisateur) -> int:
-        """
-        description de la commande 
-        """
-        res = None
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT id_watchlist                "
-                    "FROM utilisateur as u               "
-                    "JOIN utilisateur_watchlist as w"
-                    "ON u.pseudo = w.pseudo"
-                    "JOIN watchlist as wu"
-                    "ON wu.id_watchlist = w.id_watchlist",
-                    {"pseudo": utilisateur.pseudo},
-
-                )
-                res = cursor.fetchone()
-        if res :
-            return res[id_watchlist]
-        else :
-            return("C'est le temps de créer votre watchlist ! ")
+def trouver_watchlist_correspondante(self, utilisateur) -> int:
+    """
+    Cette méthode cherche la watchlist correspondant à un utilisateur.
+    Si aucune watchlist n'est trouvée, elle retourne un message invitant à en créer une.
+    """
+    res = None
+    with DBConnection().connection as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT w.id_watchlist, w.nom_watchlist "
+                "FROM utilisateur AS u "
+                "JOIN watchlist AS w "
+                "ON u.id_utilisateur = w.id_utilisateur "
+                "WHERE u.id_utilisateur = %(id_utilisateur)s",  
+                {"id_utilisateur": utilisateur.id_utilisateur},
+            )
+            res = cursor.fetchone()
+    
+    if res:
+        return [{"id_watchlist": row["id_watchlist"], "nom_watchlist": row["nom_watchlist"]} for row in res]
+    else:
+        return []
