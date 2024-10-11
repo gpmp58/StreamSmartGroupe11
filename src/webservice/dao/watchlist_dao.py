@@ -8,44 +8,43 @@ class watchlistDao():
     """Classe contenant les méthodes pour accéder aux watchlists de la base des données"""
 
     
-    def creer(self, watchlist) -> bool:
-        """Creation d'un watchlist dans la base de données
+    def creer_nouvelle_watchlist_DAO(self, watchlist: Watchlist) -> bool:
+        """Crée une nouvelle watchlist dans la base de données.
 
         Parameters
         ----------
-        watchlist : watchlist
+        watchlist : Watchlist
+            Instance de la classe Watchlist à ajouter à la base de données.
 
         Returns
         -------
-        created : bool
-            True si la création est un succès
-            False sinon
+        bool
+            True si la création est un succès, False sinon.
         """
-
-        res = None
-
-        
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO watchlist(nom) VALUES "
-                    "(%(nom)s) "
-                    "  RETURNING id_watchlist;",
-                    {
-                        "nom": watchlist.nom,
-                    },
-                )
-                res = cursor.fetchone()
+                try:
+                    cursor.execute(
+                        "INSERT INTO watchlist (nom_watchlist, id_utilisateur) "
+                        "VALUES (%(nom_watchlist)s, %(id_utilisateur)s) "
+                        "RETURNING id_watchlist;",
+                        {
+                            "nom_watchlist": watchlist.nom_watchlist,
+                            "id_utilisateur": watchlist.id_utilisateur
+                        }
+                    )
+                    res = cursor.fetchone()
 
-        created = False
-        if res:
-            id_watchlist = res["id_watchlist"]
-            created = True
-
-        return created
+                    if res:
+                        watchlist.id_watchlist = res["id_watchlist"]
+                        return True
+                    return False
+                except Exception as e:
+                    print(f"Erreur lors de la création de la watchlist : {e}")
+                    return False
 
     
-    def supprimer(self, watchlist) -> bool:
+    def supprimer_watchlist_DAO(self, watchlist) -> bool:
         """Suppression d'un watchlist dans la base de données
 
         Parameters
@@ -70,7 +69,7 @@ class watchlistDao():
 
         return res > 0
 
-    def ajouter_film(self, id_watchlist, id_film) -> bool:
+    def ajouter_film_DAO(self, id_watchlist, id_film) -> bool:
         """Ajoute un film à une watchlist dans la base de données
 
         Parameters
@@ -99,7 +98,7 @@ class watchlistDao():
         return res > 0
     
 
-    def supprimer_film(self, id_watchlist, id_film) -> bool:
+    def supprimer_film_DAO(self, id_watchlist, id_film) -> bool:
         """Supprimer un film dans une watchlist dans la base de données
 
         Parameters
