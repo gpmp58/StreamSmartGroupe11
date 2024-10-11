@@ -13,7 +13,6 @@ class ResetDatabase(metaclass=Singleton):
         init_db = open("data/init_db.sql", encoding="utf-8")
         init_db_as_string = init_db.read()
 
-
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:

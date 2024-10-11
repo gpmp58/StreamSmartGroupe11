@@ -7,7 +7,8 @@ CREATE SCHEMA projet11;
 
 DROP TABLE IF EXISTS projet11.utilisateur CASCADE ;
 CREATE TABLE projet11.utilisateur (
-    pseudo text UNIQUE PRIMARY KEY NOT NULL,
+    id_utilisateur text UNIQUE PRIMARY KEY NOT NULL
+    pseudo text NOT NULL,
     nom text NOT NULL,
     prenom text NOT NULL,
     mdp text NOT NULL,
@@ -23,20 +24,8 @@ DROP TABLE IF EXISTS projet11.watchlist;
 
 CREATE TABLE projet11.watchlist (
     id_watchlist INT PRIMARY KEY NOT NULL,
-    nom_watchlist text NOT NULL
-);
-
-
---------------------------------------------------------------
--- utilisateur_watchlist
---------------------------------------------------------------
-
-DROP TABLE IF EXISTS projet11.utilisateur_watchlist CASCADE ;
-
-CREATE TABLE projet11.utilisateur_watchlist (
-    pseudo text REFERENCES projet11.utilisateur(pseudo),
-    id_watchlist INT REFERENCES projet11.watchlist(id_watchlist),
-    PRIMARY KEY (pseudo, id_watchlist)
+    nom_watchlist text NOT NULL,
+    id_utilisateur text REFERENCES projet11.utilisateur(id_utilisateur)
 );
 
 
