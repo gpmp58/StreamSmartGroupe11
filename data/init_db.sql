@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS projet11.watchlist;
 CREATE TABLE projet11.watchlist (
     id_watchlist INT PRIMARY KEY NOT NULL,
     nom_watchlist text NOT NULL,
-    id_utilisateur text REFERENCES projet11.utilisateur(pseudo)
+    id_utilisateur text REFERENCES projet11.utilisateur(id_utilisateur)
 );
 
 
