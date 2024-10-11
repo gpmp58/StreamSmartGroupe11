@@ -1,6 +1,4 @@
 from dao.utilisateur_dao import UtilisateurDAO
-from utils.log_decorator import log
-from utils.securite import hash_password
 from business_object.utilisateur import Utilisateur
 
 class UtilisateurService:
@@ -26,8 +24,7 @@ class UtilisateurService:
         """
         self.utilisateur_dao = utilisateur_dao
 
-    
-    def creer_compte(self, nom: str, prenom: str, adresse_mail: str, pseudo: str, mdp: str):
+    def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
         """
         Crée un nouvel utilisateur dans la base de données.
 
@@ -37,27 +34,42 @@ class UtilisateurService:
             Le nom de l'utilisateur.
         prenom : str
             Le prénom de l'utilisateur.
-        adresse_mail : str
-            L'adresse e-mail de l'utilisateur.
         pseudo : str
             Le pseudo unique de l'utilisateur.
+        adresse_mail : str
+            L'adresse e-mail de l'utilisateur.
         mdp : str
-            Le mot de passe de l'utilisateur qui sera haché pour la sécurité.
+            Le mot de passe de l'utilisateur.
+        langue : str
+            La langue de l'utilisateur, par défaut "français".
+
+        Returns :
+        ---------
+        str
+            Un message indiquant le succès de la création du compte.
 
         Exceptions :
         ------------
         ValueError
             Si l'utilisateur existe déjà (vérification à implémenter au niveau du DAO).
+        dict
+            Contient une clé "error" avec le message d'erreur si la création a échoué.
         """
-        
-        # Créer un objet Utilisateur
-        utilisateur = Utilisateur(nom=nom, prenom=prenom, adresse_mail=adresse_mail, pseudo=pseudo, mdp=mdp)
+        try:
+            # Créer un objet Utilisateur
+            nouvel_utilisateur = Utilisateur(nom=nom, prenom=prenom, pseudo=pseudo, adresse_mail=adresse_mail, mdp=mdp, langue=langue)
 
-        # Créer l'utilisateur dans la base de données
-        if not self.utilisateur_dao.creer_compte_DAO(utilisateur):
-            raise ValueError("Erreur lors de la création du compte. Pseudo peut-être déjà utilisé.")
+            # Créer l'utilisateur dans la base de données
+            if not self.utilisateur_dao.creer_compte_DAO(nouvel_utilisateur):
+                raise ValueError("Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
 
-    
+            # Retourner l'utilisateur créé en cas de succès
+            return f"Nouveau compte créé : {nouvel_utilisateur}"
+
+        except Exception as e:
+            # Retourner un dictionnaire contenant l'erreur
+            return {"error": str(e)}
+
     def supprimer_compte(self, pseudo: str):
         """
         Supprime un compte utilisateur basé sur le pseudo.
@@ -72,14 +84,13 @@ class UtilisateurService:
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        # Vérifier si l'utilisateur existe avant de le supprimer
         utilisateur = self.utilisateur_dao.trouver_par_pseudo(pseudo)
         if utilisateur:
             self.utilisateur_dao.supprimer_compte_DAO(utilisateur)
+            print(f"Compte avec le pseudo '{pseudo}' supprimé avec succès.")
         else:
             raise ValueError("Utilisateur introuvable.")
 
-    
     def se_connecter(self, pseudo: str, mdp: str):
         """
         Permet à un utilisateur de se connecter en vérifiant son pseudo et son mot de passe.
@@ -91,22 +102,24 @@ class UtilisateurService:
         mdp : str
             Le mot de passe de l'utilisateur.
 
+        Returns :
+        ---------
+        str
+            Un message de bienvenue en cas de succès.
+
         Exceptions :
         ------------
         ValueError
             Si les informations de connexion sont incorrectes.
         """
-
-        # Trouver l'utilisateur dans la base de données via le pseudo & mdp
-        utilisateur = self.utilisateur_dao.se_connecter_DAO(pseudo, mdp)
-        #Cas où le mdp/pseudo sont incorrects , l'utilisateur n'est pas trouvé -> la fct renvoie None
-        if utilisateur==None:
-            raise ValueError("Pseudo ou mdp incorrect")
-        #Cas de succès: on doit le rediriger vers la page d'acceuil avec message de bienvenue
+        # Trouver l'utilisateur dans la base de données via le pseudo et le mot de passe
+        utilisateur_connexion = self.utilisateur_dao.se_connecter_DAO(pseudo, mdp)
+        
+        if utilisateur_connexion is None:
+            raise ValueError("Pseudo ou mot de passe incorrect.")
         else:
             return f"Bienvenue {utilisateur.pseudo} sur notre application"
 
-    
     def se_deconnecter(self):
         """
         Déconnecte l'utilisateur actuellement connecté.
@@ -114,13 +127,11 @@ class UtilisateurService:
 
         Remarque :
         ------------
-        Le mécanisme de session n'est pas directement implémenté ici, il dépend d'autres couches
+        Le mécanisme de session n'est pas directement implémenté ici et dépend d'autres couches
         de l'application (par exemple, une session Flask).
         """
-        # Gérer la déconnexion --> renvoie vers une fausse page de déconnexion
-        print("Déconnexion réussie")
+        print("Déconnexion réussie.")
 
-    
     def afficher(self, pseudo: str):
         """
         Affiche les informations d'un utilisateur basé sur son pseudo.
@@ -131,7 +142,14 @@ class UtilisateurService:
             Le pseudo de l'utilisateur dont on souhaite afficher les informations.
 
         Exceptions :
-        ------------
+        ------------        
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
+        utilisateur = self.utilisateur_dao.trouver_par_pseudo(pseudo)
+
+        if utilisateur:
+            print(f"Nom: {utilisateur.nom}, Prénom: {utilisateur.prenom}, "
+                  f"Email: {utilisateur.adresse_mail}, Langue: {utilisateur.langue}")
+        else:
+            raise ValueError("Utilisateur introuvable.")

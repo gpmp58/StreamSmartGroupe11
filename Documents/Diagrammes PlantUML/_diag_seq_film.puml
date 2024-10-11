@@ -8,7 +8,7 @@ entity "API" as API
 entity "DAO" as dao
 database "BDD" as db
 
-title Diagramme de Séquence : Sélection de Film et Ajout à la Watchlist
+
 
 user -> interface : **Sélectionner** un film
 interface-->user : **Demande** d'entrer un nom de film

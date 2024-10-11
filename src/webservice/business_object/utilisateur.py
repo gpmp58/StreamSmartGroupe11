@@ -95,8 +95,3 @@ class Utilisateur:
     def get_id_utilisateur(self):
         return self.id_utilisateur    
 
-# try : 
-# nouvel_utilisateur = Utilisateur()
-# return nouvel_utilisateur
-# except Exception as e:
-# return {"error" : str(e)}
