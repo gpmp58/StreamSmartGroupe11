@@ -196,7 +196,7 @@ class UtilisateurDAO():
 
         return utilisateur
     
-def trouver_watchlist_correspondante(self, utilisateur) -> int:
+def trouver_watchlist_correspondante(self, utilisateur) -> list:
     """
     Cette méthode cherche la watchlist correspondant à un utilisateur.
     Si aucune watchlist n'est trouvée, elle retourne un message invitant à en créer une.
