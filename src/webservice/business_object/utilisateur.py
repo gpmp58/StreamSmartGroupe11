@@ -20,7 +20,7 @@ class Utilisateur:
 
     def __init__(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp=None, id_utilisateur=None, langue: str = "français"):
         """Constructeur avec validation basique"""
-         """
+        """
         Initialise un objet Utilisateur avec les attributs spécifiés.
 
         Args:
@@ -57,7 +57,7 @@ class Utilisateur:
         self.nom = nom
         self.prenom = prenom
         self.pseudo = pseudo
-        self.adresse_mail
+        self.adresse_mail = adresse_mail
         self.mdp = mdp
         self.langue = langue
         
