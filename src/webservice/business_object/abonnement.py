@@ -14,46 +14,55 @@ class Abonnemennt:
         détail de l'offre proposée par l'abonnement
     """
 
-    def __init__(self, nom_abonnement: str, logo_plateforme: str, id_plateforme: str):
+    def __init__(self, nom_abonnement: str, prix: float, id_abonnement: str, detail_offre : str):
         """Constructeur avec validation basique"""
          """
-        Initialise un objet PlateformeStreaming avec les attributs spécifiés.
+        Initialise un objet Abonnement avec les attributs spécifiés.
 
         Args:
-            nom_plateforme (str) : Le nom de la plateforme renseigné.
-            logo_plateforme (str) : Le logo de la plateforme renseigné.
-            id_plateforme (str) : L'id de la plateforme renseigné.
+            nom_abonnement (str) : Le nom de l'abonnement renseigné.
+            prix (float) : Le prix de l'abonnement renseigné.
+            id_abonnement (str) : L'id de l'abonnement renseigné.
+            detail_offre (str) : Le détail de l'offre renseigné.
 
         Raises:
-            Exception: Si le nom de la plateforme n'est pas une chaîne de caractères.
-            Exception: Si le logo de la plateforme n'est pas une chaîne de caractères.
-            Exception: Si l'identifiant de la plateforme n'est pas une chaîne de caractères.
+            Exception: Si le nom de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si le prix de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si l'identifiant de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si le detail de l'offre n'est pas une chaîne de caractères.
         """
 
-        if not isinstance(nom_plateforme, str):
-            raise Exception("Le nom de la plateforme n'est pas une chaîne de caractères.")
-        if not isinstance(logo_plateforme, str):
-            raise Exception("Le logo de la plateforme n'est pas une chaîne de caractères.")
-        if not isinstance(id_plateforme, str):
-            raise Exception("L'identifiant de la plateforme n'est pas une chaîne de caractères.")
+        if not isinstance(nom_abonnement, str):
+            raise Exception("Si le nom de l'abonnement n'est pas une chaîne de caractères.")
+        if not isinstance(prix, float):
+            raise Exception("Si le prix de l'abonnement n'est pas une chaîne de caractères.")
+        if not isinstance(id_abonnement, str):
+            raise Exception("Si l'identifiant de l'abonnement n'est pas une chaîne de caractères.")
+        if not isinstance(detail_offre, str):
+            raise Exception("Si le detail de l'offre n'est pas une chaîne de caractères.")
 
-        self.id_plateforme = id_plateforme
-        self.nom_plateforme = nom_plateforme
-        self.logo_plateforme = logo_plateforme
+        self.id_abonnement = id_abonnement
+        self.nom_abonnement = nom_abonnement
+        self.prix = prix
+        self.detail_offre = detail_offre
 
     def info_plateforem(self) -> dict:
-        """Retourne les attributs de la plateforme sous forme de dictionnaire"""
+        """Retourne les attributs de l'abonnement sous forme de dictionnaire"""
         return {
-            "Nom_plateforme": self.nom_plateforme,
-            "logo_plateforme": self.logo_plateforme,
-            "id_plateforme": self.id_plateforme,
+            "Nom_abonnement": self.nom_abonnement,
+            "prix": self.prix,
+            "id_abonnement": self.id_abonnement,
+            "detail_offre": self.detail_offre,
         }
 
-    def get_nom_plateforme(self):
-        return self.nom_plateforme
+    def get_nom_abonnement(self):
+        return self.nom_abonnement
 
-    def get_logo_plateforme(selft): 
-        return self.logo_plateforme
+    def get_prix(selft): 
+        return self.prix
 
-    def get_id_plateforme(self):
-        return self.id_plateforme    
+    def get_id_abonnement(self):
+        return self.id_abonnement
+
+    def get_detail_offre(self):
+        return self.detail_offre   
