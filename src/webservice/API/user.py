@@ -20,45 +20,7 @@ class UtilisateurModel(BaseModel):
     mdp: str
     langue: str = "français"
 
-# 1. GET /utilisateurs : Récupérer tous les utilisateurs
-@router.get("/utilisateurs", response_model=List[UtilisateurModel])
-async def get_utilisateurs():
-    """
-    Récupère la liste de tous les utilisateurs.
-
-    Returns:
-    ---------
-    List[UtilisateurModel] : Une liste d'utilisateurs.
-    """
-    utilisateurs = utilisateur_service.utilisateur_dao.tous_les_utilisateurs()
-    if utilisateurs:
-        return utilisateurs
-    raise HTTPException(status_code=404, detail="Aucun utilisateur trouvé")
-
-# 2. GET /utilisateurs/{pseudo} : Récupérer un utilisateur spécifique
-@router.get("/utilisateurs/{pseudo}", response_model=UtilisateurModel)
-async def get_utilisateur(pseudo: str):
-    """
-    Récupère les informations d'un utilisateur spécifique.
-
-    Paramètres:
-    ------------
-    pseudo : str
-        Le pseudo de l'utilisateur à récupérer.
-
-    Returns:
-    ---------
-    UtilisateurModel : Informations de l'utilisateur spécifié.
-    """
-    try:
-        utilisateur = utilisateur_service.utilisateur_dao.trouver_par_pseudo(
-            pseudo
-        )
-        return utilisateur
-    except ValueError:
-        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-
-# 3. POST /utilisateurs : Créer un nouvel utilisateur
+# 1. POST /utilisateurs : Créer un nouvel utilisateur
 @router.post("/utilisateurs", response_model=UtilisateurModel)
 async def create_utilisateur(utilisateur: UtilisateurModel):
     """
@@ -82,11 +44,22 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
             mdp=utilisateur.mdp,
             langue=utilisateur.langue
         )
-        return nouvel_utilisateur
+        # Si la création est réussie, retourner l'objet Utilisateur
+        if isinstance(nouvel_utilisateur, Utilisateur):
+            return UtilisateurModel(
+                nom=nouvel_utilisateur.nom,
+                prenom=nouvel_utilisateur.prenom,
+                pseudo=nouvel_utilisateur.pseudo,
+                adresse_mail=nouvel_utilisateur.adresse_mail,
+                mdp=nouvel_utilisateur.mdp,
+                langue=nouvel_utilisateur.langue
+            )
+        else:
+            raise HTTPException(status_code=400, detail="Erreur lors de la création de l'utilisateur.")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# 4. DELETE /utilisateurs/{pseudo} : Supprimer un utilisateur
+# 2. DELETE /utilisateurs/{pseudo} : Supprimer un utilisateur
 @router.delete("/utilisateurs/{pseudo}")
 async def delete_utilisateur(pseudo: str):
     """
@@ -107,7 +80,7 @@ async def delete_utilisateur(pseudo: str):
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-# 5. POST /utilisateurs/login : Connexion d'un utilisateur
+# 3. POST /utilisateurs/login : Connexion d'un utilisateur
 @router.post("/utilisateurs/login")
 async def login_utilisateur(pseudo: str, mdp: str):
     """
@@ -130,7 +103,7 @@ async def login_utilisateur(pseudo: str, mdp: str):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# 6. GET /utilisateurs/{pseudo}/afficher : Afficher les infos d'un utilisateur
+# 4. GET /utilisateurs/{pseudo}/afficher : Afficher les infos d'un utilisateur
 @router.get("/utilisateurs/{pseudo}/afficher")
 async def afficher_utilisateur(pseudo: str):
     """
@@ -146,16 +119,15 @@ async def afficher_utilisateur(pseudo: str):
     dict : Informations de l'utilisateur.
     """
     try:
-        utilisateur = utilisateur_service.utilisateur_dao.trouver_par_pseudo(
-            pseudo
-        )
+        # Appelle la méthode afficher du service utilisateur
+        utilisateur_service.afficher(pseudo_utilisateur=pseudo)
+        # Si trouvé, construire le dictionnaire des informations de l'utilisateur
+        utilisateur = utilisateur_service.utilisateur_dao.trouver_par_pseudo(pseudo)
         return {
             "nom": utilisateur.nom,
             "prenom": utilisateur.prenom,
-            "email": utilisateur.adresse_mail,
+            "adresse_mail": utilisateur.adresse_mail,
             "langue": utilisateur.langue
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
-
-# Pour tester : http://localhost:8000/docs#/
