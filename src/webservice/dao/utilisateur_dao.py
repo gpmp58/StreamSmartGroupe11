@@ -1,5 +1,5 @@
-from business_object.utilisateur import Utilisateur
-from dao.db_connection import DBConnection
+from src.webservice.business_object.utilisateur import Utilisateur
+from src.webservice.dao.db_connection import DBConnection
 
 class UtilisateurDAO():
     """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""

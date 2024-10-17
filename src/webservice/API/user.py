@@ -6,6 +6,7 @@ from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
 # Création du router FastAPI
 router = APIRouter()
+router.include_router(router)
 
 # Initialisation du service utilisateur
 utilisateur_dao = UtilisateurDAO()
@@ -103,30 +104,33 @@ async def login_utilisateur(pseudo: str, mdp: str):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# 4. GET /utilisateurs/{pseudo}/afficher : Afficher les infos d'un utilisateur
-@router.get("/utilisateurs/{pseudo}/afficher")
-async def afficher_utilisateur(pseudo: str):
+# 4. GET /utilisateurs/{id_utilisateur}/afficher : Afficher les infos d'un utilisateur
+@router.get("/utilisateurs/{id_utilisateur}/afficher", response_model=UtilisateurModel)
+async def afficher_utilisateur(id_utilisateur: str):
     """
-    Affiche les informations d'un utilisateur basé sur son pseudo.
+    Affiche les informations d'un utilisateur basé sur son id.
 
     Paramètres:
     ------------
-    pseudo : str
-        Le pseudo de l'utilisateur dont on veut afficher les informations.
+    id_utilisateur : str
+        L'identifiant de l'utilisateur dont on veut afficher les informations.
 
     Returns:
     ---------
-    dict : Informations de l'utilisateur.
+    UtilisateurModel : Informations de l'utilisateur.
     """
     try:
-        # Appelle la méthode afficher du service utilisateur
-        utilisateur_service.afficher(pseudo_utilisateur=pseudo)
+        # Utiliser la méthode `afficher` pour obtenir les informations de l'utilisateur
+        utilisateur_info = utilisateur_service.afficher(id_utilisateur=id_utilisateur)
 
-        # On suppose que `afficher` doit fournir les détails nécessaires.
-        # Il n'y a donc pas besoin de réutiliser le DAO.
-        
-        # Ici, on retourne une réponse de succès avec une confirmation
-        return {"message": f"Les informations de l'utilisateur '{pseudo}' ont été affichées avec succès"}
-    
+        # Construire le modèle de réponse à partir de l'utilisateur récupéré
+        return UtilisateurModel(
+            nom=utilisateur_info["nom"],
+            prenom=utilisateur_info["prenom"],
+            pseudo=utilisateur_info["pseudo"],
+            adresse_mail=utilisateur_info["adresse_mail"],
+            mdp=utilisateur_info["mdp"],
+            langue=utilisateur_info["langue"]
+        )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
