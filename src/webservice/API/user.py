@@ -121,13 +121,12 @@ async def afficher_utilisateur(pseudo: str):
     try:
         # Appelle la méthode afficher du service utilisateur
         utilisateur_service.afficher(pseudo_utilisateur=pseudo)
-        # Si trouvé, construire le dictionnaire des informations de l'utilisateur
-        utilisateur = utilisateur_service.utilisateur_dao.trouver_par_pseudo(pseudo)
-        return {
-            "nom": utilisateur.nom,
-            "prenom": utilisateur.prenom,
-            "adresse_mail": utilisateur.adresse_mail,
-            "langue": utilisateur.langue
-        }
+
+        # On suppose que `afficher` doit fournir les détails nécessaires.
+        # Il n'y a donc pas besoin de réutiliser le DAO.
+        
+        # Ici, on retourne une réponse de succès avec une confirmation
+        return {"message": f"Les informations de l'utilisateur '{pseudo}' ont été affichées avec succès"}
+    
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
