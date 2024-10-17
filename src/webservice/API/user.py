@@ -1,60 +1,161 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
+from src.webservice.services.service_utilisateur import UtilisateurService
+from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
+# Création du router FastAPI
 router = APIRouter()
 
-# Exemple de bdd d'utilisateurs
-utilisateurs_db = [
-    {"pseudo": "user1", "nom": "Dupont", "prenom": "Alice", "adresse_mail": "alice@example.com", "mdp": "password123"},
-    {"pseudo": "user2", "nom": "Martin", "prenom": "Bob", "adresse_mail": "bob@example.com", "mdp": "password456"},
-    {"pseudo": "user3", "nom": "Leroy", "prenom": "Charlie", "adresse_mail": "charlie@example.com", "mdp": "password789"}
-]
+# Initialisation du service utilisateur
+utilisateur_dao = UtilisateurDAO()
+utilisateur_service = UtilisateurService(utilisateur_dao=utilisateur_dao)
 
-
-# Modèle de données pour un utilisateur
-class utilisateur(BaseModel):
-    pseudo : str
-    nom : str
-    prenom : str
-    adresse_mail : str
-    mdp : str
+# Modèle de données pour un utilisateur (utilisé pour l'API)
+class UtilisateurModel(BaseModel):
+    nom: str
+    prenom: str
+    pseudo: str
+    adresse_mail: str
+    mdp: str
+    langue: str = "français"
 
 # 1. GET /utilisateurs : Récupérer tous les utilisateurs
-@router.get("/utilisateurs", response_model=List[utilisateur])
+@router.get("/utilisateurs", response_model=List[UtilisateurModel])
 async def get_utilisateurs():
-    return utilisateurs_db
+    """
+    Récupère la liste de tous les utilisateurs.
+
+    Returns:
+    ---------
+    List[UtilisateurModel] : Une liste d'utilisateurs.
+    """
+    utilisateurs = utilisateur_service.utilisateur_dao.tous_les_utilisateurs()
+    if utilisateurs:
+        return utilisateurs
+    raise HTTPException(status_code=404, detail="Aucun utilisateur trouvé")
 
 # 2. GET /utilisateurs/{pseudo} : Récupérer un utilisateur spécifique
-@router.get("/utilisateurs/{utilisateur_pseudo}", response_model=utilisateur)
-async def get_utilisateur(utilisateur_pseudo: str):
-    utilisateur = next((utilisateur for utilisateur in utilisateurs_db if utilisateur["pseudo"] == utilisateur_pseudo), None)
-    if utilisateur:
+@router.get("/utilisateurs/{pseudo}", response_model=UtilisateurModel)
+async def get_utilisateur(pseudo: str):
+    """
+    Récupère les informations d'un utilisateur spécifique.
+
+    Paramètres:
+    ------------
+    pseudo : str
+        Le pseudo de l'utilisateur à récupérer.
+
+    Returns:
+    ---------
+    UtilisateurModel : Informations de l'utilisateur spécifié.
+    """
+    try:
+        utilisateur = utilisateur_service.utilisateur_dao.trouver_par_pseudo(
+            pseudo
+        )
         return utilisateur
-    raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
 # 3. POST /utilisateurs : Créer un nouvel utilisateur
-@router.post("/utilisateurs", response_model=utilisateur)
-async def create_utilisateur(utilisateur: utilisateur):
-    utilisateur.pseudo = len(utilisateurs_db) + 1  # Générer un nouvel pseudo pour l'utilisateur
-    utilisateurs_db.append(utilisateur.dict())  # Ajouter l'utilisateur à la base de données
-    return utilisateur
+@router.post("/utilisateurs", response_model=UtilisateurModel)
+async def create_utilisateur(utilisateur: UtilisateurModel):
+    """
+    Crée un nouvel utilisateur dans la base de données.
 
-# 4. PUT /utilisateurs/{pseudo} : Mettre à jour un utilisateur existant
-@router.put("/utilisateurs/{utilisateur_pseudo}", response_model=utilisateur)
-async def update_utilisateur(utilisateur_pseudo: int, updated_utilisateur: utilisateur):
-    utilisateur = next((utilisateur for utilisateur in utilisateurs_db if utilisateur["pseudo"] == utilisateur_pseudo), None)
-    if utilisateur:
-        utilisateur.update(updated_utilisateur.dict())  # Mise à jour des champs de l'utilisateur
-        return utilisateur
-    raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    Paramètres:
+    ------------
+    utilisateur : UtilisateurModel
+        Les informations du nouvel utilisateur.
 
-# 5. DELETE /utilisateurs/{pseudo} : Supprimer un utilisateur
-@router.delete("/utilisateurs/{utilisateur_pseudo}")
-async def delete_utilisateur(utilisateur_pseudo: int):
-    global utilisateurs_db
-    utilisateur = next((utilisateur for utilisateur in utilisateurs_db if utilisateur["pseudo"] == utilisateur_pseudo), None)
-    if utilisateur:
-        utilisateurs_db = [u for u in utilisateurs_db if u["pseudo"] != utilisateur_pseudo]  # Supprimer l'utilisateur
-        return {"message": "Utilisateur supprimé avec succès"}
-    raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    Returns:
+    ---------
+    UtilisateurModel : L'utilisateur créé avec succès.
+    """
+    try:
+        nouvel_utilisateur = utilisateur_service.creer_compte(
+            nom=utilisateur.nom,
+            prenom=utilisateur.prenom,
+            pseudo=utilisateur.pseudo,
+            adresse_mail=utilisateur.adresse_mail,
+            mdp=utilisateur.mdp,
+            langue=utilisateur.langue
+        )
+        return nouvel_utilisateur
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# 4. DELETE /utilisateurs/{pseudo} : Supprimer un utilisateur
+@router.delete("/utilisateurs/{pseudo}")
+async def delete_utilisateur(pseudo: str):
+    """
+    Supprime un utilisateur basé sur son pseudo.
+
+    Paramètres:
+    ------------
+    pseudo : str
+        Le pseudo de l'utilisateur à supprimer.
+
+    Returns:
+    ---------
+    dict : Message confirmant la suppression.
+    """
+    try:
+        utilisateur_service.supprimer_compte(pseudo_utilisateur=pseudo)
+        return {"message": f"Utilisateur '{pseudo}' supprimé avec succès"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+# 5. POST /utilisateurs/login : Connexion d'un utilisateur
+@router.post("/utilisateurs/login")
+async def login_utilisateur(pseudo: str, mdp: str):
+    """
+    Permet à un utilisateur de se connecter.
+
+    Paramètres:
+    ------------
+    pseudo : str
+        Le pseudo de l'utilisateur.
+    mdp : str
+        Le mot de passe de l'utilisateur.
+
+    Returns:
+    ---------
+    dict : Message de bienvenue si les identifiants sont corrects.
+    """
+    try:
+        message = utilisateur_service.se_connecter(pseudo=pseudo, mdp=mdp)
+        return {"message": message}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# 6. GET /utilisateurs/{pseudo}/afficher : Afficher les infos d'un utilisateur
+@router.get("/utilisateurs/{pseudo}/afficher")
+async def afficher_utilisateur(pseudo: str):
+    """
+    Affiche les informations d'un utilisateur basé sur son pseudo.
+
+    Paramètres:
+    ------------
+    pseudo : str
+        Le pseudo de l'utilisateur dont on veut afficher les informations.
+
+    Returns:
+    ---------
+    dict : Informations de l'utilisateur.
+    """
+    try:
+        utilisateur = utilisateur_service.utilisateur_dao.trouver_par_pseudo(
+            pseudo
+        )
+        return {
+            "nom": utilisateur.nom,
+            "prenom": utilisateur.prenom,
+            "email": utilisateur.adresse_mail,
+            "langue": utilisateur.langue
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+# Pour tester : http://localhost:8000/docs#/

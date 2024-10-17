@@ -80,25 +80,27 @@ class UtilisateurService:
             # Retourner un dictionnaire contenant l'erreur
             return {"error": str(e)}
 
-    def supprimer_compte(self, id_utilisateur: int):
+    def supprimer_compte(self, pseudo_utilisateur: str):
         """
-        Supprime un compte utilisateur basé sur l'id de l'utilisateur.
+        Supprime un compte utilisateur basé sur le pseudo de l'utilisateur.
 
         Paramètres :
         ------------
-        id_utilisateur : int
-            L'identifiant de l'utilisateur à supprimer.
+        pseudo_utilisateur : str
+            Le pseudo de l'utilisateur à supprimer.
 
         Exceptions :
         ------------
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        # Rechercher l'utilisateur dans la base de données via l'id
-        utilisateur = self.utilisateur_dao.trouver_par_id(id_utilisateur)
+        # Rechercher l'utilisateur dans la base de données via le pseudo
+        utilisateur = self.utilisateur_dao.trouver_par_pseudo(
+            pseudo_utilisateur
+        )
         if utilisateur:
             self.utilisateur_dao.supprimer_compte_DAO(utilisateur)
-            print(f"Compte avec l'id '{id_utilisateur}' supprimé avec succès.")
+            print(f"Compte avec le pseudo '{pseudo_utilisateur}' supprimé avec succès.")
         else:
             raise ValueError("Utilisateur introuvable.")
 
@@ -148,14 +150,14 @@ class UtilisateurService:
         """
         print("Déconnexion réussie.")
 
-    def afficher(self, id_utilisateur: int):
+    def afficher(self, pseudo_utilisateur: str):
         """
-        Affiche les informations d'un utilisateur basé sur son id.
+        Affiche les informations d'un utilisateur basé sur son pseudo.
 
         Paramètres :
         ------------
-        id_utilisateur : int
-            L'identifiant de l'utilisateur dont on souhaite afficher les
+        pseudo_utilisateur : str
+            Le pseudo de l'utilisateur dont on souhaite afficher les
             informations.
 
         Exceptions :
@@ -163,7 +165,9 @@ class UtilisateurService:
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        utilisateur = self.utilisateur_dao.trouver_par_id(id_utilisateur)
+        utilisateur = self.utilisateur_dao.trouver_par_pseudo(
+            pseudo_utilisateur
+        )
 
         if utilisateur:
             print(f"Nom: {utilisateur.nom}, Prénom: {utilisateur.prenom}, "
