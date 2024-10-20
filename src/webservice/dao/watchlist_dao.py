@@ -1,7 +1,7 @@
 
-from dao.db_connection import DBConnection
+from src.webservice.dao.db_connection import DBConnection
 
-from business_object.watchlist import watchlist
+from src.webservice.business_object.watchlist import Watchlist
 
 
 class watchlistDao():
@@ -118,7 +118,7 @@ class watchlistDao():
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM film_watchlist
+                    "DELETE FROM film_watchlist "
                     " WHERE id_watchlist = %(id_watchlist)s and id_film = %(id_film)s",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )

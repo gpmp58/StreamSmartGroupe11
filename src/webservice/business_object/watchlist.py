@@ -1,4 +1,4 @@
-from business_object.utilisateur import Utilisateur
+from src.webservice.business_object.utilisateur import Utilisateur
 
 class Watchlist:
 
@@ -43,24 +43,30 @@ class Watchlist:
         self.list_film
 
     def verifier_utilisateur(self, utilisateur: Utilisateur) -> bool:
-                """Vérifie si l'utilisateur est une instance de Utilisateur et si c'est le bon utilisateur.
+        """
+        Vérifie si l'utilisateur est une instance de Utilisateur et s'il s'agit
+        du bon utilisateur.
 
-        Parameters
-        ----------
+        Paramètres :
+        ------------
         utilisateur : Utilisateur
             L'utilisateur à vérifier.
 
-        Returns
-        -------
+        Returns :
+        ---------
         bool
             True si l'utilisateur correspond, sinon False.
 
-        Raises
-        ------
+        Exceptions :
+        ------------
         TypeError
             Si l'utilisateur n'est pas une instance de Utilisateur.
         """
-        if not isinstance(utilisateur, Utilisateur) :
-            raise TypeError(f"utilisateur doit être une instance de Utilisateur, mais reçu {type(utilisateur).__name__}")
-        
+        # Vérification du type de l'utilisateur
+        if not isinstance(utilisateur, Utilisateur):
+            raise TypeError(
+                f"utilisateur doit être une instance de Utilisateur, mais reçu {type(utilisateur).__name__}"
+            )
+
+        # Vérifie si l'identifiant de l'utilisateur correspond
         return self.id_utilisateur == utilisateur.id_utilisateur
