@@ -68,7 +68,7 @@ class UtilisateurService:
             )
 
             # Créer l'utilisateur dans la base de données
-            if not self.utilisateur_dao.creer_compte_DAO(nouvel_utilisateur):
+            if not self.utilisateur.creer_compte_DAO(nouvel_utilisateur):
                 raise ValueError("Erreur lors de la création du compte. "
                                  "Le pseudo est peut-être déjà utilisé.")
 
@@ -94,9 +94,9 @@ class UtilisateurService:
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
         # Rechercher l'utilisateur dans la base de données via l'id
-        utilisateur = self.utilisateur_dao.trouver_par_id(id_utilisateur)
+        utilisateur = self.utilisateur.trouver_par_id(id_utilisateur)
         if utilisateur:
-            self.utilisateur_dao.supprimer_compte_DAO(utilisateur)
+            self.utilisateur.supprimer_compte_DAO(utilisateur)
             print(f"Compte avec l'id '{id_utilisateur}' supprimé avec succès.")
         else:
             raise ValueError("Utilisateur introuvable.")
@@ -125,7 +125,7 @@ class UtilisateurService:
         """
         # Trouver l'utilisateur dans la base de données via le pseudo et
         # le mot de passe
-        utilisateur_connexion = self.utilisateur_dao.se_connecter_DAO(
+        utilisateur_connexion = self.utilisateur.se_connecter_DAO(
             pseudo, mdp
         )
 
@@ -162,7 +162,7 @@ class UtilisateurService:
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        utilisateur = self.utilisateur_dao.trouver_par_id(id_utilisateur)
+        utilisateur = self.utilisateur.trouver_par_id(id_utilisateur)
 
         if utilisateur:
             print(f"Nom: {utilisateur.nom}, Prénom: {utilisateur.prenom}, "
