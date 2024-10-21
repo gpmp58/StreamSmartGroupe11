@@ -1,10 +1,10 @@
 
-from src.webservice.dao.db_connection import DBConnection
+from dao.db_connection import DBConnection
 
-from src.webservice.business_object.watchlist import Watchlist
+from business_object.watchlist import Watchlist
 
 
-class watchlistDao():
+class WatchlistDao():
     """Classe contenant les méthodes pour accéder aux watchlists de la base des données"""
 
     
@@ -44,7 +44,7 @@ class watchlistDao():
                     return False
 
     
-    def supprimer_watchlist_DAO(self, watchlist) -> bool:
+    def supprimer_watchlist_DAO(self,  watchlist: Watchlist) -> bool:
         """Suppression d'un watchlist dans la base de données
 
         Parameters
@@ -69,7 +69,7 @@ class watchlistDao():
 
         return res > 0
 
-    def ajouter_film_DAO(self, id_watchlist, id_film) -> bool:
+    def ajouter_film_DAO(self, id_watchlist:int, id_film:int) -> bool:
         """Ajoute un film à une watchlist dans la base de données
 
         Parameters
@@ -98,7 +98,7 @@ class watchlistDao():
         return res > 0
     
 
-    def supprimer_film_DAO(self, id_watchlist, id_film) -> bool:
+    def supprimer_film_DAO(self, id_watchlist:int, id_film:int) -> bool:
         """Supprimer un film dans une watchlist dans la base de données
 
         Parameters
@@ -118,10 +118,41 @@ class watchlistDao():
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM film_watchlist "
+                    "DELETE FROM film_watchlist"
                     " WHERE id_watchlist = %(id_watchlist)s and id_film = %(id_film)s",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )
                 res = cursor.rowcount
 
         return res > 0
+    
+    def film_deja_present(self, id_watchlist: int, id_film: int) -> bool:
+        res = None
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT COUNT(*) FROM film_watchlist WHERE id_watchlist = %(id_watchlist)s AND id_film = %(id_film)s;",
+                    {"id_watchlist": id_watchlist, "id_film": id_film},
+                )
+                res = cursor.fetchone()[0]
+
+    # Si le nombre de lignes trouvées est supérieur à 0, le film est déjà présent
+        return res > 0
+
+    def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:
+    """
+    Récupère tous les films d'une watchlist spécifique.
+    """
+        films = []
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT f.id_film, f.nom "
+                    "FROM film_watchlist fw "
+                    "JOIN film f ON fw.id_film = f.id_film "
+                    "WHERE fw.id_watchlist = %(id_watchlist)s;",
+                    {"id_watchlist": id_watchlist},
+                )
+                films = cursor.fetchall()
+
+        return films
