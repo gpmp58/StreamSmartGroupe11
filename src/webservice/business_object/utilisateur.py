@@ -57,7 +57,7 @@ class Utilisateur:
             raise Exception("L'adresse mail n'est pas une chaîne de caractères.")
         if not isinstance(langue, str):
             raise Exception("La langue n'est pas une chaîne de caractères.")
-            if not isinstance(mdp, str):
+        if not isinstance(mdp, str):
             raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
         if not isinstance(id_utilisateur, str):
             raise Exception("id_utilisateur n'est pas une chaîne de caractères.")
