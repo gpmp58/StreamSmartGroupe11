@@ -77,7 +77,6 @@ def test_creer_compte_erreur_pseudo_existant(utilisateur_service):
         adresse_mail="alice@example.com",
         mdp="password123",
         langue="anglais",
-        id_utilisateur="test"
     )
 
     # THEN: Une erreur est renvoyée indiquant que le pseudo est déjà utilisé

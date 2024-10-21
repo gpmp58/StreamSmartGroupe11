@@ -59,8 +59,8 @@ class Utilisateur:
             raise Exception("La langue n'est pas une chaîne de caractères.")
         if not isinstance(mdp, str):
             raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
-        if not isinstance(id_utilisateur, str):
-            raise Exception("id_utilisateur n'est pas une chaîne de caractères.")
+        #if not isinstance(id_utilisateur, str):
+            #raise Exception("id_utilisateur n'est pas une chaîne de caractères.")
 
         self.id_utilisateur = id_utilisateur
         self.nom = nom
