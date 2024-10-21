@@ -33,7 +33,7 @@ class PlateformeStreaming:
         if not isinstance(logo_plateforme, str):
             raise Exception("Le logo de la plateforme n'est pas une chaîne de caractères.")
         if not isinstance(id_plateforme, int):
-            raise Exception("L'identifiant de la plateforme n'est pas une chaîne de caractères.")
+            raise Exception("L'identifiant de la plateforme n'est pas un entier.")
 
         self.id_plateforme = id_plateforme
         self.nom_plateforme = nom_plateforme

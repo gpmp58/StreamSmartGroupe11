@@ -18,7 +18,7 @@ class Utilisateur:
         la langue de l'utilisateur
     """
 
-    def __init__(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp=None, id_utilisateur=None, langue: str = "français"):
+    def __init__(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, id_utilisateur: str, langue: str = "français"):
         """Constructeur avec validation basique"""
         """
         Initialise un objet Utilisateur avec les attributs spécifiés.
@@ -29,6 +29,8 @@ class Utilisateur:
             pseudo (str) : Le pseudo renseigné par l'utilisateur.
             adresse_mail (str) : L'adresse mail renseignée par l'utilisateur.
             langue (str) : La langue de renseignée par l'utilisateur, si différente de celle par défaut.
+            mdp (str) : Le mot de passe renseignée par l'utilisateur.
+            id_utilisateur (str) : id_utilisateur.
 
         Raises:
             Exception: Si le nom n'est pas une chaîne de caractères.
@@ -37,6 +39,9 @@ class Utilisateur:
             # a voir si on ajoute des conditions sur le pseudo 
             Exception : Si l'adresse mail n'est pas une chaîne de caractères.
             Exception: Si la langue n'est pas une chaîne de caractères.
+            Exception : Si le mot de passe n'est pas une chaîne de caractères.
+            Exception: Si id_utilisateur n'est pas une chaîne de caractères.
+
         """
 
         if not isinstance(nom, str):
@@ -52,6 +57,10 @@ class Utilisateur:
             raise Exception("L'adresse mail n'est pas une chaîne de caractères.")
         if not isinstance(langue, str):
             raise Exception("La langue n'est pas une chaîne de caractères.")
+            if not isinstance(mdp, str):
+            raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
+        if not isinstance(id_utilisateur, str):
+            raise Exception("id_utilisateur n'est pas une chaîne de caractères.")
 
         self.id_utilisateur = id_utilisateur
         self.nom = nom
@@ -65,6 +74,7 @@ class Utilisateur:
     def __str__(self):
         """Permet d'afficher un message de bienvenue"""
         return f"Bienvenue {self.prenom} sur notre application !"
+
 
     def info_utilisateur(self) -> dict:
         """Retourne les attributs de l'utilisateur sous forme de dictionnaire"""
