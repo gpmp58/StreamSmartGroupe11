@@ -16,18 +16,18 @@ class UtilisateurService:
         sur la base de données.
     """
 
-    def __init__(self, utilisateur_dao: UtilisateurDAO):
+    def __init__(self, utilisateur: Utilisateur):
         """
         Initialise un nouvel objet UtilisateurService avec un DAO utilisateur
         donné.
 
         Paramètres :
         ------------
-        utilisateur_dao : UtilisateurDAO
-            Une instance de la classe UtilisateurDAO utilisée pour interagir
+        utilisateur : Utilisateur
+            Une instance de la classe Utilisateur utilisée pour interagir
             avec la base de données.
         """
-        self.utilisateur_dao = utilisateur_dao
+        self.utilisateur = utilisateur
 
     def creer_compte(self, nom: str, prenom: str, pseudo: str,
                      adresse_mail: str, mdp: str, langue: str = "français"):
