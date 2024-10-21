@@ -1,5 +1,5 @@
-from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 from src.webservice.business_object.utilisateur import Utilisateur
+from src.utils.securite import hash_mdp, verify_mdp
 
 class UtilisateurService:
     """
@@ -8,12 +8,6 @@ class UtilisateurService:
     de comptes, la connexion, la déconnexion, et l'affichage des informations
     d'un utilisateur. Elle s'appuie sur UtilisateurDAO pour interagir avec la
     base de données.
-
-    Attributs :
-    -----------
-    utilisateur_dao : UtilisateurDAO
-        Instance de la classe UtilisateurDAO pour effectuer des opérations CRUD
-        sur la base de données.
     """
 
     def __init__(self, utilisateur: Utilisateur):
@@ -61,11 +55,16 @@ class UtilisateurService:
             du DAO).
         """
         try:
-            # Créer un objet Utilisateur
+            # Hacher le mot de passe avec un sel aléatoire
+            hashed_mdp, sel = hash_mdp(mdp)
+
+            # Créer un objet Utilisateur avec le mot de passe haché et le sel
             nouvel_utilisateur = Utilisateur(
                 nom=nom, prenom=prenom, pseudo=pseudo,
-                adresse_mail=adresse_mail, mdp=mdp, langue=langue
+                adresse_mail=adresse_mail, mdp=hashed_mdp, langue=langue
             )
+            # Ajouter le sel en tant qu'attribut à l'utilisateur
+            nouvel_utilisateur.sel = sel
 
             # Créer l'utilisateur dans la base de données
             if not self.utilisateur.creer_compte_DAO(nouvel_utilisateur):
@@ -93,7 +92,6 @@ class UtilisateurService:
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        # Rechercher l'utilisateur dans la base de données via l'id
         utilisateur = self.utilisateur.trouver_par_id(id_utilisateur)
         if utilisateur:
             self.utilisateur.supprimer_compte_DAO(utilisateur)
@@ -123,27 +121,25 @@ class UtilisateurService:
         ValueError
             Si les informations de connexion sont incorrectes.
         """
-        # Trouver l'utilisateur dans la base de données via le pseudo et
-        # le mot de passe
-        utilisateur_connexion = self.utilisateur.se_connecter_DAO(
-            pseudo, mdp
-        )
+        # Trouver l'utilisateur dans la base de données via le pseudo
+        utilisateur_connexion = self.utilisateur.trouver_par_pseudo(pseudo)
 
+        # Si l'utilisateur n'existe pas, lever une erreur
         if utilisateur_connexion is None:
             raise ValueError("Pseudo ou mot de passe incorrect.")
-        else:
-            return (f"Bienvenue {utilisateur_connexion.pseudo} sur notre "
-                    f"application")
+
+        # Vérifier le mot de passe fourni avec le mot de passe haché et le sel
+        if not verify_mdp(utilisateur_connexion.mdp, mdp, utilisateur_connexion.sel):
+            raise ValueError("Pseudo ou mot de passe incorrect.")
+
+        # Retourner un message de bienvenue si la vérification est réussie
+        return (f"Bienvenue {utilisateur_connexion.pseudo} sur notre application")
 
     def se_deconnecter(self):
         """
         Déconnecte l'utilisateur actuellement connecté.
         Cette méthode peut être utilisée pour mettre fin à une session
         utilisateur active.
-
-        Remarque :
-        ------------
-        À faire plus tard.
         """
         print("Déconnexion réussie.")
 
