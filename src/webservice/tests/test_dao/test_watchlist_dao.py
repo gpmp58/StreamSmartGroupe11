@@ -21,9 +21,11 @@ def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
     # When : Créer une instance de watchlistDao et appeler la méthode
     dao = watchlistDao()
     result = dao.creer_nouvelle_watchlist_DAO(wl)
+    result = dao.creer_nouvelle_watchlist_DAO(wl)
 
     # Then : Vérifier que la méthode retourne True et que l'id_watchlist a été mis à jour
     assert result is True
+    assert wl.id_watchlist == 1
     assert wl.id_watchlist == 1
 
     # Vérifier que les bonnes requêtes SQL ont été exécutées
@@ -32,6 +34,7 @@ def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
         "VALUES (%(nom_watchlist)s, %(id_utilisateur)s) "
         "RETURNING id_watchlist;",
         {
+            "nom_watchlist": "My watchlist",
             "nom_watchlist": "My watchlist",
             "id_utilisateur": 1
         }
@@ -52,6 +55,7 @@ def test_supprimer_watchlist_DAO(MockDBConnection):
 
     # When : Créer une instance de watchlistDao et appeler la méthode
     dao = watchlistDao()
+    result = dao.supprimer_watchlist_DAO(wl)
     result = dao.supprimer_watchlist_DAO(wl)
 
     # Then : Vérifier que la méthode retourne True
