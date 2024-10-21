@@ -16,23 +16,23 @@ def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
     mock_cursor.fetchone.return_value = {"id_watchlist": 1}
     
     # Créer une instance de Watchlist
-    wl = Watchlist(nom_Watchlist="My Watchlist", id_utilisateur=1)
+    wl = watchlist(nom_watchlist="My watchlist", id_utilisateur=1)
 
     # When : Créer une instance de watchlistDao et appeler la méthode
     dao = watchlistDao()
-    result = dao.creer_nouvelle_Watchlist_DAO(wl)
+    result = dao.creer_nouvelle_watchlist_DAO(wl)
 
     # Then : Vérifier que la méthode retourne True et que l'id_Watchlist a été mis à jour
     assert result is True
-    assert wl.id_Watchlist == 1
+    assert wl.id_watchlist == 1
 
     # Vérifier que les bonnes requêtes SQL ont été exécutées
     mock_cursor.execute.assert_called_once_with(
-        "INSERT INTO Watchlist (nom_Watchlist, id_utilisateur) "
+        "INSERT INTO watchlist (nom_watchlist, id_utilisateur) "
         "VALUES (%(nom_Watchlist)s, %(id_utilisateur)s) "
-        "RETURNING id_Watchlist;",
+        "RETURNING id_watchlist;",
         {
-            "nom_Watchlist": "My Watchlist",
+            "nom_watchlist": "My watchlist",
             "id_utilisateur": 1
         }
     )
@@ -48,20 +48,20 @@ def test_supprimer_Watchlist_DAO(MockDBConnection):
     mock_cursor.rowcount = 1
 
     # Créer une instance de Watchlist
-    wl = Watchlist(id_Watchlist=1)
+    wl = watchlist(id_watchlist=1)
 
     # When : Créer une instance de watchlistDao et appeler la méthode
     dao = watchlistDao()
-    result = dao.supprimer_Watchlist_DAO(wl)
+    result = dao.supprimer_watchlist_DAO(wl)
 
     # Then : Vérifier que la méthode retourne True
     assert result is True
 
     # Vérifier que la bonne requête SQL a été exécutée
     mock_cursor.execute.assert_called_once_with(
-        "DELETE FROM Watchlist "
-        " WHERE id_Watchlist = %(id_Watchlist)s",
-        {"id_Watchlist": 1}
+        "DELETE FROM watchlist "
+        " WHERE id_watchlist = %(id_Watchlist)s",
+        {"id_watchlist": 1}
     )
 
 
@@ -83,9 +83,9 @@ def test_ajouter_film_DAO(MockDBConnection):
 
     # Vérifier que la bonne requête SQL a été exécutée
     mock_cursor.execute.assert_called_once_with(
-        "INSERT INTO film_Watchlist(id_Watchlist, id_film) VALUES "
+        "INSERT INTO film_watchlist(id_watchlist, id_film) VALUES "
         "(%(id_Watchlist)s, %(id_film)s);",
-{"id_Watchlist": 1, "id_film": 101}
+{"id_watchlist": 1, "id_film": 101}
     )
 
 
@@ -107,7 +107,7 @@ def test_supprimer_film_DAO(MockDBConnection):
 
     # Vérifier que la bonne requête SQL a été exécutée
     mock_cursor.execute.assert_called_once_with(
-        "DELETE FROM film_Watchlist "
-        "WHERE id_Watchlist = %(id_Watchlist)s and id_film = %(id_film)s",
-        {"id_Watchlist": 1, "id_film": 101}
+        "DELETE FROM film_watchlist "
+        "WHERE id_watchlist = %(id_Watchlist)s and id_film = %(id_film)s",
+        {"id_watchlist": 1, "id_film": 101}
     )
