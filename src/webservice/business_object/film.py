@@ -11,14 +11,13 @@ def transformer_duree(d = int):
     duree = f"{h} h {m} min"
     return duree
 
-
-
 class Film():
     """Cette classe s'occupe de récupérer les différentes informations sur les films
     A continuer pour la description
+
     """
 
-    def __init__(self, nom_film: str):
+    def __init__(self, nom_film: str ):
         self.nom_film = nom_film
 
     def rechercher_film(self):
@@ -28,7 +27,10 @@ class Film():
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}"
         }
+
         reponse = requests.get(url_recherche_film, headers=headers)
+        if reponse.status_code != 200:
+            return {"error": "Erreur lors de la récupération des films."}
         data = json.loads(reponse.content)
         films_obtenus = data["results"]
         liste_films = dict()
@@ -80,3 +82,4 @@ class Film():
 
 # pas de test pour les méthodes qui recherchent des infos en ligne
 a = Film("Batman")
+print(a.afficher_film(268))
