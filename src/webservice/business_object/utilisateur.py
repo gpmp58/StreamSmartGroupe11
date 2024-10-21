@@ -4,7 +4,7 @@ class Utilisateur:
 
     Attributs
     ----------
-    id_utilisateur : int
+    id_utilisateur : str
         identifiant
     nom : str
         nom de l'utilisateur

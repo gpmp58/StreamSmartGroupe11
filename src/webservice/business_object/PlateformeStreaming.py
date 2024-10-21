@@ -12,7 +12,7 @@ class PlateformeStreaming:
         logo de la plateforme
     """
 
-    def __init__(self, nom_plateforme: str, logo_plateforme: str, id_plateforme: str):
+    def __init__(self, nom_plateforme: str, logo_plateforme: str, id_plateforme: int):
         """Constructeur avec validation basique"""
          """
         Initialise un objet PlateformeStreaming avec les attributs spécifiés.
@@ -32,7 +32,7 @@ class PlateformeStreaming:
             raise Exception("Le nom de la plateforme n'est pas une chaîne de caractères.")
         if not isinstance(logo_plateforme, str):
             raise Exception("Le logo de la plateforme n'est pas une chaîne de caractères.")
-        if not isinstance(id_plateforme, str):
+        if not isinstance(id_plateforme, int):
             raise Exception("L'identifiant de la plateforme n'est pas une chaîne de caractères.")
 
         self.id_plateforme = id_plateforme

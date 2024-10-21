@@ -14,7 +14,7 @@ class Abonnemennt:
         détail de l'offre proposée par l'abonnement
     """
 
-    def __init__(self, nom_abonnement: str, prix: float, id_abonnement: str, detail_offre : str):
+    def __init__(self, nom_abonnement: str, prix: float, id_abonnement: int, detail_offre : str):
         """Constructeur avec validation basique"""
          """
         Initialise un objet Abonnement avec les attributs spécifiés.
@@ -36,7 +36,7 @@ class Abonnemennt:
             raise Exception("Si le nom de l'abonnement n'est pas une chaîne de caractères.")
         if not isinstance(prix, float):
             raise Exception("Si le prix de l'abonnement n'est pas une chaîne de caractères.")
-        if not isinstance(id_abonnement, str):
+        if not isinstance(id_abonnement, int):
             raise Exception("Si l'identifiant de l'abonnement n'est pas une chaîne de caractères.")
         if not isinstance(detail_offre, str):
             raise Exception("Si le detail de l'offre n'est pas une chaîne de caractères.")
