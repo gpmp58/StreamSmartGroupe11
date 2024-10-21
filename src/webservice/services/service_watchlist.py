@@ -19,14 +19,20 @@ class WatchlistService:
             print(f"Erreur: Le film est déjà dans la watchlist.")
             return False
 
-        succes_ajout = Watchlist_dao().ajouter_film_DAO(id_watchlist, id_film)
+        succes_ajout = WatchlistDao().ajouter_film_DAO(id_watchlist, id_film)
+
 
         if succes_ajout:
             print(f"Le film {nom_film} a été ajouté avec succès.")
         else:
             print("Erreur lors de l'ajout du film.")
+        succes_ajout_film = FilmDAO().ajouter_film(id_film)
+        if not succes_ajout_film:
+            print(f"Erreur lors de l'ajout du film '{film.nom}' à la base de données.")
+            return False  # Arrêter ici si l'ajout a échoué
 
         return succes_ajout
+
     def supprimer_film(self, Film, watchlist):
         id_film = Film.id_film
         id_watchlist = watchlist.id_watchlist
@@ -36,9 +42,11 @@ class WatchlistService:
             return False
         succes_suppression = WatchlistDao().supprimer_film_DAO(id_watchlist, id_film)
         return succes_suppression
+
     def sauvegarder_watchlist(self, watchlist):
         id_watchlist = watchlist.id_watchlist
         films = WatchlistDao().recuperer_films_watchlist_DAO(id_watchlist)
-        return films
+        watchlist.list_film = film
+        return watchlist.list_film
 
     
