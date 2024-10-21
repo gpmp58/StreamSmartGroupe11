@@ -1,7 +1,7 @@
 
-from dao.db_connection import DBConnection
+from src.webservice.dao.db_connection import DBConnection
 
-from business_object.watchlist import Watchlist
+from src.webservice.business_object.watchlist import Watchlist
 
 
 class WatchlistDao():
