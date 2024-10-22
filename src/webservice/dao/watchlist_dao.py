@@ -1,13 +1,11 @@
-
 from src.webservice.dao.db_connection import DBConnection
 
 from src.webservice.business_object.watchlist import Watchlist
 
 
-class WatchlistDao():
+class WatchlistDao:
     """Classe contenant les méthodes pour accéder aux watchlists de la base des données"""
 
-    
     def creer_nouvelle_watchlist_DAO(self, watchlist: Watchlist) -> bool:
         """Crée une nouvelle watchlist dans la base de données.
 
@@ -30,8 +28,8 @@ class WatchlistDao():
                         "RETURNING id_watchlist;",
                         {
                             "nom_watchlist": watchlist.nom_watchlist,
-                            "id_utilisateur": watchlist.id_utilisateur
-                        }
+                            "id_utilisateur": watchlist.id_utilisateur,
+                        },
                     )
                     res = cursor.fetchone()
 
@@ -43,8 +41,7 @@ class WatchlistDao():
                     print(f"Erreur lors de la création de la watchlist : {e}")
                     return False
 
-    
-    def supprimer_watchlist_DAO(self,  watchlist: Watchlist) -> bool:
+    def supprimer_watchlist_DAO(self, watchlist: Watchlist) -> bool:
         """Suppression d'un watchlist dans la base de données
 
         Parameters
@@ -57,7 +54,6 @@ class WatchlistDao():
             True si le watchlist a bien été supprimé
         """
 
-        
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -69,7 +65,7 @@ class WatchlistDao():
 
         return res > 0
 
-    def ajouter_film_DAO(self, id_watchlist:int, id_film:int) -> bool:
+    def ajouter_film_DAO(self, id_watchlist: int, id_film: int) -> bool:
         """Ajoute un film à une watchlist dans la base de données
 
         Parameters
@@ -96,9 +92,8 @@ class WatchlistDao():
                 res = cursor.rowcount
 
         return res > 0
-    
 
-    def supprimer_film_DAO(self, id_watchlist:int, id_film:int) -> bool:
+    def supprimer_film_DAO(self, id_watchlist: int, id_film: int) -> bool:
         """Supprimer un film dans une watchlist dans la base de données
 
         Parameters
@@ -125,7 +120,7 @@ class WatchlistDao():
                 res = cursor.rowcount
 
         return res > 0
-    
+
     def film_deja_present(self, id_watchlist: int, id_film: int) -> bool:
         res = None
         with DBConnection().connection as connection:
@@ -136,7 +131,7 @@ class WatchlistDao():
                 )
                 res = cursor.fetchone()[0]
 
-    # Si le nombre de lignes trouvées est supérieur à 0, le film est déjà présent
+        # Si le nombre de lignes trouvées est supérieur à 0, le film est déjà présent
         return res > 0
 
     def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:

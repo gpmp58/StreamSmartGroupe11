@@ -4,7 +4,8 @@ import psycopg2
 
 from psycopg2.extras import RealDictCursor
 
-class DBConnection():
+
+class DBConnection:
     """
     Classe de connexion à la base de données
     Elle permet de n'ouvrir qu'une seule et unique connexion

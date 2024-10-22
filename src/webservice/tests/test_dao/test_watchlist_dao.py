@@ -5,8 +5,9 @@ from unittest.mock import patch, MagicMock
 from src.webservice.dao.watchlist_dao import watchlistDao
 from src.webservice.business_object.watchlist import Watchlist
 
+
 # Pour remplacer la connexion à la base de données par une version simulée.
-@patch('src.webservice.dao.watchlist_dao.DBConnection')
+@patch("src.webservice.dao.watchlist_dao.DBConnection")
 def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.connection.return_value
@@ -14,7 +15,7 @@ def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
 
     # Simuler un retour de requête
     mock_cursor.fetchone.return_value = {"id_watchlist": 1}
-    
+
     # Créer une instance de watchlist
     wl = Watchlist(nom_watchlist="My watchlist", id_utilisateur=1)
 
@@ -36,12 +37,12 @@ def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
         {
             "nom_watchlist": "My watchlist",
             "nom_watchlist": "My watchlist",
-            "id_utilisateur": 1
-        }
+            "id_utilisateur": 1,
+        },
     )
 
 
-@patch('dao.db_connection.DBConnection')
+@patch("dao.db_connection.DBConnection")
 def test_supprimer_watchlist_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection
@@ -63,13 +64,12 @@ def test_supprimer_watchlist_DAO(MockDBConnection):
 
     # Vérifier que la bonne requête SQL a été exécutée
     mock_cursor.execute.assert_called_once_with(
-        "DELETE FROM watchlist "
-        " WHERE id_watchlist = %(id_watchlist)s",
-        {"id_watchlist": 1}
+        "DELETE FROM watchlist " " WHERE id_watchlist = %(id_watchlist)s",
+        {"id_watchlist": 1},
     )
 
 
-@patch('dao.db_connection.DBConnection')
+@patch("dao.db_connection.DBConnection")
 def test_ajouter_film_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection
@@ -89,11 +89,11 @@ def test_ajouter_film_DAO(MockDBConnection):
     mock_cursor.execute.assert_called_once_with(
         "INSERT INTO film_watchlist(id_watchlist, id_film) VALUES "
         "(%(id_watchlist)s, %(id_film)s);",
-{"id_watchlist": 1, "id_film": 101}
+        {"id_watchlist": 1, "id_film": 101},
     )
 
 
-@patch('dao.db_connection.DBConnection')
+@patch("dao.db_connection.DBConnection")
 def test_supprimer_film_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection
@@ -113,5 +113,5 @@ def test_supprimer_film_DAO(MockDBConnection):
     mock_cursor.execute.assert_called_once_with(
         "DELETE FROM film_watchlist "
         "WHERE id_watchlist = %(id_watchlist)s and id_film = %(id_film)s",
-        {"id_watchlist": 1, "id_film": 101}
+        {"id_watchlist": 1, "id_film": 101},
     )

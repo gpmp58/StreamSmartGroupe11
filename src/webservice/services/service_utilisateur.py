@@ -1,6 +1,7 @@
 from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.utils.securite import hash_mdp, verify_mdp
 
+
 class UtilisateurService:
     """
     La classe UtilisateurService fournit des méthodes de haut niveau pour la
@@ -23,8 +24,15 @@ class UtilisateurService:
         """
         self.utilisateur = utilisateur
 
-    def creer_compte(self, nom: str, prenom: str, pseudo: str,
-                     adresse_mail: str, mdp: str, langue: str = "français"):
+    def creer_compte(
+        self,
+        nom: str,
+        prenom: str,
+        pseudo: str,
+        adresse_mail: str,
+        mdp: str,
+        langue: str = "français",
+    ):
         """
         Crée un nouvel utilisateur dans la base de données.
 
@@ -60,16 +68,22 @@ class UtilisateurService:
 
             # Créer un objet Utilisateur avec le mot de passe haché et le sel
             nouvel_utilisateur = Utilisateur(
-                nom=nom, prenom=prenom, pseudo=pseudo,
-                adresse_mail=adresse_mail, mdp=hashed_mdp, langue=langue
+                nom=nom,
+                prenom=prenom,
+                pseudo=pseudo,
+                adresse_mail=adresse_mail,
+                mdp=hashed_mdp,
+                langue=langue,
             )
             # Ajouter le sel en tant qu'attribut à l'utilisateur
             nouvel_utilisateur.sel = sel
 
             # Créer l'utilisateur dans la base de données
             if not self.utilisateur.creer_compte_DAO(nouvel_utilisateur):
-                raise ValueError("Erreur lors de la création du compte. "
-                                 "Le pseudo est peut-être déjà utilisé.")
+                raise ValueError(
+                    "Erreur lors de la création du compte. "
+                    "Le pseudo est peut-être déjà utilisé."
+                )
 
             # Retourner l'utilisateur créé en cas de succès
             return nouvel_utilisateur
@@ -133,7 +147,7 @@ class UtilisateurService:
             raise ValueError("Pseudo ou mot de passe incorrect.")
 
         # Retourner un message de bienvenue si la vérification est réussie
-        return (f"Bienvenue {utilisateur_connexion.pseudo} sur notre application")
+        return f"Bienvenue {utilisateur_connexion.pseudo} sur notre application"
 
     def se_deconnecter(self):
         """
@@ -161,8 +175,10 @@ class UtilisateurService:
         utilisateur = self.utilisateur.trouver_par_id(id_utilisateur)
 
         if utilisateur:
-            print(f"Nom: {utilisateur.nom}, Prénom: {utilisateur.prenom}, "
-                  f"Email: {utilisateur.adresse_mail}, Langue: "
-                  f"{utilisateur.langue}")
+            print(
+                f"Nom: {utilisateur.nom}, Prénom: {utilisateur.prenom}, "
+                f"Email: {utilisateur.adresse_mail}, Langue: "
+                f"{utilisateur.langue}"
+            )
         else:
             raise ValueError("Utilisateur introuvable.")

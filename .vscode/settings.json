@@ -11,5 +11,5 @@
     "python.testing.pytestArgs": [
         "src"
     ],
-    "editor.rulers": [80]
+    "editor.rulers": [79]
 }

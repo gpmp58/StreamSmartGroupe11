@@ -1,4 +1,4 @@
-class Abonnemennt:
+class Abonnement:
     """
     Classe représentant un abonnement sur une plateforme de streaming
 
@@ -14,9 +14,11 @@ class Abonnemennt:
         détail de l'offre proposée par l'abonnement
     """
 
-    def __init__(self, nom_abonnement: str, prix: float, id_abonnement: int, detail_offre : str):
+    def __init__(
+        self, nom_abonnement: str, prix: float, id_abonnement: int, detail_offre: str
+    ):
         """Constructeur avec validation basique"""
-         """
+        """
         Initialise un objet Abonnement avec les attributs spécifiés.
 
         Args:
@@ -33,11 +35,15 @@ class Abonnemennt:
         """
 
         if not isinstance(nom_abonnement, str):
-            raise Exception("Le nom de l'abonnement n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le nom de l'abonnement n'est pas une chaîne de caractères."
+            )
         if not isinstance(prix, float):
             raise Exception("Le prix de l'abonnement n'est pas un flottant.")
         if not isinstance(id_abonnement, int):
-            raise Exception("L'identifiant de l'abonnement n'est pas une chaîne de caractères.")
+            raise Exception(
+                "L'identifiant de l'abonnement n'est pas une chaîne de caractères."
+            )
         if not isinstance(detail_offre, str):
             raise Exception("Le detail de l'offre n'est pas une chaîne de caractères.")
 
@@ -46,7 +52,7 @@ class Abonnemennt:
         self.prix = prix
         self.detail_offre = detail_offre
 
-    def info_plateforem(self) -> dict:
+    def info_abonnement(self) -> dict:
         """Retourne les attributs de l'abonnement sous forme de dictionnaire"""
         return {
             "Nom_abonnement": self.nom_abonnement,
@@ -58,11 +64,11 @@ class Abonnemennt:
     def get_nom_abonnement(self):
         return self.nom_abonnement
 
-    def get_prix(selft): 
+    def get_prix(self):
         return self.prix
 
     def get_id_abonnement(self):
         return self.id_abonnement
 
     def get_detail_offre(self):
-        return self.detail_offre   
+        return self.detail_offre

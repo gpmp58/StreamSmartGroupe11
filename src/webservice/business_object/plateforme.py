@@ -14,7 +14,7 @@ class PlateformeStreaming:
 
     def __init__(self, nom_plateforme: str, logo_plateforme: str, id_plateforme: int):
         """Constructeur avec validation basique"""
-         """
+        """
         Initialise un objet PlateformeStreaming avec les attributs spécifiés.
 
         Args:
@@ -29,9 +29,13 @@ class PlateformeStreaming:
         """
 
         if not isinstance(nom_plateforme, str):
-            raise Exception("Le nom de la plateforme n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le nom de la plateforme n'est pas une chaîne de caractères."
+            )
         if not isinstance(logo_plateforme, str):
-            raise Exception("Le logo de la plateforme n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le logo de la plateforme n'est pas une chaîne de caractères."
+            )
         if not isinstance(id_plateforme, int):
             raise Exception("L'identifiant de la plateforme n'est pas un entier.")
 
@@ -39,7 +43,7 @@ class PlateformeStreaming:
         self.nom_plateforme = nom_plateforme
         self.logo_plateforme = logo_plateforme
 
-    def info_plateforem(self) -> dict:
+    def info_plateforme(self) -> dict:
         """Retourne les attributs de la plateforme sous forme de dictionnaire"""
         return {
             "Nom_plateforme": self.nom_plateforme,
@@ -50,8 +54,8 @@ class PlateformeStreaming:
     def get_nom_plateforme(self):
         return self.nom_plateforme
 
-    def get_logo_plateforme(selft): 
+    def get_logo_plateforme(self):
         return self.logo_plateforme
 
     def get_id_plateforme(self):
-        return self.id_plateforme    
+        return self.id_plateforme

@@ -20,7 +20,7 @@ def utilisateur_service():
         pseudo="alice123",
         adresse_mail="alice@example.com",
         mdp="password123",
-        langue="anglais"
+        langue="anglais",
     )
     return service, mock_utilisateur, utilisateur
 
@@ -80,8 +80,12 @@ def test_creer_compte_erreur_pseudo_existant(utilisateur_service):
     )
 
     # THEN: Une erreur est renvoyée indiquant que le pseudo est déjà utilisé
-    assert resultat == {"error": ("Erreur lors de la création du compte. "
-                                  "Le pseudo est peut-être déjà utilisé.")}
+    assert resultat == {
+        "error": (
+            "Erreur lors de la création du compte. "
+            "Le pseudo est peut-être déjà utilisé."
+        )
+    }
 
     # Comparer les attributs du mock avec ceux de l'utilisateur attendu
     mock_utilisateur.creer_compte_DAO.assert_called_once()
@@ -109,9 +113,7 @@ def test_supprimer_compte_succes(utilisateur_service):
     service.supprimer_compte(id_utilisateur="123456")
 
     # THEN: Le compte est supprimé avec succès
-    mock_utilisateur.supprimer_compte_DAO.assert_called_once_with(
-        utilisateur
-    )
+    mock_utilisateur.supprimer_compte_DAO.assert_called_once_with(utilisateur)
 
 
 def test_supprimer_compte_utilisateur_inexistant(utilisateur_service):
@@ -142,9 +144,7 @@ def test_se_connecter_succes(utilisateur_service):
 
     # THEN: Le message de bienvenue est renvoyé
     assert resultat == f"Bienvenue {utilisateur.pseudo} sur notre application"
-    mock_utilisateur.se_connecter_DAO.assert_called_once_with(
-        "alice123", "password123"
-    )
+    mock_utilisateur.se_connecter_DAO.assert_called_once_with("alice123", "password123")
 
 
 def test_se_connecter_echec(utilisateur_service):
@@ -175,8 +175,10 @@ def test_afficher_utilisateur_succes(utilisateur_service, capsys):
 
     # THEN: Les informations de l'utilisateur sont affichées
     captured = capsys.readouterr()
-    assert ("Nom: Alice, Prénom: Dupont, Email: alice@example.com, Langue: "
-            "anglais" in captured.out)
+    assert (
+        "Nom: Alice, Prénom: Dupont, Email: alice@example.com, Langue: "
+        "anglais" in captured.out
+    )
     mock_utilisateur.trouver_par_id.assert_called_once_with("123456")
 
 

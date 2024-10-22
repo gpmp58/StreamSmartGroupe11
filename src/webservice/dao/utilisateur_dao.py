@@ -1,6 +1,7 @@
 from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.dao.db_connection import DBConnection
-from src.webservice.utils.securite import verify_mdp 
+from src.webservice.utils.securite import verify_mdp
+
 
 class UtilisateurDAO:
     """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
@@ -41,7 +42,9 @@ class UtilisateurDAO:
 
         created = False
         if res:
-            utilisateur.id_utilisateur = res["id_utilisateur"]  # Mise à jour de l'id_utilisateur après création
+            utilisateur.id_utilisateur = res[
+                "id_utilisateur"
+            ]  # Mise à jour de l'id_utilisateur après création
             created = True
 
         return created
@@ -79,7 +82,7 @@ class UtilisateurDAO:
                 adresse_mail=res["adresse_mail"],
                 langue=res["langue"],
                 sel=res["sel"],  # Récupération du sel associé à l'utilisateur
-                id_utilisateur=res["id_utilisateur"]
+                id_utilisateur=res["id_utilisateur"],
             )
 
         return utilisateur
@@ -183,8 +186,10 @@ class UtilisateurDAO:
                     prénom=res["prénom"],
                     adresse_mail=res["adresse_mail"],
                     langue=res["langue"],
-                    sel=res["sel"],  # Inclure le sel pour une éventuelle modification future
-                    id_utilisateur=res["id_utilisateur"]
+                    sel=res[
+                        "sel"
+                    ],  # Inclure le sel pour une éventuelle modification future
+                    id_utilisateur=res["id_utilisateur"],
                 )
 
         return utilisateur
@@ -203,14 +208,21 @@ class UtilisateurDAO:
                     "FROM utilisateur AS u "
                     "JOIN watchlist AS w "
                     "ON u.id_utilisateur = w.id_utilisateur "
-                    "WHERE u.id_utilisateur = %(id_utilisateur)s",  
+                    "WHERE u.id_utilisateur = %(id_utilisateur)s",
                     {"id_utilisateur": utilisateur.id_utilisateur},
                 )
-                res = cursor.fetchall()  # Utiliser `fetchall` pour obtenir toutes les watchlists
+                res = (
+                    cursor.fetchall()
+                )  # Utiliser `fetchall` pour obtenir toutes les watchlists
 
         if res:
             # Construire une liste de dictionnaires pour chaque watchlist
-            return [{"id_watchlist": row["id_watchlist"], "nom_watchlist": row["nom_watchlist"]} for row in res]
+            return [
+                {
+                    "id_watchlist": row["id_watchlist"],
+                    "nom_watchlist": row["nom_watchlist"],
+                }
+                for row in res
+            ]
         else:
             return []
-

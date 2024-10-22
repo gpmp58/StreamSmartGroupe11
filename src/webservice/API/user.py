@@ -12,6 +12,7 @@ router.include_router(router)
 utilisateur_dao = UtilisateurDAO()
 utilisateur_service = UtilisateurService(utilisateur=utilisateur_dao)
 
+
 # Modèle de données pour un utilisateur (utilisé pour l'API)
 class UtilisateurModel(BaseModel):
     nom: str
@@ -20,6 +21,7 @@ class UtilisateurModel(BaseModel):
     adresse_mail: str
     mdp: str
     langue: str = "français"
+
 
 # 1. POST /utilisateurs : Créer un nouvel utilisateur
 @router.post("/utilisateurs", response_model=UtilisateurModel)
@@ -43,7 +45,7 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
             pseudo=utilisateur.pseudo,
             adresse_mail=utilisateur.adresse_mail,
             mdp=utilisateur.mdp,
-            langue=utilisateur.langue
+            langue=utilisateur.langue,
         )
         # Si la création est réussie, retourner l'objet Utilisateur
         if isinstance(nouvel_utilisateur, Utilisateur):
@@ -53,12 +55,15 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
                 pseudo=nouvel_utilisateur.pseudo,
                 adresse_mail=nouvel_utilisateur.adresse_mail,
                 mdp=nouvel_utilisateur.mdp,
-                langue=nouvel_utilisateur.langue
+                langue=nouvel_utilisateur.langue,
             )
         else:
-            raise HTTPException(status_code=400, detail="Erreur lors de la création de l'utilisateur.")
+            raise HTTPException(
+                status_code=400, detail="Erreur lors de la création de l'utilisateur."
+            )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 # 2. DELETE /utilisateurs/{pseudo} : Supprimer un utilisateur
 @router.delete("/utilisateurs/{pseudo}")
@@ -80,6 +85,7 @@ async def delete_utilisateur(pseudo: str):
         return {"message": f"Utilisateur '{pseudo}' supprimé avec succès"}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
 
 # 3. POST /utilisateurs/login : Connexion d'un utilisateur
 @router.post("/utilisateurs/login")
@@ -103,6 +109,7 @@ async def login_utilisateur(pseudo: str, mdp: str):
         return {"message": message}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 # 4. GET /utilisateurs/{id_utilisateur}/afficher : Afficher les infos d'un utilisateur
 @router.get("/utilisateurs/{id_utilisateur}/afficher", response_model=UtilisateurModel)
@@ -130,7 +137,7 @@ async def afficher_utilisateur(id_utilisateur: str):
             pseudo=utilisateur_info["pseudo"],
             adresse_mail=utilisateur_info["adresse_mail"],
             mdp=utilisateur_info["mdp"],
-            langue=utilisateur_info["langue"]
+            langue=utilisateur_info["langue"],
         )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
