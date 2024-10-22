@@ -12,8 +12,12 @@ def transformer_duree(d=int):
     m = d % 60
     duree = f"{h} h {m} min"
     return duree
+
+
 translator = Translator()
-def traduire_texte(texte, target_lang='fr'):
+
+
+def traduire_texte(texte, target_lang="fr"):
     # Détecte la langue du texte
     detection = translator.detect(texte)
     lang_source = detection.lang
@@ -41,7 +45,10 @@ class Film:
     def afficher_film(self):
         cle_api = os.environ.get("API_KEY")
         url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}"
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {cle_api}"
+        }
         response = requests.get(url_search_movie, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content)
@@ -61,20 +68,30 @@ class Film:
 
     def recuperer_image(self):
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
+        url_search_movie_2 = (
+            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images")
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {cle_api}"
+        }
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
 
         if content["posters"]:
-            return "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + content["posters"][0]["file_path"]
+            return ("https://image.tmdb.org/t/p/w600_and_h900_bestv2" +
+                    content["posters"][0]["file_path"])
         else:
             return "Image non disponible"
 
     def recuperer_streaming(self):
         cle_api = os.environ.get("API_KEY")
-        url_movie_providers = f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
+        url_movie_providers = (
+            f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
+        )
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {cle_api}"
+        }
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
@@ -83,10 +100,12 @@ class Film:
             streaming = dict()
             result_flatrate = result_fr["flatrate"]
             for provider in result_flatrate:
-                streaming[provider["provider_id"]] =  provider["provider_name"]
+                streaming[provider["provider_id"]] = provider["provider_name"]
             return streaming
         else:
             return "Pas disponible en streaming en France."
 
-a = Film(19995)
+
+a = Film(1059673)
 print(a.recuperer_streaming())
+print(a.image)
