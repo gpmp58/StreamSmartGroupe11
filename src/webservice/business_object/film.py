@@ -108,4 +108,4 @@ class Film:
 
 a = Film(1059673)
 print(a.recuperer_streaming())
-print(a.image)
+print(a.image)        
