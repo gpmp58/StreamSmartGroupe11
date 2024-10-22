@@ -27,19 +27,19 @@ class Abonnemennt:
 
         Raises:
             Exception: Si le nom de l'abonnement n'est pas une chaîne de caractères.
-            Exception: Si le prix de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si le prix de l'abonnement n'est pas un flottant.
             Exception: Si l'identifiant de l'abonnement n'est pas une chaîne de caractères.
             Exception: Si le detail de l'offre n'est pas une chaîne de caractères.
         """
 
         if not isinstance(nom_abonnement, str):
-            raise Exception("Si le nom de l'abonnement n'est pas une chaîne de caractères.")
+            raise Exception("Le nom de l'abonnement n'est pas une chaîne de caractères.")
         if not isinstance(prix, float):
-            raise Exception("Si le prix de l'abonnement n'est pas une chaîne de caractères.")
+            raise Exception("Le prix de l'abonnement n'est pas un flottant.")
         if not isinstance(id_abonnement, int):
-            raise Exception("Si l'identifiant de l'abonnement n'est pas une chaîne de caractères.")
+            raise Exception("L'identifiant de l'abonnement n'est pas une chaîne de caractères.")
         if not isinstance(detail_offre, str):
-            raise Exception("Si le detail de l'offre n'est pas une chaîne de caractères.")
+            raise Exception("Le detail de l'offre n'est pas une chaîne de caractères.")
 
         self.id_abonnement = id_abonnement
         self.nom_abonnement = nom_abonnement

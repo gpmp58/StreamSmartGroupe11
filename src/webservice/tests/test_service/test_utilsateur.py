@@ -2,8 +2,6 @@ import re
 
 import pytest
 
-import unittest
-
 from src.webservice.business_object.utilisateur import Utilisateur
 
 
@@ -22,6 +20,8 @@ def test_utilisateur_init_succes():
         ("Dupont","Alice", "alice123", "alice@example.com", "password123", 1234, Exception, "id_utilisateur n'est pas une chaîne de caractères."),
     ],
 )
+
+
 def test_utilisateur_init_echec(nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur, erreur, message_erreur):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         Utilisateur(nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur)
@@ -30,6 +30,7 @@ def test_utilisateur_init_echec(nom, prenom, pseudo, adresse_mail, mdp, id_utili
 def test__str__(self):
     utilisateur = Utilisateur("Dupont", "Alice", "alice123", "alice@example.com", "password123", "id_utilisateur")
     self.assertEqual(__str__(utilisateur), "Bienvenue Alice sur notre application !")
+
 
 def test_info_utilisateur(self):
     utilisateur = Utilisateur("Dupont", "Alice", "alice123", "alice@example.com", "password123", "id_utilisateur")
@@ -42,7 +43,7 @@ def test_info_utilisateur(self):
             "id_utilisateur": "id_utilisateur",
         })
 
+
 def test_get_nom(self):
     utilisateur = Utilisateur("Dupont", "Alice", "alice123", "alice@example.com", "password123", "id_utilisateur")
     self.assertEqual(get_nom(utilisateur), "Dupont")
-
