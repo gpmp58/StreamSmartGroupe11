@@ -1,8 +1,10 @@
+from src.webservice.business_object.film import Film
+
 class FilmDao():
         def ajouter_film(self, film: Film) -> bool:
 
             try:
-                with self.db_connection as connection:
+                with DBConnection().connection as connection:
                     with connection.cursor() as cursor:
                         # Vérifier si le film est déjà présent
                         cursor.execute(
@@ -21,8 +23,8 @@ class FilmDao():
                             (film.id_film, film.nom)
                         )
                         print(f"Le film '{film.nom}' a été ajouté avec succès.")
-                        return True  # Film ajouté avec succès
+                        return True  
 
             except Exception as e:
                 print(f"Une erreur est survenue lors de l'ajout du film : {e}")
-                return False  
+                return False
