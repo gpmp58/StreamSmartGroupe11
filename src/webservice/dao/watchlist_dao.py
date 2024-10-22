@@ -140,9 +140,9 @@ class WatchlistDao():
         return res > 0
 
     def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:
-    """
-    Récupère tous les films d'une watchlist spécifique.
-    """
+        """
+        Récupère tous les films d'une watchlist spécifique.
+        """
         films = []
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:

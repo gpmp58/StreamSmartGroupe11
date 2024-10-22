@@ -14,6 +14,7 @@ def utilisateur_service():
     mock_utilisateur = MagicMock()
     service = UtilisateurService(utilisateur=mock_utilisateur)
     utilisateur = Utilisateur(
+        id_utilisateur="123456",  # Ajout de l'id_utilisateur requis
         nom="Alice",
         prenom="Dupont",
         pseudo="alice123",
@@ -40,7 +41,7 @@ def test_creer_compte_succes(utilisateur_service):
         pseudo="alice123",
         adresse_mail="alice@example.com",
         mdp="password123",
-        langue="anglais"
+        langue="anglais",
     )
 
     # THEN: Le compte est créé avec succès
@@ -75,7 +76,7 @@ def test_creer_compte_erreur_pseudo_existant(utilisateur_service):
         pseudo="alice123",
         adresse_mail="alice@example.com",
         mdp="password123",
-        langue="anglais"
+        langue="anglais",
     )
 
     # THEN: Une erreur est renvoyée indiquant que le pseudo est déjà utilisé
@@ -101,11 +102,11 @@ def test_supprimer_compte_succes(utilisateur_service):
     compte est supprimé avec succès.
     """
     service, mock_utilisateur, utilisateur = utilisateur_service
-    utilisateur.id_utilisateur = 1
+    utilisateur.id_utilisateur = "123456"
     mock_utilisateur.trouver_par_id.return_value = utilisateur
 
     # WHEN: On appelle la méthode supprimer_compte
-    service.supprimer_compte(id_utilisateur=1)
+    service.supprimer_compte(id_utilisateur="123456")
 
     # THEN: Le compte est supprimé avec succès
     mock_utilisateur.supprimer_compte_DAO.assert_called_once_with(
@@ -124,7 +125,7 @@ def test_supprimer_compte_utilisateur_inexistant(utilisateur_service):
 
     # WHEN & THEN: Appel de la méthode supprimer_compte et erreur est levée
     with pytest.raises(ValueError, match="Utilisateur introuvable."):
-        service.supprimer_compte(id_utilisateur=999)
+        service.supprimer_compte(id_utilisateur="999")
 
 
 def test_se_connecter_succes(utilisateur_service):
@@ -166,17 +167,17 @@ def test_afficher_utilisateur_succes(utilisateur_service, capsys):
     de l'utilisateur sont affichées correctement.
     """
     service, mock_utilisateur, utilisateur = utilisateur_service
-    utilisateur.id_utilisateur = 1
+    utilisateur.id_utilisateur = "123456"
     mock_utilisateur.trouver_par_id.return_value = utilisateur
 
     # WHEN: On appelle la méthode afficher
-    service.afficher(id_utilisateur=1)
+    service.afficher(id_utilisateur="123456")
 
     # THEN: Les informations de l'utilisateur sont affichées
     captured = capsys.readouterr()
     assert ("Nom: Alice, Prénom: Dupont, Email: alice@example.com, Langue: "
             "anglais" in captured.out)
-    mock_utilisateur.trouver_par_id.assert_called_once_with(1)
+    mock_utilisateur.trouver_par_id.assert_called_once_with("123456")
 
 
 def test_afficher_utilisateur_inexistant(utilisateur_service):
@@ -189,4 +190,4 @@ def test_afficher_utilisateur_inexistant(utilisateur_service):
 
     # WHEN & THEN: On appelle la méthode afficher et une erreur est levée
     with pytest.raises(ValueError, match="Utilisateur introuvable."):
-        service.afficher(id_utilisateur=999)
+        service.afficher(id_utilisateur="999")
