@@ -1,20 +1,16 @@
 from src.webservice.dao.watchlist_dao import WatchlistDao
 from src.webservice.business_object.watchlist import Watchlist
 
-
 class WatchlistService:
+
     def creer_nouvelle_watchlist(self, nom_watchlist, utilisateur):
         id_utilisateur = utilisateur.id_utilisateur
         nouvelle_watchlist = Watchlist(nom_watchlist, id_utilisateur)
-        return (
-            nouveau_watchlist
-            if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist)
-            else None
-        )
-
+        return nouveau_watchlist if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist) else None
+    
     def supprimer_watchlist(self, watchlist):
         return WatchlistDao().supprimer_watchlist_DAO(watchlist)
-
+    
     def ajouter_film(self, Film, watchlist):
         id_film = Film.id_film
         id_watchlist = watchlist.id_watchlist
@@ -24,6 +20,7 @@ class WatchlistService:
             return False
 
         succes_ajout = WatchlistDao().ajouter_film_DAO(id_watchlist, id_film)
+
 
         if succes_ajout:
             print(f"Le film {nom_film} a été ajouté avec succès.")
@@ -37,12 +34,10 @@ class WatchlistService:
         if self.ajouter_film(film,watchlist):
             succes_ajout_film = FilmDAO().ajouter_film(id_film)
             if succes_ajout_film :
-                id_plateforme = film.donner_id_plateforme()
-                nom_plateforme = film.donner_nom_plateforme()
-                success_ajout_plateforme = service_plateforme().mettre_a_jour_plateforme(id_plateforme,nom_plateforme)
-            else :    
-                print(f"Erreur lors de l'ajout du film '{film.nom}' à la base de données.")
-                return False
+                streaming_info = film.recuperer_streaming()
+                for id_plateforme, nom_plateforme in streaming_info.items():
+                    # Mettre à jour les plateformes récupérées dans la base de données
+                    success_ajout_plateforme = ServicePlateforme().mettre_a_jour_plateforme(id_plateforme, nom_plateforme)
 
 
     def supprimer_film(self, Film, watchlist):
@@ -60,3 +55,5 @@ class WatchlistService:
         films = WatchlistDao().recuperer_films_watchlist_DAO(id_watchlist)
         watchlist.list_film = film
         return watchlist.list_film
+
+    
