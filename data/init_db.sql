@@ -81,47 +81,46 @@ CREATE TABLE projet11.film_plateforme (
 
 
 --------------------------------------------------------------
--- Abonnements (pour stocker les informations des abonnements)
+-- Abonnement (id_abonnement, nom de l'abonnement, nom de la plateforme, qualité, prix, pub)
 --------------------------------------------------------------
 
-DROP TABLE IF EXISTS projet11.abonnement_details CASCADE;
+DROP TABLE IF EXISTS projet11.abonnement CASCADE;
 
-CREATE TABLE projet11.abonnement_details (
+CREATE TABLE projet11.abonnement (
     id_abonnement INT PRIMARY KEY NOT NULL,
-    type_abonnement TEXT NOT NULL,
-    qualite_video TEXT NOT NULL, -- 4K ou HD
-    prix_mensuel DECIMAL(5, 2) NOT NULL, 
-    pub BOOLEAN NOT NULL,
-    id_plateforme INT REFERENCES projet11.plateforme_abonnement(id_plateforme)
+    nom_abonnement TEXT NOT NULL, -- Le type d'abonnement (ex: 'Avec pub', 'Sans pub')
+    nom_plateforme TEXT NOT NULL, -- Le nom de la plateforme (ex: 'Amazon')
+    qualite TEXT NOT NULL, -- Cette colonne stockera la qualité vidéo (ex: HD, 4K)
+    prix DECIMAL(5, 2) NOT NULL, -- Le prix mensuel de l'abonnement
+    pub BOOLEAN NOT NULL -- Indique si l'abonnement contient de la publicité (TRUE/FALSE)
 );
 
--- Insertion des abonnements
-INSERT INTO projet11.abonnement_infos (id_abonnement, type_abonnement, qualite_video, prix_mensuel, pub, id_plateforme)
+-- Insertion des abonnements dans la table "abonnement"
+INSERT INTO projet11.abonnement (id_abonnement, nom_abonnement, nom_plateforme, qualite, prix, pub)
 VALUES 
-(1, 'Avec pub', '4K', 6.99, TRUE, 1),
-(2, 'Sans pub', '4K', 8.98, FALSE, 2),
-(3, '-24 ans', '4K', 3.49, FALSE, 3),
-(4, 'Standard', '4K', 9.99, FALSE, 4),
-(5, 'Standard', '4K', 19.99, FALSE, 5),
-(6, 'Pass Coupes d’Europe', '4K', 29.99, FALSE, 6),
-(7, 'Ciné Séries', '4K', 29.99, FALSE, 7),
-(8, 'Friends & Family', '4K', 64.99, FALSE, 8),
-(9, 'Sport', '4K', 29.99, FALSE, 9),
-(10, 'Super Sports', 'HD', 19.99, FALSE, 10),
-(11, 'Unlimited', 'HD', 39.99, FALSE, 11),
-(12, 'Premium', '4K', 11.99, FALSE, 12),
-(13, 'Standard', 'HD', 8.99, FALSE, 13),
-(14, 'Avec pub', 'HD', 5.99, TRUE, 14),
-(15, 'Standard', 'HD', 6.99, FALSE, 15),
-(16, 'Avec tickets', 'HD', 11.99, FALSE, 16),
-(17, 'Standard avec pub', 'HD', 5.99, TRUE, 17),
-(18, 'Standard', 'HD', 13.49, FALSE, 18),
-(19, 'Premium', '4K', 19.99, FALSE, 19),
-(20, 'Basique avec pub', 'HD', 5.99, TRUE, 20),
-(21, 'Standard', '4K', 9.99, FALSE, 21),
-(22, 'Premium', '4K', 13.99, FALSE, 22),
-(23, 'Extended', 'HD', 10.99, FALSE, 23),
-(24, 'Extra', 'HD', 6.99, FALSE, 24),
-(25, 'Premium', '4K', 10.99, FALSE, 25),
-(26, 'Standard', 'HD', 7.99, FALSE, 26);
-
+(1, 'Avec pub', 'Amazon', '4K', 6.99, TRUE),
+(2, 'Sans pub', 'Amazon', '4K', 8.98, FALSE),
+(3, '-24 ans', 'Amazon', '4K', 3.49, FALSE),
+(4, 'Standard', 'Apple TV+', '4K', 9.99, FALSE),
+(5, 'Standard', 'Canal+', '4K', 19.99, FALSE),
+(6, 'Pass Coupes d’Europe', 'Canal+', '4K', 29.99, FALSE),
+(7, 'Ciné Séries', 'Canal+', '4K', 29.99, FALSE),
+(8, 'Friends & Family', 'Canal+', '4K', 64.99, FALSE),
+(9, 'Sport', 'Canal+', '4K', 29.99, FALSE),
+(10, 'Super Sports', 'DAZN', 'HD', 19.99, FALSE),
+(11, 'Unlimited', 'DAZN', 'HD', 39.99, FALSE),
+(12, 'Premium', 'Disney+', '4K', 11.99, FALSE),
+(13, 'Standard', 'Disney+', 'HD', 8.99, FALSE),
+(14, 'Avec pub', 'Disney+', 'HD', 5.99, TRUE),
+(15, 'Standard', 'Filmo', 'HD', 6.99, FALSE),
+(16, 'Avec tickets', 'Filmo', 'HD', 11.99, FALSE),
+(17, 'Standard avec pub', 'Netflix', 'HD', 5.99, TRUE),
+(18, 'Standard', 'Netflix', 'HD', 13.49, FALSE),
+(19, 'Premium', 'Netflix', '4K', 19.99, FALSE),
+(20, 'Basique avec pub', 'Max', 'HD', 5.99, TRUE),
+(21, 'Standard', 'Max', '4K', 9.99, FALSE),
+(22, 'Premium', 'Max', '4K', 13.99, FALSE),
+(23, 'Extended', 'Molotov', 'HD', 10.99, FALSE),
+(24, 'Extra', 'Molotov', 'HD', 6.99, FALSE),
+(25, 'Premium', 'Paramount+', '4K', 10.99, FALSE),
+(26, 'Standard', 'Paramount+', 'HD', 7.99, FALSE);
