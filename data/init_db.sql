@@ -65,36 +65,6 @@ CREATE TABLE projet11.plateforme_abonnement (
     nom_plateforme TEXT NOT NULL
 );
 
--- Insertion des plateformes
-INSERT INTO projet11.plateforme_abonnement (id_plateforme, nom_plateforme)
-VALUES 
-(1, 'Amazon'),
-(2, 'Amazon'),
-(3, 'Amazon'),
-(4, 'Apple TV+'),
-(5, 'Canal+'),
-(6, 'Canal+'),
-(7, 'Canal+'),
-(8, 'Canal+'),
-(9, 'Canal+'),
-(10, 'DAZN'),
-(11, 'DAZN'),
-(12, 'Disney+'),
-(13, 'Disney+'),
-(14, 'Disney+'),
-(15, 'Filmo'),
-(16, 'Filmo'),
-(17, 'Netflix'),
-(18, 'Netflix'),
-(19, 'Netflix'),
-(20, 'Max'),
-(21, 'Max'),
-(22, 'Max'),
-(23, 'Molotov'),
-(24, 'Molotov'),
-(25, 'Paramount+'),
-(26, 'Paramount+');
-
 
 
 --------------------------------------------------------------
@@ -126,7 +96,7 @@ CREATE TABLE projet11.abonnement_details (
 );
 
 -- Insertion des abonnements
-INSERT INTO projet11.abonnement_details (id_abonnement, type_abonnement, qualite_video, prix_mensuel, pub, id_plateforme)
+INSERT INTO projet11.abonnement_infos (id_abonnement, type_abonnement, qualite_video, prix_mensuel, pub, id_plateforme)
 VALUES 
 (1, 'Avec pub', '4K', 6.99, TRUE, 1),
 (2, 'Sans pub', '4K', 8.98, FALSE, 2),
