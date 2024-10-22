@@ -16,13 +16,11 @@ def transformer_duree(d=int):
 
 translator = Translator()
 
-
 def traduire_texte(texte, target_lang="fr"):
-    # Détecte la langue du texte
+    if not texte:
+        return ""
     detection = translator.detect(texte)
     lang_source = detection.lang
-
-    # Traduire seulement si la langue source n'est pas le français
     if lang_source != target_lang:
         translation = translator.translate(texte, dest=target_lang)
         return translation.text
@@ -82,6 +80,7 @@ class Film:
                     content["posters"][0]["file_path"])
         else:
             return "Image non disponible"
+        # peut-être mettre un lien d'une image qui montre qu'on a pas d'image
 
     def recuperer_streaming(self):
         cle_api = os.environ.get("API_KEY")
@@ -108,4 +107,4 @@ class Film:
 
 a = Film(1059673)
 print(a.recuperer_streaming())
-print(a.image)        
+print(a.image)
