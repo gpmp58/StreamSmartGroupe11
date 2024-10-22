@@ -1,5 +1,5 @@
 from src.webservice.business_object.utilisateur import Utilisateur
-from src.utils.securite import hash_mdp, verify_mdp
+from src.webservice.utils.securite import hash_mdp, verify_mdp
 
 class UtilisateurService:
     """

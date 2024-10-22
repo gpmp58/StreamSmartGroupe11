@@ -10,7 +10,7 @@ router.include_router(router)
 
 # Initialisation du service utilisateur
 utilisateur_dao = UtilisateurDAO()
-utilisateur_service = UtilisateurService(utilisateur_dao=utilisateur_dao)
+utilisateur_service = UtilisateurService(utilisateur=utilisateur_dao)
 
 # Modèle de données pour un utilisateur (utilisé pour l'API)
 class UtilisateurModel(BaseModel):
