@@ -29,12 +29,21 @@ class WatchlistService:
             print(f"Le film {nom_film} a été ajouté avec succès.")
         else:
             print("Erreur lors de l'ajout du film.")
-        succes_ajout_film = FilmDAO().ajouter_film(id_film)
-        if not succes_ajout_film:
-            print(f"Erreur lors de l'ajout du film '{film.nom}' à la base de données.")
-            return False  # Arrêter ici si l'ajout a échoué
-
         return succes_ajout
+    
+    def mise_jour_bases(self, film, watchlist):
+        id_film = film.id_film
+        id_watchlist = watchlist.id_watchlist
+        if self.ajouter_film(film,watchlist):
+            succes_ajout_film = FilmDAO().ajouter_film(id_film)
+            if succes_ajout_film :
+                id_plateforme = film.donner_id_plateforme()
+                nom_plateforme = film.donner_nom_plateforme()
+                success_ajout_plateforme = service_plateforme().mettre_a_jour_plateforme(id_plateforme,nom_plateforme)
+            else :    
+                print(f"Erreur lors de l'ajout du film '{film.nom}' à la base de données.")
+                return False
+
 
     def supprimer_film(self, Film, watchlist):
         id_film = Film.id_film

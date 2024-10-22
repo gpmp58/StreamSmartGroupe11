@@ -1,4 +1,5 @@
 from src.webservice.business_object.plateforme import PlateformeStreaming
+from src.webservice.dao.plateforme_dao import PlateformeDAO
 
 
 class service_plateforme:

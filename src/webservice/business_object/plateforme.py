@@ -12,7 +12,7 @@ class PlateformeStreaming:
         logo de la plateforme
     """
 
-    def __init__(self, nom_plateforme: str, logo_plateforme: str, id_plateforme: int):
+    def __init__(self, nom_plateforme: str, logo_plateforme = None, id_plateforme: int):                                
         """Constructeur avec validation basique"""
         """
         Initialise un objet PlateformeStreaming avec les attributs spécifiés.

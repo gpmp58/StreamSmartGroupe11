@@ -53,30 +53,25 @@ class Watchlist:
         self.list_film
 
     def verifier_utilisateur(self, utilisateur: Utilisateur) -> bool:
-        """
-        Vérifie si l'utilisateur est une instance de Utilisateur et s'il s'agit
-        du bon utilisateur.
+        """Vérifie si l'utilisateur est une instance de Utilisateur et si c'est le bon utilisateur.
 
-        Paramètres :
-        ------------
+        Parameters
+        ----------
         utilisateur : Utilisateur
             L'utilisateur à vérifier.
 
-        Returns :
-        ---------
+        Returns
+        -------
         bool
             True si l'utilisateur correspond, sinon False.
 
-        Exceptions :
-        ------------
+        Raises
+        ------
         TypeError
             Si l'utilisateur n'est pas une instance de Utilisateur.
         """
-        # Vérification du type de l'utilisateur
-        if not isinstance(utilisateur, Utilisateur):
-            raise TypeError(
-                f"utilisateur doit être une instance de Utilisateur, mais reçu {type(utilisateur).__name__}"
-            )
-
-        # Vérifie si l'identifiant de l'utilisateur correspond
+        if not isinstance(utilisateur ,Utilisateur):
+            raise TypeError(f"utilisateur doit être une instance de Utilisateur")
+        
         return self.id_utilisateur == utilisateur.id_utilisateur
+    

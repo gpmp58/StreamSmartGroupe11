@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
+from googletrans import Translator
 
 load_dotenv()
 
@@ -11,65 +12,81 @@ def transformer_duree(d=int):
     m = d % 60
     duree = f"{h} h {m} min"
     return duree
+translator = Translator()
+def traduire_texte(texte, target_lang='fr'):
+    # Détecte la langue du texte
+    detection = translator.detect(texte)
+    lang_source = detection.lang
+
+    # Traduire seulement si la langue source n'est pas le français
+    if lang_source != target_lang:
+        translation = translator.translate(texte, dest=target_lang)
+        return translation.text
+    return texte
 
 
 class Film:
-    """Cette classe s'occupe de récupérer les différentes informations sur les films
-    A continuer pour la description
+    """
+    Création de la classe Film.
 
+    Cette classe permet de récupérer les infos du film en fonction de l'ID donné.
     """
 
-    def __init__(self, nom_film: str):
-        self.nom_film = nom_film
+    def __init__(self, id_film: int):
+        self.id_film = id_film
+        self.image = self.recuperer_image()
+        self.streaming = self.recuperer_streaming()
+        self.details = self.afficher_film()
 
-    def rechercher_film(self):
+    def afficher_film(self):
         cle_api = os.environ.get("API_KEY")
-        url_recherche_film = f"https://api.themoviedb.org/3/search/movie?query={self.nom_film}&include_adult=false&language=en-US&page=1"
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
-
-        reponse = requests.get(url_recherche_film, headers=headers)
-        if reponse.status_code != 200:
-            return {"error": "Erreur lors de la récupération des films."}
-        data = json.loads(reponse.content)
-        films_obtenus = data["results"]
-        liste_films = dict()
-        liste_films = {film["id"]: film["original_title"] for film in films_obtenus}
-        return liste_films
-        """ ne pas oublier de réfléchir à l'autocomplétion"""
-
-    def afficher_film(self, id):
-        cle_api = os.environ.get("API_KEY")
-        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(id)}"
+        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}"
         headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
         response = requests.get(url_search_movie, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content)
             result = {
                 "name": content["original_title"],
-                "description": content["overview"],
+                "description": traduire_texte(content["overview"]),
                 "sortie": content["status"],
                 "vote_average": content["vote_average"],
                 "date_sortie": content["release_date"],
-                "duree": content["runtime"],
+                "duree": transformer_duree(content["runtime"]),
                 "genres": [genre["name"] for genre in content["genres"]],
             }
-            result["duree"] = transformer_duree(content["runtime"])
+
             return result
         else:
             raise Exception("Le film n'a pas été trouvé (pas le bon id).")
 
-    def recuperer_image(self, id: int):
+    def recuperer_image(self):
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(id)}/images"
+        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
         headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
-        result = {"image": content["posters"][0]["file_path"]}
-        return result
 
+        if content["posters"]:
+            return "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + content["posters"][0]["file_path"]
+        else:
+            return "Image non disponible"
 
-# A utiliser dans streamlit pour pouvoir afficher le film
+    def recuperer_streaming(self):
+        cle_api = os.environ.get("API_KEY")
+        url_movie_providers = f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
+        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
 
-# pas de test pour les méthodes qui recherchent des infos en ligne
-a = Film("Batman")
-print(a.afficher_film(268))
+        response = requests.get(url_movie_providers, headers=headers)
+        data = json.loads(response.content)
+        result_fr = data["results"]["FR"]
+        if "flatrate" in result_fr.keys():
+            streaming = dict()
+            result_flatrate = result_fr["flatrate"]
+            for provider in result_flatrate:
+                streaming[provider["provider_id"]] =  provider["provider_name"]
+            return streaming
+        else:
+            return "Pas disponible en streaming en France."
+
+a = Film(19995)
+print(a.recuperer_streaming())
