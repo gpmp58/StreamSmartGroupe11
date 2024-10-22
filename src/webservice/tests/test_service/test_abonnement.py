@@ -6,63 +6,39 @@ from src.webservice.business_object.abonnement import Abonnement
 
 
 def test_abonnement_init_succes():
-    Abonnement("abonnement_famille", 12.4, 2334, "detail_offre")
+    Abonnement(2334)
 
 
 @pytest.mark.parametrize(
-    "nom_abonnement, prix, id_abonnement, detail_offre, erreur, message_erreur",
+    "id_abonnement, erreur, message_erreur",
     [
-        (
-            ["abonnement_famille"],
-            12.4,
-            2334,
-            "detail_offre",
-            Exception,
-            "Le nom de l'abonnement n'est pas une chaîne de caractères.",
-        ),
-        (
-            "abonnement_famille",
-            "12.4",
-            2334,
-            "detail_offre",
-            Exception,
-            "Le prix de l'abonnement n'est pas un flottant.",
-        ),
         (
             "abonnement_famille",
             12.4,
             {2334},
             "detail_offre",
             Exception,
-            "L'identifiant de l'abonnement n'est pas une chaîne de caractères.",
-        ),
-        (
-            "abonnement_famille",
-            12.4,
-            2334,
-            2527,
-            Exception,
-            "Le detail de l'offre n'est pas une chaîne de caractères.",
+            "L'identifiant de l'abonnement n'est pas un entier.",
         ),
     ],
 )
-def test_abonnement_init_echec(
-    nom_abonnement, prix, id_abonnement, detail_offre, erreur, message_erreur
+def test_abonnement_init_echec(id_abonnement, erreur, message_erreur
 ):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
-        Abonnement(nom_abonnement, prix, id_abonnement, detail_offre)
+        Abonnement(id_abonnement)
 
 
 def test_info_abonnement():
-    abonnement = Abonnement("abonnement_famille", 12.4, 2334, "detail_offre")
+    abonnement = Abonnement(2334)
     assert abonnement.info_abonnement() == {
-        "Nom_abonnement": "abonnement_famille",
-        "prix": 12.4,
+        "Nom_abonnement": self.nom_abonnement,
+        "prix": self.prix,
         "id_abonnement": 2334,
-        "detail_offre": "detail_offre",
+        "pub": self.pub,
+        "qualité" : self.qualite,
     }
 
 
-def test_get_nom_abonnement():
-    abonnement = Abonnement("abonnement_famille", 12.4, 2334, "detail_offre")
-    assert abonnement.get_nom_abonnement() == "abonnement_famille"
+def test_get_prix():
+    abonnement = Abonnement(2334)
+    assert abonnement.get_nom_abonnement() == self.prix
