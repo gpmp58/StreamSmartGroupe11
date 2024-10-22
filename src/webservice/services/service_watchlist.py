@@ -1,5 +1,5 @@
-from dao.watchlist_dao import WatchlistDao
-from business_object.watchlist import Watchlist
+from src.webservice.dao.watchlist_dao import WatchlistDao
+from src.webservice.business_object.watchlist import Watchlist
 
 class WatchlistService:
 
