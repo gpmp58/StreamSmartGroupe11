@@ -9,8 +9,8 @@ from src.webservice.business_object.plateforme import Plateforme
 class AbonnementDao():
     """Classe contenant les méthodes pour recuperer les infos d'un abonnement"""
 
-    def rechercher_prix_DAO(self,  abonnement: Abonnement) -> tuple:
-        """Cette méthode recherche les infos sur un abonnement"""
+    def rechercher_prix__abonnement_DAO(self,  abonnement: Abonnement) -> tuple:
+        """Cette méthode renvoie le prix d'un abonnement"""
 
         prix = None
         with DBConnection().connection as connection:
@@ -25,8 +25,8 @@ class AbonnementDao():
         return prix
 
 
-    def rechercher_pub_DAO(self,  abonnement: Abonnement) -> tuple:
-        """Cette méthode recherche les infos sur un abonnement"""
+    def rechercher_pub__abonnement_DAO(self,  abonnement: Abonnement) -> tuple:
+        """Cette méthode renvoie true si l'abonnement fait de la pub"""
         
         pub = None
         with DBConnection().connection as connection:
@@ -41,8 +41,8 @@ class AbonnementDao():
         return pub
     
     
-def rechercher_qualite_DAO(self,  abonnement: Abonnement) -> tuple:
-        """Cette méthode recherche les infos sur un abonnement"""
+    def rechercher_qualite_abonnement_DAO(self,  abonnement: Abonnement) -> tuple:
+        """Cette méthode recherche la qualité d'un abonnement"""
         
         qualite = None
         with DBConnection().connection as connection:
@@ -55,10 +55,26 @@ def rechercher_qualite_DAO(self,  abonnement: Abonnement) -> tuple:
                 qualite = cursor.fetchone()
 
         return qualite
+   
+   
+   def rechercher_nom_abonnement_DAO(self,  abonnement: Abonnement) -> tuple:
+        """Cette méthode recherche le nom d'un abonnement"""
+        
+        nom = None
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT nom_abonnement FROM abonnement             "
+                    " WHERE id_abonnement = %(id_abonnement)s      ",
+                    {"id_abonnement": abonnement.id_abonnement},
+                )
+                nom = cursor.fetchone()
+
+        return nom
+   
     
-def rechercher_abonnement(self, plateforme: Plateforme) -> list:
-        """
-        Cette méthode recherche les abonnements d'une plateforme"""
+    def rechercher_abonnement_par_plateforme_DAO(self, plateforme: Plateforme) -> list:
+        """Cette méthode fournit la liste d'abonnements d'une plateforme"""
         abonnements = []
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
