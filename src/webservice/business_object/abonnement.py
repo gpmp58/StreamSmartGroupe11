@@ -1,5 +1,6 @@
-from sevice_abonnement import AbonnementService 
+from sevice_abonnement import AbonnementService
 
+from abonnement_dao import AbonnementDao
 
 class Abonnement:
     """
@@ -39,6 +40,7 @@ class Abonnement:
         self.qualite = self.qualite_abonnement()
         self.prix = self.prix_abonnement()
         self.pub = self.pub_abonnement()
+        self.nom_abonnement = self.rechercher_nom_abonnement_DAO()
 
     def info_abonnement(self) -> dict:
         """Retourne les attributs de l'abonnement sous forme de dictionnaire"""
@@ -47,7 +49,7 @@ class Abonnement:
             "prix": self.prix,
             "id_abonnement": self.id_abonnement,
             "pub": self.pub,
-            "qualité" : self.qualite,
+            "qualité": self.qualite,
         }
 
     def get_nom_abonnement(self):

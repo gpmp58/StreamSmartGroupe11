@@ -57,7 +57,7 @@ class AbonnementDao():
         return qualite
    
    
-   def rechercher_nom_abonnement_DAO(self,  abonnement: Abonnement) -> tuple:
+    def rechercher_nom_abonnement_DAO(self,  abonnement: Abonnement) -> tuple:
         """Cette méthode recherche le nom d'un abonnement"""
         
         nom = None

@@ -6,11 +6,11 @@ from src.webservice.business_object.abonnement import Abonnement
 
 
 def test_abonnement_init_succes():
-    Abonnement("abonnement_famille", 12.4, 2334, "detail_offre")
+    Abonnement(2334)
 
 
 @pytest.mark.parametrize(
-    "nom_abonnement, prix, id_abonnement, detail_offre, erreur, message_erreur",
+    "id_abonnement, erreur, message_erreur",
     [
         (
             "abonnement_famille",
