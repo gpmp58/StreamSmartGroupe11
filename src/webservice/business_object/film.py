@@ -16,13 +16,11 @@ def transformer_duree(d=int):
 
 translator = Translator()
 
-
 def traduire_texte(texte, target_lang="fr"):
-    # Détecte la langue du texte
+    if not texte:
+        return ""
     detection = translator.detect(texte)
     lang_source = detection.lang
-
-    # Traduire seulement si la langue source n'est pas le français
     if lang_source != target_lang:
         translation = translator.translate(texte, dest=target_lang)
         return translation.text
@@ -82,6 +80,7 @@ class Film:
                     content["posters"][0]["file_path"])
         else:
             return "Image non disponible"
+        # peut-être mettre un lien d'une image qui montre qu'on a pas d'image
 
     def recuperer_streaming(self):
         cle_api = os.environ.get("API_KEY")
@@ -95,17 +94,17 @@ class Film:
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
-        result_fr = data["results"]["FR"]
-        if "flatrate" in result_fr.keys():
-            streaming = dict()
-            result_flatrate = result_fr["flatrate"]
-            for provider in result_flatrate:
-                streaming[provider["provider_id"]] = provider["provider_name"]
-            return streaming
+
+        # Vérifiez si les résultats existent et s'il y a des fournisseurs pour la France
+        if "results" in data and "FR" in data["results"]:
+            result_fr = data["results"]["FR"]
+            if "flatrate" in result_fr.keys():
+                streaming = dict()
+                result_flatrate = result_fr["flatrate"]
+                for provider in result_flatrate:
+                    streaming[provider["provider_id"]] = provider["provider_name"]
+                return streaming
+            else:
+                return "Pas disponible en streaming en France."
         else:
-            return "Pas disponible en streaming en France."
-
-
-a = Film(1059673)
-print(a.recuperer_streaming())
-print(a.image)
+            return "Aucune information de streaming disponible pour ce film."
