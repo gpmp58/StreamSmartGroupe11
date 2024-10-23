@@ -6,12 +6,12 @@ class AbonnementService():
 
     def prix_abonnement(self, id_abonnement):
         abonnement = Abonnement(id_abonnement)
-        prix = AbonnementDao().rechercher_prix_DAO(abonnement)
+        prix = AbonnementDao().get_prix_DAO(abonnement)
         return prix
 
     def pub_abonnement(self, id_abonnement):
         abonnement = Abonnement(id_abonnement)
-        pub = AbonnementDao().rechercher_pub_DAO(abonnement)
+        pub = AbonnementDao().get_pub_DAO(abonnement)
         if pub :
             return f"Cet abonnement contient des pub !"
         else :
@@ -19,12 +19,12 @@ class AbonnementService():
 
     def qualite_abonnement(self, id_abonnement):
         abonnement = Abonnement(id_abonnement)
-        qualite = AbonnementDao().rechercher_qualite_DAO(abonnement)
+        qualite = AbonnementDao().get_qualite_DAO(abonnement)
         return qualite
     
     def recherche_abonnement(self, nom_plateforme, id_plateforme):
         plateforme = PlateformeStreaming(nom_plateforme, id_plateforme)
-        abonnement_list = AbonnementDao().rechercher_abonnement(plateforme)
+        abonnement_list = AbonnementDao().get_abonnement(plateforme)
         return abonnement_list
 
     

@@ -3,7 +3,7 @@ from src.webservice.business_object.utilisateur import Utilisateur
 
 class Watchlist:
     def __init__(
-        self, nom_watchlist: str, id_utilisateur, list_film=[], id_watchlist=None
+        self, nom_watchlist: str, id_utilisateur, list_film=[], id_watchlist: int = None
     ):
         """Constructeur avec validation basique et initialisation des attributs.
 
@@ -30,12 +30,12 @@ class Watchlist:
                 f"id_utilisateur doit être un entier, mais reçu {type(id_utilisateur).__name__}"
             )
 
-        if list_film is not isinstance(list_film, list):
+        if not isinstance(list_film, list):
             raise TypeError(
                 f"list_film doit être une liste ou None, mais reçu {type(list_film).__name__}"
             )
 
-        if id_watchlist is not None or not isinstance(id_watchlist, int):
+        if not isinstance(id_watchlist, int) and id_watchlist is not None:
             raise TypeError(
                 f"id_watchlist doit être un entier ou None, mais reçu {type(id_watchlist).__name__}"
             )

@@ -14,16 +14,16 @@ class FilmDao:
 
                     if count > 0:
                         print(
-                            f"Le film '{film.nom}' est déjà présent dans la base de données."
+                            f"Le film '{film.details["name"]}' est déjà présent dans la base de données."
                         )
                         return False  # Film déjà présent
 
                     # Ajouter le film
                     cursor.execute(
                         "INSERT INTO film (id_film, nom) VALUES (%s, %s);",
-                        (film.id_film, film.nom),
+                        (film.id_film, film.details["name"]),
                     )
-                    print(f"Le film '{film.nom}' a été ajouté avec succès.")
+                    print(f"Le film '{film.details["name"]}' a été ajouté avec succès.")
                     return True
 
         except Exception as e:
