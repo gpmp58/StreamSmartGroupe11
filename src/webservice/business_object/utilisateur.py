@@ -16,6 +16,8 @@ class Utilisateur:
         le mot de passe de l'utilisateur
     langue :str
         la langue de l'utilisateur
+    sel : str
+        le sel utilisé pour hacher le mot de passe
     """
 
     def __init__(
@@ -27,6 +29,7 @@ class Utilisateur:
         mdp: str,
         id_utilisateur: str,
         langue: str = "français",
+        sel: str = None,
     ):
         """Constructeur avec validation basique"""
         """
@@ -40,17 +43,16 @@ class Utilisateur:
             langue (str) : La langue de renseignée par l'utilisateur, si différente de celle par défaut.
             mdp (str) : Le mot de passe renseignée par l'utilisateur.
             id_utilisateur (str) : id_utilisateur.
+            sel (str) : Le sel utilisé pour hacher le mot de passe (optionnel).
 
         Raises:
             Exception: Si le nom n'est pas une chaîne de caractères.
             Exception: Si le prenom n'est pas une chaîne de caractères.
-            Exception: Si le peudo n'est pas une chaîne de caractères ou si il contient des caractères spéciaux.
-            # a voir si on ajoute des conditions sur le pseudo 
+            Exception: Si le pseudo n'est pas une chaîne de caractères ou si il contient des caractères spéciaux.
             Exception : Si l'adresse mail n'est pas une chaîne de caractères.
             Exception: Si la langue n'est pas une chaîne de caractères.
             Exception : Si le mot de passe n'est pas une chaîne de caractères.
             Exception: Si id_utilisateur n'est pas une chaîne de caractères.
-
         """
 
         if not isinstance(nom, str):
@@ -70,6 +72,8 @@ class Utilisateur:
             raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
         if not isinstance(id_utilisateur, str):
             raise Exception("id_utilisateur n'est pas une chaîne de caractères.")
+        if sel is not None and not isinstance(sel, str):
+            raise Exception("Le sel n'est pas une chaîne de caractères.")
 
         self.id_utilisateur = id_utilisateur
         self.nom = nom
@@ -78,6 +82,7 @@ class Utilisateur:
         self.adresse_mail = adresse_mail
         self.mdp = mdp
         self.langue = langue
+        self.sel = sel
 
     def message(self):
         """Permet d'afficher un message de bienvenue"""
@@ -92,6 +97,7 @@ class Utilisateur:
             "Adresse mail": self.adresse_mail,
             "Langue": self.langue,
             "id_utilisateur": self.id_utilisateur,
+            "sel": self.sel,  # Ajout du sel dans le dictionnaire des informations utilisateur
         }
 
     def get_nom(self):
@@ -111,3 +117,6 @@ class Utilisateur:
 
     def get_id_utilisateur(self):
         return self.id_utilisateur
+
+    def get_sel(self):
+        return self.sel  # Ajout d'un getter pour récupérer le sel

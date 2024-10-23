@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from src.webservice.services.service_utilisateur import UtilisateurService
 from src.webservice.business_object.utilisateur import Utilisateur
+from src.webservice.utils.securite import hash_mdp
 
 # Fixture pour initialiser UtilisateurService et UtilisateurDAO
 @pytest.fixture
@@ -12,16 +13,38 @@ def utilisateur_service():
     """
     mock_utilisateur = MagicMock()
     service = UtilisateurService(utilisateur=mock_utilisateur)
+
+    # Hacher le mot de passe de l'utilisateur et générer un sel
+    mdp = "password123"
+    hashed_mdp, sel = hash_mdp(mdp)
+
     utilisateur = Utilisateur(
+        id_utilisateur="123",  # Ajout d'un id_utilisateur simulé
         nom="Alice",
         prenom="Dupont",
         pseudo="alice123",
         adresse_mail="alice@example.com",
-        mdp="password123",
+        mdp=hashed_mdp,
         langue="anglais",
+        sel=sel  # Ajout du sel généré
     )
     return service, mock_utilisateur, utilisateur
 
+def test_se_connecter_succes(utilisateur_service):
+    """
+    Test de connexion réussie : GIVEN un utilisateur existant avec des bonnes
+    informations de connexion, WHEN 'se_connecter' est appelée, THEN un
+    message de bienvenue est retourné.
+    """
+    service, mock_utilisateur, utilisateur = utilisateur_service
+    mock_utilisateur.trouver_par_pseudo.return_value = utilisateur
+
+    # WHEN: On appelle la méthode se_connecter avec les bons identifiants
+    resultat = service.se_connecter(pseudo="alice123", mdp="password123")
+
+    # THEN: Le message de bienvenue est renvoyé
+    assert resultat == f"Bienvenue {utilisateur.pseudo} sur notre application"
+    mock_utilisateur.trouver_par_pseudo.assert_called_once_with("alice123")
 
 def test_creer_compte_succes(utilisateur_service):
     """
@@ -39,7 +62,7 @@ def test_creer_compte_succes(utilisateur_service):
         pseudo="alice123",
         adresse_mail="alice@example.com",
         mdp="password123",
-        langue="anglais"
+        langue="anglais",
     )
 
     # THEN: Le compte est créé avec succès
@@ -80,22 +103,6 @@ def test_creer_compte_erreur_pseudo_existant(utilisateur_service):
     assert resultat == {"error": ("Erreur lors de la création du compte. "
                                    "Le pseudo est peut-être déjà utilisé.")}
 
-
-def test_se_connecter_succes(utilisateur_service):
-    """
-    Test de connexion réussie : GIVEN un utilisateur existant avec des bonnes
-    informations de connexion, WHEN 'se_connecter' est appelée, THEN un
-    message de bienvenue est retourné.
-    """
-    service, mock_utilisateur, utilisateur = utilisateur_service
-    mock_utilisateur.trouver_par_pseudo.return_value = utilisateur
-
-    # WHEN: On appelle la méthode se_connecter avec les bons identifiants
-    resultat = service.se_connecter(pseudo="alice123", mdp="password123")
-
-    # THEN: Le message de bienvenue est renvoyé
-    assert resultat == f"Bienvenue {utilisateur.pseudo} sur notre application"
-    mock_utilisateur.trouver_par_pseudo.assert_called_once_with("alice123")
 
 
 def test_se_connecter_echec(utilisateur_service):
