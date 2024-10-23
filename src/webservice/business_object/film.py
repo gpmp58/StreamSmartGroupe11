@@ -94,17 +94,15 @@ class Film:
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
-        result_fr = data["results"]["FR"]
-        if "flatrate" in result_fr.keys():
-            streaming = dict()
-            result_flatrate = result_fr["flatrate"]
-            for provider in result_flatrate:
-                streaming[provider["provider_id"]] = provider["provider_name"]
-            return streaming
+        if "results" in data and "FR" in data["results"]:
+            result_fr = data["results"]["FR"]
+            if "flatrate" in result_fr.keys():
+                streaming = dict()
+                result_flatrate = result_fr["flatrate"]
+                for provider in result_flatrate:
+                    streaming[provider["provider_id"]] = provider["provider_name"]
+                return streaming
+            else:
+                return "Pas disponible en streaming en France."
         else:
-            return "Pas disponible en streaming en France."
-
-
-a = Film(1059673)
-print(a.recuperer_streaming())
-print(a.image)
+            return "Aucune information de streaming disponible pour ce film."
