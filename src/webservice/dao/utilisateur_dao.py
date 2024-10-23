@@ -164,8 +164,8 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 # Récupérer l'utilisateur par pseudo (on veut aussi le sel pour vérifier le mot de passe)
                 cursor.execute(
-                    "SELECT * FROM utilisateur WHERE pseudo = %(pseudo)s;",
-                    {"pseudo": pseudo},
+                    "SELECT * FROM utilisateur WHERE pseudo = %(pseudo)s AND mdp = %(mdp)s;",
+                    {"pseudo": pseudo, "mdp":mdp},
                 )
                 res = cursor.fetchone()
 
