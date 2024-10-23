@@ -62,21 +62,38 @@ st.markdown("""
     .film-card:hover .film-info {
         opacity: 1; /* Afficher sur hover */
     }
-    .placeholder-image {
-        background-color: #000; /* Couleur de fond noire */
+    .details-container {
         display: flex;
-        justify-content: center;
         align-items: center;
-        height: 100%;
+        margin: 20px;
+        background-color: #2e2e2e; /* Fond sombre */
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .details-image {
+        width: 200px; /* Ajuster la taille de l'image */
+        height: auto;
+        margin-right: 20px; /* Espace entre l'image et le texte */
+    }
+    .details-content {
         color: #ffffff; /* Couleur du texte */
-        font-size: 14px;
+    }
+    .details-title {
+        font-size: 24px; /* Taille du titre */
         font-weight: bold;
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        transform: translateY(-50%); /* Ajustement pour centrer parfaitement */
-        text-align: center; /* Centrer le texte */
+    }
+    .details-description {
+        margin-top: 10px;
+        font-size: 16px; /* Taille de la description */
+    }
+    .details-info {
+        margin-top: 10px;
+        font-size: 14px; /* Taille des informations */
+        color: #cccccc; /* Couleur des informations */
+    }
+    .streaming-links a {
+        color: #1E90FF; /* Couleur des liens de streaming */
+        text-decoration: underline;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -132,19 +149,39 @@ def rechercher_films(nom_film):
 # Fonction pour afficher les détails du film
 def afficher_details_film(film_id):
     film = Film(film_id)  # Récupérer les détails du film
-    st.write(f"ID du film : {film_id}")  # Affiche l'ID du film
     st.title(film.details.get("title", "Titre non disponible"))
-    st.image(film.image, use_column_width=True)  # Affiche l'image du film
-    st.write(film.details.get("description", "Pas de description disponible."))
+
+    # Conteneur pour l'image et les informations
+    details_container = st.container()
+    with details_container:
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            if film.image:
+                st.image(film.image, use_column_width=False, width=200)  # Ajuste la taille de l'image
+            else:
+                st.write("Image non disponible.")
+        with col2:
+            st.markdown(f"<div class='details-title'>{film.details.get('title', 'Titre non disponible')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-description'>{film.details.get('description', 'Pas de description disponible.')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-info'>Date de sortie : {film.details.get('release_date', 'Date non disponible')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-info'>Durée : {film.details.get('duration', 'Durée non disponible')} minutes</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-info'>Genres : {', '.join(film.details.get('genres', ['Pas de genres disponibles']))}</div>", unsafe_allow_html=True)
+
+            # Recherche des sites de streaming
+            streaming_sites = film_service.rechercher_streaming(film_id)  # Assurez-vous que cette méthode existe
+            if streaming_sites:
+                st.markdown("<div class='streaming-links'>Disponibles sur : </div>", unsafe_allow_html=True)
+                for site in streaming_sites:
+                    st.markdown(f"<a href='{site['url']}' target='_blank'>{site['name']}</a>", unsafe_allow_html=True)
+            else:
+                st.write("Pas de plateformes de streaming disponibles.")
 
 # Interface principale avec Streamlit
 def main():
     query_params = st.query_params  # Utiliser la bonne méthode
-    st.write("Query Params : ", query_params)  # Ajoute ceci pour déboguer
 
     if "film_id" in query_params:
         film_id = query_params["film_id"]
-        st.write(f"Film ID récupéré : {film_id}")  # Affiche l'ID récupéré
         afficher_details_film(film_id)
     else:
         st.title("Recherche de films")

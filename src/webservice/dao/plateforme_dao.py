@@ -13,7 +13,7 @@ class PlateformeDAO:
                 with connection.cursor() as cursor:
                     # Vérifier si la plateforme existe déjà (par id ou nom)
                     cursor.execute(
-                        "SELECT COUNT(*) FROM plateforme WHERE id_plateforme = %s OR nom_plateforme = %s;",
+                        "SELECT COUNT(*) FROM projet11.plateforme WHERE id_plateforme = %s OR nom_plateforme = %s;",
                         (plateforme.id_plateforme, plateforme.nom_plateforme),
                     )
                     count = cursor.fetchone()[0]
@@ -26,7 +26,7 @@ class PlateformeDAO:
 
                     # Insérer la nouvelle plateforme
                     cursor.execute(
-                        "INSERT INTO plateforme (id_plateforme, nom_plateforme) VALUES (%s, %s);",
+                        "INSERT INTO projet11.plateforme (id_plateforme, nom_plateforme) VALUES (%s, %s);",
                         (plateforme.id_plateforme, plateforme.nom_plateforme),
                     )
                     print(

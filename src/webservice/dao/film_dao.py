@@ -8,22 +8,22 @@ class FilmDao:
                 with connection.cursor() as cursor:
                     # Vérifier si le film est déjà présent
                     cursor.execute(
-                        "SELECT COUNT(*) FROM film WHERE id_film = %s;", (film.id_film)
+                        "SELECT COUNT(*) FROM projet11.film WHERE id_film = %s;", (film.id_film)
                     )
                     count = cursor.fetchone()[0]
 
                     if count > 0:
                         print(
-                            f"Le film '{film.nom}' est déjà présent dans la base de données."
+                            f"Le film '{film.details["name"]}' est déjà présent dans la base de données."
                         )
                         return False  # Film déjà présent
 
                     # Ajouter le film
                     cursor.execute(
                         "INSERT INTO film (id_film, nom) VALUES (%s, %s);",
-                        (film.id_film, film.nom),
+                        (film.id_film, film.details["name"]),
                     )
-                    print(f"Le film '{film.nom}' a été ajouté avec succès.")
+                    print(f"Le film '{film.details["name"]}' a été ajouté avec succès.")
                     return True
 
         except Exception as e:

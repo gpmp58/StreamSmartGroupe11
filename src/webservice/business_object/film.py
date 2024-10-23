@@ -14,18 +14,6 @@ def transformer_duree(d=int):
     return duree
 
 
-translator = Translator()
-
-def traduire_texte(texte, target_lang="fr"):
-    if not texte:
-        return ""
-    detection = translator.detect(texte)
-    lang_source = detection.lang
-    if lang_source != target_lang:
-        translation = translator.translate(texte, dest=target_lang)
-        return translation.text
-    return texte
-
 
 class Film:
     """
@@ -42,7 +30,7 @@ class Film:
 
     def afficher_film(self):
         cle_api = os.environ.get("API_KEY")
-        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}"
+        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}"
@@ -52,7 +40,7 @@ class Film:
             content = json.loads(response.content)
             result = {
                 "name": content["original_title"],
-                "description": traduire_texte(content["overview"]),
+                "description": content["overview"],
                 "sortie": content["status"],
                 "vote_average": content["vote_average"],
                 "date_sortie": content["release_date"],

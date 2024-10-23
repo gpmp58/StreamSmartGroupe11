@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS projet11.watchlist CASCADE;
 CREATE TABLE projet11.watchlist (
     id_watchlist SERIAL PRIMARY KEY NOT NULL, -- Utilisation de SERIAL pour autoincrémentation
     nom_watchlist TEXT NOT NULL,
-    id_utilisateur TEXT REFERENCES projet11.utilisateur(id_utilisateur)
+    id_utilisateur SERIAL REFERENCES projet11.utilisateur(id_utilisateur)
 );
 
 --------------------------------------------------------------

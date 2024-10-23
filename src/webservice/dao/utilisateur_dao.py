@@ -25,7 +25,7 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 # Ajout du champ `sel` dans la requête d'insertion
                 cursor.execute(
-                    "INSERT INTO utilisateur(nom, prenom, adresse_mail, mdp, pseudo, langue, sel) VALUES "
+                    "INSERT INTO projet11.utilisateur (nom, prenom, adresse_mail, mdp, pseudo, langue, sel) VALUES "
                     "(%(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s) "
                     "RETURNING id_utilisateur;",  # `RETURNING` pour récupérer l'id_utilisateur après création
                     {
@@ -65,7 +65,7 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 # Requête de sélection pour récupérer un utilisateur avec son id
                 cursor.execute(
-                    "SELECT * FROM utilisateur WHERE id_utilisateur = %(id_utilisateur)s;",
+                    "SELECT * FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s;",
                     {"id_utilisateur": id},
                 )
                 res = cursor.fetchone()
@@ -105,7 +105,7 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 # Mise à jour de l'utilisateur, ajout du champ `sel` si besoin d'être mis à jour
                 cursor.execute(
-                    "UPDATE utilisateur "
+                    "UPDATE projet11.utilisateur "
                     "SET mdp = %(mdp)s, nom = %(nom)s, prénom = %(prénom)s, adresse_mail = %(adresse_mail)s, sel = %(sel)s "
                     "WHERE pseudo = %(pseudo)s;",  # `sel` est ajouté pour s'assurer qu'il est aussi mis à jour si nécessaire
                     {
@@ -137,22 +137,20 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 # Suppression de l'utilisateur par `id_utilisateur`
                 cursor.execute(
-                    "DELETE FROM utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
+                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
                     {"id_utilisateur": utilisateur.id_utilisateur},
                 )
                 res = cursor.rowcount
 
         return res > 0
 
-    def se_connecter_DAO(self, pseudo, mdp) -> Utilisateur:
-        """Se connecter grâce à son pseudo et son mot de passe
+    def se_connecter_DAO(self, pseudo: str) -> Utilisateur:
+        """Récupérer l'utilisateur par pseudo pour vérifier le mot de passe
 
         Parameters
         ----------
         pseudo : str
-            pseudo d'utilisateur que l'on souhaite trouver
-        mdp : str
-            mot de passe d'utilisateur (en texte clair, sera comparé après hachage)
+            pseudo de l'utilisateur
 
         Returns
         -------
@@ -162,36 +160,20 @@ class UtilisateurDAO:
         res = None
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                # Récupérer l'utilisateur par pseudo (on veut aussi le sel pour vérifier le mot de passe)
+                # Requête SQL pour récupérer toutes les informations de l'utilisateur
                 cursor.execute(
-                    "SELECT * FROM utilisateur WHERE pseudo = %(pseudo)s AND mdp = %(mdp)s;",
-                    {"pseudo": pseudo, "mdp":mdp},
+                    "SELECT * FROM projet11.utilisateur WHERE pseudo = %(pseudo)s;",
+                    {"pseudo": pseudo},
                 )
                 res = cursor.fetchone()
 
         utilisateur = None
         if res:
-            # Vérification du mot de passe avec le sel récupéré
-            sel = res["sel"]  # Récupération du sel stocké pour cet utilisateur
-            stored_mdp_hash = res["mdp"]  # Récupération du hash du mot de passe stocké
+            return res
+        else:
+            raise ValueError("Pseudo Introuvable")
 
-            # Utilisation de la fonction `verify_mdp` pour vérifier la correspondance
-            if verify_mdp(stored_mdp_hash, mdp, sel):
-                # Si le mot de passe correspond, créer un objet utilisateur
-                utilisateur = Utilisateur(
-                    pseudo=res["pseudo"],
-                    mdp=res["mdp"],  # Le mot de passe stocké (haché)
-                    nom=res["nom"],
-                    prénom=res["prénom"],
-                    adresse_mail=res["adresse_mail"],
-                    langue=res["langue"],
-                    sel=res[
-                        "sel"
-                    ],  # Inclure le sel pour une éventuelle modification future
-                    id_utilisateur=res["id_utilisateur"],
-                )
 
-        return utilisateur
 
     def trouver_watchlist_correspondante(self, utilisateur) -> list:
         """

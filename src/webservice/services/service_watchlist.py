@@ -1,18 +1,19 @@
 from src.webservice.dao.watchlist_dao import WatchlistDao
 from src.webservice.business_object.watchlist import Watchlist
+from src.webservice.business_object.utilisateur import Utilisateur
 
 class WatchlistService:
 
     def creer_nouvelle_watchlist(self, nom_watchlist, utilisateur):
         id_utilisateur = utilisateur.id_utilisateur
         nouvelle_watchlist = Watchlist(nom_watchlist, id_utilisateur)
-        return nouveau_watchlist if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist) else None
+        return nouvelle_watchlist if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist) else None
     
     def supprimer_watchlist(self, watchlist):
         return WatchlistDao().supprimer_watchlist_DAO(watchlist)
     
-    def ajouter_film(self, Film, watchlist):
-        id_film = Film.id_film
+    def ajouter_film(self, film, watchlist):
+        id_film = film.id_film
         id_watchlist = watchlist.id_watchlist
         deja_present = WatchlistDao().film_deja_present(id_watchlist, id_film)
         if deja_present:

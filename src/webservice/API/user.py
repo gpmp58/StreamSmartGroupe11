@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List
+from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.services.service_utilisateur import UtilisateurService
 from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
