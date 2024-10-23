@@ -28,7 +28,7 @@ class ClassWatchlistTest(unittest.TestCase):
         watchlist = WatchlistService().creer_nouvelle_watchlist(nom_watchlist, utilisateur)
         assert watchlist is None
 
-    
+   
     def test_ajouter_film_ok(self):
         """Ajout d'un film à la watchlist réussie"""
         # GIVEN
