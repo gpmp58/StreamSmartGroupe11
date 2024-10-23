@@ -4,7 +4,7 @@ from src.webservice.business_object.watchlist import Watchlist
 
 
 class WatchlistDao:
-    """Classe contenant les méthodes pour accéder aux watchlists de la base des données"""
+    """Classe contenant les méthodes pour accéder aux watchlists de la bdd"""
 
     def creer_nouvelle_watchlist_DAO(self, watchlist: Watchlist) -> bool:
         """Crée une nouvelle watchlist dans la base de données.
@@ -23,9 +23,9 @@ class WatchlistDao:
             with connection.cursor() as cursor:
                 try:
                     cursor.execute(
-                        "INSERT INTO watchlist (nom_watchlist, id_utilisateur) "
-                        "VALUES (%(nom_watchlist)s, %(id_utilisateur)s) "
-                        "RETURNING id_watchlist;",
+                        "INSERT INTO watchlist (nom_watchlist, id_utilisateur)"
+                        "VALUES (%(nom_watchlist)s, %(id_utilisateur)s)      "
+                        "RETURNING id_watchlist;                            ",
                         {
                             "nom_watchlist": watchlist.nom_watchlist,
                             "id_utilisateur": watchlist.id_utilisateur,
@@ -57,7 +57,7 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM watchlist             "
+                    "DELETE FROM watchlist                       "
                     " WHERE id_watchlist = %(id_watchlist)s      ",
                     {"id_watchlist": watchlist.id_watchlist},
                 )
@@ -85,8 +85,8 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO film_watchlist(id_watchlist, id_film) VALUES "
-                    "(%(id_watchlist)s, %(id_film)s);",
+                    "INSERT INTO film_watchlist(id_watchlist, id_film)    "
+                    "VALUES (%(id_watchlist)s, %(id_film)s);              ",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )
                 res = cursor.rowcount
@@ -113,8 +113,9 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM film_watchlist"
-                    " WHERE id_watchlist = %(id_watchlist)s and id_film = %(id_film)s",
+                    "DELETE FROM film_watchlist                    "
+                    " WHERE id_watchlist = %(id_watchlist)s        "
+                    "        AND id_film = %(id_film)s             ",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )
                 res = cursor.rowcount
@@ -126,12 +127,15 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT COUNT(*) FROM film_watchlist WHERE id_watchlist = %(id_watchlist)s AND id_film = %(id_film)s;",
+                    "SELECT COUNT(*)                              "
+                    " FROM film_watchlist                         "
+                    "WHERE id_watchlist = %(id_watchlist)s        "
+                    "      AND id_film = %(id_film)s;             ",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )
                 res = cursor.fetchone()[0]
 
-        # Si le nombre de lignes trouvées est supérieur à 0, le film est déjà présent
+        # Si le nombre de lignes trouvées > 0, le film est déjà présent
         return res > 0
 
     def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:
