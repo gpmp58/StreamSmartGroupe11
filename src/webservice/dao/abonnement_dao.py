@@ -12,7 +12,7 @@ class AbonnementDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT prix FROM abonnement "
+                    "SELECT prix FROM projet11.abonnement "
                     "WHERE id_abonnement = %(id_abonnement)s",
                     {"id_abonnement": abonnement.id_abonnement},
                 )
@@ -25,7 +25,7 @@ class AbonnementDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT pub FROM abonnement "
+                    "SELECT pub FROM projet11.abonnement "
                     "WHERE id_abonnement = %(id_abonnement)s",
                     {"id_abonnement": abonnement.id_abonnement},
                 )
@@ -38,7 +38,7 @@ class AbonnementDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT qualite FROM abonnement "
+                    "SELECT qualite FROM projet11.abonnement "
                     "WHERE id_abonnement = %(id_abonnement)s",
                     {"id_abonnement": abonnement.id_abonnement},
                 )
@@ -51,7 +51,7 @@ class AbonnementDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT nom_abonnement FROM abonnement "
+                    "SELECT nom_abonnement FROM projet11.abonnement "
                     "WHERE id_abonnement = %(id_abonnement)s",
                     {"id_abonnement": abonnement.id_abonnement},
                 )
@@ -65,7 +65,7 @@ class AbonnementDao:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT id_abonnement "
-                    "FROM utilisateur "
+                    "FROM projet11.utilisateur "
                     "WHERE nom_plateforme = %(nom_plateforme)s",
                     {"nom_plateforme": plateforme.nom_plateforme},
                 )

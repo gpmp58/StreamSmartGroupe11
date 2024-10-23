@@ -4,7 +4,7 @@ class Utilisateur:
 
     Attributs
     ----------
-    id_utilisateur : str
+    id_utilisateur : int
         identifiant
     nom : str
         nom de l'utilisateur
@@ -27,7 +27,7 @@ class Utilisateur:
         pseudo: str,
         adresse_mail: str,
         mdp: str,
-        id_utilisateur: str,
+        id_utilisateur: int,
         langue: str = "français",
         sel: str = None,
     ):
@@ -42,7 +42,7 @@ class Utilisateur:
             adresse_mail (str) : L'adresse mail renseignée par l'utilisateur.
             langue (str) : La langue de renseignée par l'utilisateur, si différente de celle par défaut.
             mdp (str) : Le mot de passe renseignée par l'utilisateur.
-            id_utilisateur (str) : id_utilisateur.
+            id_utilisateur (int) : id_utilisateur.
             sel (str) : Le sel utilisé pour hacher le mot de passe (optionnel).
 
         Raises:
@@ -70,8 +70,8 @@ class Utilisateur:
             raise Exception("La langue n'est pas une chaîne de caractères.")
         if not isinstance(mdp, str):
             raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
-        if not isinstance(id_utilisateur, str):
-            raise Exception("id_utilisateur n'est pas une chaîne de caractères.")
+        if not isinstance(id_utilisateur, int):
+            raise Exception("id_utilisateur n'est pas un entier.")
         if sel is not None and not isinstance(sel, str):
             raise Exception("Le sel n'est pas une chaîne de caractères.")
 

@@ -47,10 +47,10 @@ class Watchlist:
         self.list_film = list_film 
 
     def get_nom_watchlist(self):
-        self.nom_watchlist
+        return self.nom_watchlist
 
     def get_list_film(self):
-        self.list_film
+        return self.list_film
 
     def verifier_utilisateur(self, utilisateur: Utilisateur) -> bool:
         """Vérifie si l'utilisateur est une instance de Utilisateur et si c'est le bon utilisateur.

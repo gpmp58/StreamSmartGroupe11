@@ -8,7 +8,7 @@ class FilmDao:
                 with connection.cursor() as cursor:
                     # Vérifier si le film est déjà présent
                     cursor.execute(
-                        "SELECT COUNT(*) FROM film WHERE id_film = %s;", (film.id_film)
+                        "SELECT COUNT(*) FROM projet11.film WHERE id_film = %s;", (film.id_film)
                     )
                     count = cursor.fetchone()[0]
 

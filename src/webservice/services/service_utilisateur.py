@@ -1,5 +1,6 @@
 from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.utils.securite import hash_mdp, verify_mdp
+from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
 
 class UtilisateurService:
@@ -113,15 +114,15 @@ class UtilisateurService:
         else:
             raise ValueError("Utilisateur introuvable.")
 
-    def se_connecter(self, pseudo: str, hash_mdp(mdp)):
+    def se_connecter(self, pseudo: str, mdp: str):
         """
         Permet à un utilisateur de se connecter en vérifiant son pseudo et son
         mot de passe.
 
-        Parameters :
+        Paramètres :
         ------------
-        pseudo : str
-            Le pseudo de l'utilisateur.
+        id_utilisateur : str
+            L'id de l'utilisateur.
         mdp : str
             Le mot de passe de l'utilisateur.
 
@@ -135,14 +136,17 @@ class UtilisateurService:
         ValueError
             Si les informations de connexion sont incorrectes.
         """
-        # Utiliser la méthode du DAO pour tenter la connexion
-        utilisateur_connexion = self.utilisateur.se_connecter_DAO(pseudo, hash_mdp(mdp))
+        utilisateur_connecte=UtilisateurDAO().se_connecter_DAO(pseudo)
+        mdp_stocke=utilisateur_connecte["mdp"]  # Mot de passe haché stocke dans la db
+        sel=utilisateur_connecte["sel"]  # Le sel utilisé pour hacher le mot de passe
 
-        # Si l'utilisateur n'existe pas, lever une erreur
-        if utilisateur_connexion is None:
+        # hacher le mdp
+        hashed_mdp, _ = hash_mdp(mdp, sel)
+
+        # Vérifier si le mot de passe haché correspond à celui stocké
+        if mdp_stocke != hashed_mdp:
             raise ValueError("Pseudo ou mot de passe incorrect.")
 
-        # Retourner un message de bienvenue si la vérification est réussie
         return f"Bienvenue {utilisateur_connexion.pseudo} sur notre application"
 
 
@@ -152,9 +156,9 @@ class UtilisateurService:
         Cette méthode peut être utilisée pour mettre fin à une session
         utilisateur active.
         """
-        print("Déconnexion réussie.")
+        pass
 
-    def afficher(self, id_utilisateur: str):
+    def afficher(self, id_utilisateur):
         """
         Affiche les informations d'un utilisateur basé sur son id.
 
