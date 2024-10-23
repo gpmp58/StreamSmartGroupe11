@@ -1,10 +1,6 @@
-from sevice_abonnement import AbonnementService
-
-from abonnement_dao import AbonnementDao
-
 class Abonnement:
     """
-    Classe représentant un abonnement sur une plateforme de streaming
+    Classe représentant un abonnement sur un abonnement
 
     Attributs
     ----------
@@ -12,35 +8,55 @@ class Abonnement:
         identifiant
     nom_abonnement : str
         nom de l'abonnement
-    prix : int or float
+    prix : float
         prix de l'abonnement
-    detail_offre : str
-        détail de l'offre proposée par l'abonnement
+    pub : bool
+        pub de l'abonnement 
+    qualité : str 
+        qualité de l'abonnement 
     """
 
-    def __init__(self, id_abonnement: int):
+    def __init__(self, id_abonnement: int, nom_abonnement : str, qualite : str, prix : float, pub : bool):
         """Constructeur avec validation basique"""
         """
         Initialise un objet Abonnement avec les attributs spécifiés.
 
         Args:
             nom_abonnement (str) : Le nom de l'abonnement renseigné.
-            id_abonnement (str) : L'id de l'abonnement renseigné.
+            id_abonnement (int) : L'id de l'abonnement renseigné.
+            prix (float) : Prix de l'abonnement renseigné. 
+            pub (bool) : Dis si un abonnement contient des pub ou non.
+            qualité (str) : Qualité de l'abonnement renseignée. 
 
         Raises:
             Exception: Si le nom de l'abonnement n'est pas une chaîne de caractères.
             Exception: Si l'identifiant de l'abonnement n'est pas un entier.
+            Exception: Si le prix de l'abonnement n'est pas un nombre.
+            Exception: Si la qualité de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si pub n'est pas un booléen.
         """
 
         if not isinstance(id_abonnement, int):
             raise Exception(
                 "L'identifiant de l'abonnement n'est pas un entier.")
+        if not isinstance(prix, float):
+            raise Exception(
+                "Le prix de l'abonnement n'est pas un nombre.")
+        if not isinstance(qualite, str):
+            raise Exception(
+                "La qualité de l'abonnement n'est pas une chaîne de caractère.")
+        if not isinstance(pub, bool):
+            raise Exception(
+                "Pub n'est pas un booléen.")
+        if not isinstance(nom_abonnement, str):
+            raise Exception(
+                "Le nom de l'abonnement n'est pas une chaîne de caractère.")
 
         self.id_abonnement = id_abonnement
-        self.qualite = self.qualite_abonnement()
-        self.prix = self.prix_abonnement()
-        self.pub = self.pub_abonnement()
-        self.nom_abonnement = self.rechercher_nom_abonnement_DAO()
+        self.qualite = qualite
+        self.prix = prix
+        self.pub = pub
+        self.nom_abonnement = nom_abonnement
 
     def info_abonnement(self) -> dict:
         """Retourne les attributs de l'abonnement sous forme de dictionnaire"""
