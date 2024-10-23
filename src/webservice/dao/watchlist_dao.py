@@ -152,6 +152,8 @@ class WatchlistDao:
                     "WHERE fw.id_watchlist = %(id_watchlist)s;",
                     {"id_watchlist": id_watchlist},
                 )
-                films = cursor.fetchall()
+                films_data = cursor.fetchall()
+                
+                films = [{"id_film": film[0], "nom": film[1]} for film in films_data]
 
         return films
