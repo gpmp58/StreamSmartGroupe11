@@ -1,6 +1,6 @@
 import streamlit as st
 from src.webservice.services.service_utilisateur import UtilisateurService
-from unittest.mock import MagicMock
+from src.webservice.dao.utilisateur_dao import UtilisateurDAO  # Importer le DAO réel pour interagir avec la base de données
 
 # Interface principale avec Streamlit pour la gestion des utilisateurs
 def page_accueil():
@@ -8,6 +8,10 @@ def page_accueil():
 
     # Sélectionner l'action souhaitée : Se connecter ou Créer un compte
     action = st.radio("Choisissez une action :", ("Se connecter", "Créer un compte"))
+
+    # Initialisation du DAO et du Service Utilisateur
+    utilisateur_dao = UtilisateurDAO()  # Utilisation d'une instance réelle de DAO
+    utilisateur_service = UtilisateurService(utilisateur=utilisateur_dao)
 
     if action == "Créer un compte":
         st.header("Création de Compte Utilisateur")
@@ -25,9 +29,6 @@ def page_accueil():
             if not (nom and prenom and pseudo and adresse_mail and mdp):
                 st.error("Veuillez remplir tous les champs obligatoires.")
             else:
-                # Initialiser le service utilisateur avec un DAO factice (par exemple pour test)
-                utilisateur_service = UtilisateurService(utilisateur=MagicMock())
-
                 # Appeler la méthode du service pour créer un compte
                 resultat = utilisateur_service.creer_compte(
                     nom=nom,
@@ -55,8 +56,6 @@ def page_accueil():
             if not (pseudo and mdp):
                 st.error("Veuillez entrer votre pseudo et mot de passe.")
             else:
-                utilisateur_service = UtilisateurService(utilisateur=MagicMock())
-                
                 try:
                     # Tenter de se connecter avec les informations fournies
                     message = utilisateur_service.se_connecter(pseudo=pseudo, mdp=mdp)

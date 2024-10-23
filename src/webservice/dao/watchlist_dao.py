@@ -23,7 +23,7 @@ class WatchlistDao:
             with connection.cursor() as cursor:
                 try:
                     cursor.execute(
-                        "INSERT INTO watchlist (nom_watchlist, id_utilisateur)"
+                        "INSERT INTO projet11.watchlist (nom_watchlist, id_utilisateur)"
                         "VALUES (%(nom_watchlist)s, %(id_utilisateur)s)      "
                         "RETURNING id_watchlist;                            ",
                         {
@@ -57,7 +57,7 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM watchlist                       "
+                    "DELETE FROM projet11.watchlist                       "
                     " WHERE id_watchlist = %(id_watchlist)s      ",
                     {"id_watchlist": watchlist.id_watchlist},
                 )
@@ -85,7 +85,7 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO film_watchlist(id_watchlist, id_film)    "
+                    "INSERT INTO projet11.film_watchlist (id_watchlist, id_film)    "
                     "VALUES (%(id_watchlist)s, %(id_film)s);              ",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )
@@ -113,7 +113,7 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM film_watchlist                    "
+                    "DELETE FROM projet11.film_watchlist                    "
                     " WHERE id_watchlist = %(id_watchlist)s        "
                     "        AND id_film = %(id_film)s             ",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
@@ -128,7 +128,7 @@ class WatchlistDao:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT COUNT(*)                              "
-                    " FROM film_watchlist                         "
+                    " FROM projet11.film_watchlist                         "
                     "WHERE id_watchlist = %(id_watchlist)s        "
                     "      AND id_film = %(id_film)s;             ",
                     {"id_watchlist": id_watchlist, "id_film": id_film},
@@ -147,7 +147,7 @@ class WatchlistDao:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT f.id_film, f.nom "
-                    "FROM film_watchlist fw "
+                    "FROM projet11.film_watchlist fw "
                     "JOIN film f ON fw.id_film = f.id_film "
                     "WHERE fw.id_watchlist = %(id_watchlist)s;",
                     {"id_watchlist": id_watchlist},
