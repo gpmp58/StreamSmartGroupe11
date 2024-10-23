@@ -25,15 +25,7 @@ class UtilisateurService:
         """
         self.utilisateur = utilisateur
 
-    def creer_compte(
-        self,
-        nom: str,
-        prenom: str,
-        pseudo: str,
-        adresse_mail: str,
-        mdp: str,
-        langue: str = "français",
-    ):
+    def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
         """
         Crée un nouvel utilisateur dans la base de données.
 
@@ -67,24 +59,32 @@ class UtilisateurService:
             # Hacher le mot de passe avec un sel aléatoire
             hashed_mdp, sel = hash_mdp(mdp)
 
-            # Créer un objet Utilisateur avec le mot de passe haché et le sel
-            nouvel_utilisateur = Utilisateur(
+            # Appeler le DAO pour créer un utilisateur en base de données
+            # Assurez-vous que creer_compte_DAO renvoie bien un id_utilisateur
+            id_utilisateur = self.utilisateur.creer_compte_DAO(
                 nom=nom,
                 prenom=prenom,
                 pseudo=pseudo,
                 adresse_mail=adresse_mail,
                 mdp=hashed_mdp,
                 langue=langue,
+                sel=sel
             )
-            # Ajouter le sel en tant qu'attribut à l'utilisateur
-            nouvel_utilisateur.sel = sel
 
-            # Créer l'utilisateur dans la base de données
-            if not self.utilisateur.creer_compte_DAO(nouvel_utilisateur):
-                raise ValueError(
-                    "Erreur lors de la création du compte. "
-                    "Le pseudo est peut-être déjà utilisé."
-                )
+            if not isinstance(id_utilisateur, int):
+                raise ValueError("id_utilisateur n'est pas un entier.")
+
+            # Créer l'objet Utilisateur avec les informations de l'utilisateur
+            nouvel_utilisateur = Utilisateur(
+                id_utilisateur=id_utilisateur,
+                nom=nom,
+                prenom=prenom,
+                pseudo=pseudo,
+                adresse_mail=adresse_mail,
+                mdp=hashed_mdp,
+                langue=langue,
+                sel=sel
+            )
 
             # Retourner l'utilisateur créé en cas de succès
             return nouvel_utilisateur
@@ -92,6 +92,8 @@ class UtilisateurService:
         except Exception as e:
             # Retourner un dictionnaire contenant l'erreur
             return {"error": str(e)}
+
+
 
     def supprimer_compte(self, id_utilisateur: str):
         """

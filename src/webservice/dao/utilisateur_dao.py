@@ -6,12 +6,12 @@ from src.webservice.utils.securite import verify_mdp
 class UtilisateurDAO:
     """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
 
-    def creer_compte_DAO(self, utilisateur) -> bool:
+    def creer_compte_DAO(self,nom: str,prenom: str,pseudo: str,adresse_mail: str,mdp: str,id_utilisateur: int,langue: str = "français",sel: str = None) -> bool:
         """Creation d'un joueur dans la base de données
 
         Parameters
         ----------
-        utilisateur : Utilisateur
+        #paramètres à compléter
 
         Returns
         -------
@@ -20,7 +20,7 @@ class UtilisateurDAO:
             False sinon
         """
         res = None
-
+        nv_utilisateur=Utilisateur()
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 # Ajout du champ `sel` dans la requête d'insertion
@@ -28,24 +28,9 @@ class UtilisateurDAO:
                     "INSERT INTO projet11.utilisateur (nom, prenom, adresse_mail, mdp, pseudo, langue, sel) VALUES "
                     "(%(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s) "
                     "RETURNING id_utilisateur;",  # `RETURNING` pour récupérer l'id_utilisateur après création
-                    {
-                        "nom": utilisateur.nom,
-                        "prenom": utilisateur.prenom,
-                        "adresse_mail": utilisateur.adresse_mail,
-                        "mdp": utilisateur.mdp,  # mdp est maintenant un mot de passe haché
-                        "pseudo": utilisateur.pseudo,
-                        "langue": utilisateur.langue,
-                        "sel": utilisateur.sel,  # Le sel est ajouté pour être stocké dans la base de données
-                    },
                 )
-                res = cursor.fetchone()
-
-        created = False
-        if res:
-            utilisateur.id_utilisateur = res["id_utilisateur"]  # Mise à jour de l'id_utilisateur après création
-            created = True
-
-        return created
+                id_utilisateur = cursor.fetchone()["id_utilisateur"]
+            return id_utilisateur
 
 
     def trouver_par_id(self, id_utilisateur) -> Utilisateur:
@@ -171,7 +156,7 @@ class UtilisateurDAO:
         if res:
             return res
         else:
-            raise ValueError("Pseudo Introuvable")
+            raise ValueError("Pseudo ou mot de passe incorrect.")
 
 
 
