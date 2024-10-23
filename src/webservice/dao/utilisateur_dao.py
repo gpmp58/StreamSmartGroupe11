@@ -6,50 +6,49 @@ from src.webservice.utils.securite import verify_mdp
 class UtilisateurDAO:
     """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
 
-    def creer_compte_DAO(self, utilisateur) -> bool:
-        """Creation d'un joueur dans la base de données
+def creer_compte_DAO(self, utilisateur) -> bool:
+    """Creation d'un joueur dans la base de données
 
-        Parameters
-        ----------
-        utilisateur : Utilisateur
+    Parameters
+    ----------
+    utilisateur : Utilisateur
 
-        Returns
-        -------
-        created : bool
-            True si la création est un succès
-            False sinon
-        """
-        res = None
+    Returns
+    -------
+    created : bool
+        True si la création est un succès
+        False sinon
+    """
+    res = None
 
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                # Ajout du champ `sel` dans la requête d'insertion
-                cursor.execute(
-                    "INSERT INTO utilisateur(nom, prénom, adresse_mail, mdp, pseudo, langue, sel) VALUES "
-                    "(%(nom)s, %(prénom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s) "
-                    "RETURNING id_utilisateur;",  # Ajout du `RETURNING` pour récupérer l'id_utilisateur après création
-                    {
-                        "nom": utilisateur.nom,
-                        "prénom": utilisateur.prénom,
-                        "adresse_mail": utilisateur.adresse_mail,
-                        "mdp": utilisateur.mdp,  # mdp est maintenant un mot de passe haché
-                        "pseudo": utilisateur.pseudo,
-                        "langue": utilisateur.langue,
-                        "sel": utilisateur.sel,  # Le sel est ajouté pour être stocké dans la base de données
-                    },
-                )
-                res = cursor.fetchone()
+    with DBConnection().connection as connection:
+        with connection.cursor() as cursor:
+            # Ajout du champ `sel` dans la requête d'insertion
+            cursor.execute(
+                "INSERT INTO utilisateur(nom, prenom, adresse_mail, mdp, pseudo, langue, sel) VALUES "
+                "(%(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s) "
+                "RETURNING id_utilisateur;",  # `RETURNING` pour récupérer l'id_utilisateur après création
+                {
+                    "nom": utilisateur.nom,
+                    "prenom": utilisateur.prenom,
+                    "adresse_mail": utilisateur.adresse_mail,
+                    "mdp": utilisateur.mdp,  # mdp est maintenant un mot de passe haché
+                    "pseudo": utilisateur.pseudo,
+                    "langue": utilisateur.langue,
+                    "sel": utilisateur.sel,  # Le sel est ajouté pour être stocké dans la base de données
+                },
+            )
+            res = cursor.fetchone()
 
-        created = False
-        if res:
-            utilisateur.id_utilisateur = res[
-                "id_utilisateur"
-            ]  # Mise à jour de l'id_utilisateur après création
-            created = True
+    created = False
+    if res:
+        utilisateur.id_utilisateur = res["id_utilisateur"]  # Mise à jour de l'id_utilisateur après création
+        created = True
 
-        return created
+    return created
 
-    def trouver_par_id(self, id) -> Utilisateur:
+
+    def trouver_par_id(self, id_utilisateur) -> Utilisateur:
         """Trouver un utilisateur grâce à son id
 
         Parameters

@@ -7,7 +7,7 @@ CREATE SCHEMA projet11;
 
 DROP TABLE IF EXISTS projet11.utilisateur CASCADE;
 CREATE TABLE projet11.utilisateur (
-    id_utilisateur TEXT UNIQUE PRIMARY KEY NOT NULL,
+    id_utilisateur SERIAL UNIQUE PRIMARY KEY NOT NULL,
     pseudo TEXT NOT NULL,
     nom TEXT NOT NULL,
     prenom TEXT NOT NULL,
