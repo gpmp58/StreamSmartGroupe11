@@ -113,12 +113,12 @@ class UtilisateurService:
         else:
             raise ValueError("Utilisateur introuvable.")
 
-    def se_connecter(self, pseudo: str, mdp: str):
+    def se_connecter(self, pseudo: str, hash_mdp(mdp)):
         """
         Permet à un utilisateur de se connecter en vérifiant son pseudo et son
         mot de passe.
 
-        Paramètres :
+        Parameters :
         ------------
         pseudo : str
             Le pseudo de l'utilisateur.
@@ -135,19 +135,16 @@ class UtilisateurService:
         ValueError
             Si les informations de connexion sont incorrectes.
         """
-        # Trouver l'utilisateur dans la base de données via le pseudo
-        utilisateur_connexion = self.utilisateur.trouver_par_pseudo(pseudo)
+        # Utiliser la méthode du DAO pour tenter la connexion
+        utilisateur_connexion = self.utilisateur.se_connecter_DAO(pseudo, hash_mdp(mdp))
 
         # Si l'utilisateur n'existe pas, lever une erreur
         if utilisateur_connexion is None:
             raise ValueError("Pseudo ou mot de passe incorrect.")
 
-        # Vérifier le mot de passe fourni avec le mot de passe haché et le sel
-        if not verify_mdp(utilisateur_connexion.mdp, mdp, utilisateur_connexion.sel):
-            raise ValueError("Pseudo ou mot de passe incorrect.")
-
         # Retourner un message de bienvenue si la vérification est réussie
         return f"Bienvenue {utilisateur_connexion.pseudo} sur notre application"
+
 
     def se_deconnecter(self):
         """
