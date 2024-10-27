@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
-from googletrans import Translator
+
 
 load_dotenv()
 
@@ -82,15 +82,20 @@ class Film:
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
+
         if "results" in data and "FR" in data["results"]:
             result_fr = data["results"]["FR"]
             if "flatrate" in result_fr.keys():
-                streaming = dict()
+                streaming = []
                 result_flatrate = result_fr["flatrate"]
                 for provider in result_flatrate:
-                    streaming[provider["provider_id"]] = provider["provider_name"]
-                return streaming
+                    streaming.append({
+                        "id": provider["provider_id"],  # Ajoute l'ID du provider
+                        "name": provider["provider_name"],
+                        "logo" : "https://image.tmdb.org/t/p/w780" + provider["logo_path"]
+                    })
+                return streaming  # Renvoie une liste de services de streaming disponibles
             else:
-                return "Pas disponible en streaming en France."
+                return "Pas disponible en streaming en France"
         else:
-            return "Aucune information de streaming disponible pour ce film."
+            return "Aucune information de streaming disponible pour ce film"

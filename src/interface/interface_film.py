@@ -64,36 +64,47 @@ st.markdown("""
     }
     .details-container {
         display: flex;
-        align-items: center;
+        align-items: flex-start; /* Alignement du texte en haut */
         margin: 20px;
         background-color: #2e2e2e; /* Fond sombre */
         padding: 20px;
         border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2); /* Ombre */
     }
     .details-image {
-        width: 200px; /* Ajuster la taille de l'image */
+        width: 250px; /* Augmenter la taille de l'image à 250px */
         height: auto;
         margin-right: 20px; /* Espace entre l'image et le texte */
-    }
-    .details-content {
-        color: #ffffff; /* Couleur du texte */
     }
     .details-title {
         font-size: 24px; /* Taille du titre */
         font-weight: bold;
+        color: #FFDD57; /* Couleur du titre */
+        border-bottom: 2px solid #FFDD57; /* Ligne sous le titre */
+        padding-bottom: 5px; /* Espacement sous le titre */
+        margin-bottom: 10px; /* Marge sous le titre */
     }
-    .details-description {
-        margin-top: 10px;
+    .details-section {
+        background-color: #3e3e3e; /* Fond légèrement plus clair */
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px; /* Marge entre les sections */
+    }
+    .details-description, .details-info {
         font-size: 16px; /* Taille de la description */
+        color: #cccccc; /* Couleur du texte normal */
+        margin: 5px 0; /* Marges entre les lignes */
     }
-    .details-info {
+    .streaming-links {
         margin-top: 10px;
-        font-size: 14px; /* Taille des informations */
-        color: #cccccc; /* Couleur des informations */
+        font-weight: bold;
+        color: #FFDD57; /* Couleur des titres de section */
     }
-    .streaming-links a {
-        color: #1E90FF; /* Couleur des liens de streaming */
-        text-decoration: underline;
+    .streaming-links img {
+        width: 30px; /* Réduire la taille des logos de streaming */
+        height: auto;
+        border-radius: 5px; /* Coins arrondis */
+        margin-right: 5px; /* Espacement entre les logos */
     }
     </style>
 """, unsafe_allow_html=True)
@@ -120,7 +131,7 @@ def rechercher_films(nom_film):
                     film = Film(film_id)
                     with cols[j]:
                         description = film.details.get("description", "Pas de description disponible.")
-                        description_tronquee = tronquer_texte(description, 60)  # Tronquer à 60 caractères
+                        description_tronquee = tronquer_texte(description, 300)  # Tronquer à 300 caractères
 
                         st.markdown(f"""
                             <a href="/?film_id={film_id}" target="_self" style="text-decoration: none;">
@@ -147,6 +158,9 @@ def rechercher_films(nom_film):
         st.error(str(e))
 
 # Fonction pour afficher les détails du film
+# ... (le reste du code reste inchangé)
+
+# Fonction pour afficher les détails du film
 def afficher_details_film(film_id):
     film = Film(film_id)  # Récupérer les détails du film
     st.title(film.details.get("title", "Titre non disponible"))
@@ -157,24 +171,48 @@ def afficher_details_film(film_id):
         col1, col2 = st.columns([1, 2])
         with col1:
             if film.image:
-                st.image(film.image, use_column_width=False, width=200)  # Ajuste la taille de l'image
+                st.image(film.image, use_column_width=False, width=250)  # Ajuste la taille de l'image à 250px
             else:
                 st.write("Image non disponible.")
+
         with col2:
             st.markdown(f"<div class='details-title'>{film.details.get('title', 'Titre non disponible')}</div>", unsafe_allow_html=True)
+
+            # Section pour la description
+            st.markdown("<div class='details-section'>", unsafe_allow_html=True)
             st.markdown(f"<div class='details-description'>{film.details.get('description', 'Pas de description disponible.')}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-info'>Date de sortie : {film.details.get('release_date', 'Date non disponible')}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-info'>Durée : {film.details.get('duration', 'Durée non disponible')} minutes</div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # Informations sur le film
+            st.markdown("<div class='details-section'>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-info'>Date de sortie : {film.details.get('date_sortie', 'Date non disponible')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-info'>Durée : {film.details.get('duree', 'Durée non disponible')} minutes</div>", unsafe_allow_html=True)
             st.markdown(f"<div class='details-info'>Genres : {', '.join(film.details.get('genres', ['Pas de genres disponibles']))}</div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
             # Recherche des sites de streaming
-            streaming_sites = film_service.rechercher_streaming(film_id)  # Assurez-vous que cette méthode existe
+            streaming_sites = film.streaming  # Assurez-vous que cette méthode existe
             if streaming_sites:
-                st.markdown("<div class='streaming-links'>Disponibles sur : </div>", unsafe_allow_html=True)
+                st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
+
+                # Conteneur flex pour les logos
+                st.markdown("<div style='display: flex; flex-wrap: wrap; margin-top: 10px;'>", unsafe_allow_html=True)
                 for site in streaming_sites:
-                    st.markdown(f"<a href='{site['url']}' target='_blank'>{site['name']}</a>", unsafe_allow_html=True)
-            else:
-                st.write("Pas de plateformes de streaming disponibles.")
+                    if "logo" in site:  # Vérifie que l'image du logo existe
+                        st.markdown(f"""
+                            <div style='margin-right: 10px;'>
+                                <a href='{site["id"]}' target='_blank'>
+                                    <img src='https://image.tmdb.org/t/p/w45{site["logo"]}' alt='{site["name"]}' style='width: 30px; height: auto; border-radius: 5px;' />
+                                </a>
+                            </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.write(f"Pas de logo pour {site['name']}.")
+                st.markdown("</div>", unsafe_allow_html=True)  # Ferme le conteneur flex
+
+                if len(streaming_sites) == 0:
+                    st.write("Pas de plateformes de streaming disponibles.")
+
 
 # Interface principale avec Streamlit
 def main():
