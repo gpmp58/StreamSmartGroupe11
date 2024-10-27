@@ -142,3 +142,71 @@ def test_get_nom():
         1234,
     )
     assert utilisateur.get_nom() == "Dupont"
+
+
+def test_get_prenom():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_prenom() == "Alice"
+
+def test_get_pseudo():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_pseudo() == "alice123"
+
+def test_get_adresse_mail():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_adresse_mail() == "alice@example.com"
+
+def test_get_langue():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_langue() == "français"
+
+
+def test_get_id_utilisateur():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_id_utilisateur() == 1234
+
+def test_get_sel():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_sel() == None

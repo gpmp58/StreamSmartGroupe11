@@ -54,3 +54,12 @@ def test_info_plateforme():
 def test_get_nom_plateforme():
     plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
     assert plateforme.get_nom_plateforme() == "Netflix"
+
+def test_get_logo_plateforme():
+    plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
+    assert plateforme.get_logo_plateforme() == "logo_plateforme"
+
+
+def test_get_id_plateforme():
+    plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
+    assert plateforme.get_id_plateforme() == 1230
