@@ -69,6 +69,15 @@ def test_get_nom_watchlist():
     assert watchlist.get_nom_watchlist() == "watchlist_alice"  
 
 
+def test_get_list_film():
+    watchlist = Watchlist(
+        "watchlist_alice",
+        123,
+        ["film1", "film2"],
+        1290,
+    )
+    assert watchlist.get_list_film() == ["film1", "film2"]  
+
 def test_verifier_utilisateur_succès():
     utilisateur = Utilisateur(
         "Dupont",

@@ -17,7 +17,6 @@ class Abonnement:
     """
 
     def __init__(self, id_abonnement: int, nom_abonnement : str, qualite : str, prix : float, pub : bool):
-        """Constructeur avec validation basique"""
         """
         Initialise un objet Abonnement avec les attributs spécifiés.
 

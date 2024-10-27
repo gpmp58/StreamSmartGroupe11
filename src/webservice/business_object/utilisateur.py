@@ -1,3 +1,6 @@
+import re
+
+
 class Utilisateur:
     """
     Classe représentant un Utilisateur
@@ -31,8 +34,8 @@ class Utilisateur:
         langue: str = "français",
         sel: str = None,
     ):
-        """Constructeur avec validation basique"""
-        """
+        """Constructeur avec validation basique
+    
         Initialise un objet Utilisateur avec les attributs spécifiés.
 
         Args:
@@ -42,17 +45,18 @@ class Utilisateur:
             adresse_mail (str) : L'adresse mail renseignée par l'utilisateur.
             langue (str) : La langue de renseignée par l'utilisateur, si différente de celle par défaut.
             mdp (str) : Le mot de passe renseignée par l'utilisateur.
-            id_utilisateur (int) : id_utilisateur.
+            id_utilisateur (int) : l'identifiant de l'utilisateur.
             sel (str) : Le sel utilisé pour hacher le mot de passe (optionnel).
 
         Raises:
             Exception: Si le nom n'est pas une chaîne de caractères.
             Exception: Si le prenom n'est pas une chaîne de caractères.
             Exception: Si le pseudo n'est pas une chaîne de caractères ou si il contient des caractères spéciaux.
-            Exception : Si l'adresse mail n'est pas une chaîne de caractères.
+            Exception: Si l'adresse mail n'est pas une chaîne de caractères ou si elle n'est pas valide.
             Exception: Si la langue n'est pas une chaîne de caractères.
-            Exception : Si le mot de passe n'est pas une chaîne de caractères.
-            Exception: Si id_utilisateur n'est pas une chaîne de caractères.
+            Exception: Si le mot de passe n'est pas une chaîne de caractères.
+            Exception: Si id_utilisateur n'est pas un entier.
+            Exception: Si le sel n'est pas une chaîne de caractères.
         """
 
         if not isinstance(nom, str):
@@ -66,12 +70,14 @@ class Utilisateur:
                 raise Exception("Il y a des caratères non autorisés dans le pseudo")
         if not isinstance(adresse_mail, str):
             raise Exception("L'adresse mail n'est pas une chaîne de caractères.")
+        if not self.is_valid_email(adresse_mail):
+            raise Exception("L'adresse mail n'est pas valide.")
         if not isinstance(langue, str):
             raise Exception("La langue n'est pas une chaîne de caractères.")
         if not isinstance(mdp, str):
             raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
         if not isinstance(id_utilisateur, int):
-            raise Exception("id_utilisateur n'est pas un entier.")
+            raise Exception("L'identifiant de l'utilisateur n'est pas un entier.")
         if sel is not None and not isinstance(sel, str):
             raise Exception("Le sel n'est pas une chaîne de caractères.")
 
@@ -83,6 +89,12 @@ class Utilisateur:
         self.mdp = mdp
         self.langue = langue
         self.sel = sel
+
+
+    @staticmethod
+    def is_valid_email(adresse_mail: str):
+        return re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
+
 
     def message(self):
         """Permet d'afficher un message de bienvenue"""

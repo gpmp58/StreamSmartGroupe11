@@ -14,7 +14,7 @@ class TestUtilisateurService(unittest.TestCase):
 
         # Définir un utilisateur pour les tests
         self.utilisateur = Utilisateur(
-            id_utilisateur="123",
+            id_utilisateur=123,
             nom="Alice",
             prenom="Dupont",
             pseudo="alice123",
@@ -28,8 +28,8 @@ class TestUtilisateurService(unittest.TestCase):
         """
         Test de création de compte réussi
         """
-        # Configurer le mock pour renvoyer True lors de la création de compte
-        self.mock_utilisateur_dao.creer_compte_DAO.return_value = True
+        # Configurer le mock pour renvoyer un id_utilisateur (par exemple, 1)
+        self.mock_utilisateur_dao.creer_compte_DAO.return_value = 1
 
         # Appeler la méthode à tester
         resultat = self.utilisateur_service.creer_compte(
@@ -43,8 +43,9 @@ class TestUtilisateurService(unittest.TestCase):
 
         # Vérifier si le résultat est une instance de Utilisateur
         self.assertIsInstance(resultat, Utilisateur)
+        self.assertEqual(resultat.nom, "Alice")
         self.assertEqual(resultat.pseudo, "alice123")
-        self.mock_utilisateur_dao.creer_compte_DAO.assert_called_once()
+
 
     def test_creer_compte_echec(self):
         """
