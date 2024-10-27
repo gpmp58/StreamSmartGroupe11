@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
-from googletrans import Translator
+
 
 load_dotenv()
 

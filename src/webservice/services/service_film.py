@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import requests
 import json
 
-
 class FilmService:
     """
     Création de la classe FilmService.
@@ -37,7 +36,7 @@ class FilmService:
             "Authorization": f"Bearer {cle_api}"
         }
 
-        reponse = requests.get(url_recherche_film, headers=headers)
+        reponse = requests.get(url_recherche_film, headers=headers, verify=False)
         if reponse.status_code != 200:
             return {"error": "Erreur lors de la récupération des films."}
         data = json.loads(reponse.content)
