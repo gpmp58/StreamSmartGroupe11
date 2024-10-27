@@ -1,3 +1,6 @@
+import re
+
+
 class Utilisateur:
     """
     Classe représentant un Utilisateur
@@ -31,8 +34,8 @@ class Utilisateur:
         langue: str = "français",
         sel: str = None,
     ):
-        """Constructeur avec validation basique"""
-        """
+        """Constructeur avec validation basique
+    
         Initialise un objet Utilisateur avec les attributs spécifiés.
 
         Args:
@@ -49,7 +52,7 @@ class Utilisateur:
             Exception: Si le nom n'est pas une chaîne de caractères.
             Exception: Si le prenom n'est pas une chaîne de caractères.
             Exception: Si le pseudo n'est pas une chaîne de caractères ou si il contient des caractères spéciaux.
-            Exception: Si l'adresse mail n'est pas une chaîne de caractères.
+            Exception: Si l'adresse mail n'est pas une chaîne de caractères ou si elle n'est pas valide.
             Exception: Si la langue n'est pas une chaîne de caractères.
             Exception: Si le mot de passe n'est pas une chaîne de caractères.
             Exception: Si id_utilisateur n'est pas un entier.
@@ -67,6 +70,8 @@ class Utilisateur:
                 raise Exception("Il y a des caratères non autorisés dans le pseudo")
         if not isinstance(adresse_mail, str):
             raise Exception("L'adresse mail n'est pas une chaîne de caractères.")
+        if not self.is_valid_email(adresse_mail):
+            raise Exception("L'adresse mail n'est pas valide.")
         if not isinstance(langue, str):
             raise Exception("La langue n'est pas une chaîne de caractères.")
         if not isinstance(mdp, str):
@@ -84,6 +89,12 @@ class Utilisateur:
         self.mdp = mdp
         self.langue = langue
         self.sel = sel
+
+
+    @staticmethod
+    def is_valid_email(adresse_mail: str):
+        return re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
+
 
     def message(self):
         """Permet d'afficher un message de bienvenue"""
