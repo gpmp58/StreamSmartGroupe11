@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from src.webservice.business_object.abonnement import Abonnement
-from src.dao.abonnement_dao import AbonnementDao
+from src.webservice.dao.abonnement_dao import AbonnementDao
 from src.webservice.business_object.plateforme import PlateformeStreaming
 from src.webservice.abonnement_service import AbonnementService
 
