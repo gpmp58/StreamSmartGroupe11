@@ -60,7 +60,7 @@ class UtilisateurService:
             hashed_mdp, sel = hash_mdp(mdp)
 
             # Appeler le DAO pour créer un utilisateur en base de données
-            # Assurez-vous que creer_compte_DAO renvoie bien un id_utilisateur
+            # creer_compte_DAO envoie l'id utilisateur ou renvoie False en cas d'échec
             id_utilisateur = self.utilisateur.creer_compte_DAO(
                 nom=nom,
                 prenom=prenom,
@@ -71,6 +71,11 @@ class UtilisateurService:
                 sel=sel
             )
 
+            # Vérifier le succès de la création
+            if id_utilisateur is False:
+                return {"error": "Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé."}
+            
+            # Si l'id_utilisateur n'est pas un entier, lever une erreur
             if not isinstance(id_utilisateur, int):
                 raise ValueError("id_utilisateur n'est pas un entier.")
 
