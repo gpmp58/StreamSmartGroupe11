@@ -50,6 +50,7 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
                 prenom=nouvel_utilisateur.prenom,
                 pseudo=nouvel_utilisateur.pseudo,
                 adresse_mail=nouvel_utilisateur.adresse_mail,
+                mdp=nouvel_utilisateur.mdp,
                 langue=nouvel_utilisateur.langue,
             )
         else:
