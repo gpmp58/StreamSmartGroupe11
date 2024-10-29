@@ -4,191 +4,131 @@ from src.webservice.utils.securite import verify_mdp
 
 
 class UtilisateurDAO:
-    """Classe contenant les méthodes pour accéder aux utilisateurs de la base des données"""
+    """Classe contenant les méthodes pour accéder aux utilisateurs de la base de données"""
 
-    def creer_compte_DAO(self,nom: str,prenom: str,pseudo: str,adresse_mail: str,mdp: str,id_utilisateur: int,langue: str = "français",sel: str = None) -> bool:
-        """Creation d'un joueur dans la base de données
-
-        Parameters
-        ----------
-        #paramètres à compléter
-
-        Returns
-        -------
-        created : bool
-            True si la création est un succès
-            False sinon
+    def creer_compte_DAO(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français", sel: str = None) -> int:
         """
-        res = None
-        nv_utilisateur=Utilisateur()
+        Création d'un utilisateur dans la base de données.
+
+        Returns:
+        --------
+        id_utilisateur : int
+            L'ID utilisateur créé.
+        """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                # Ajout du champ `sel` dans la requête d'insertion
                 cursor.execute(
-                    "INSERT INTO projet11.utilisateur (nom, prenom, adresse_mail, mdp, pseudo, langue, sel) VALUES "
-                    "(%(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s) "
-                    "RETURNING id_utilisateur;",  # `RETURNING` pour récupérer l'id_utilisateur après création
+                    """
+                    INSERT INTO projet11.utilisateur (nom, prenom, adresse_mail, mdp, pseudo, langue, sel)
+                    VALUES (%(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s)
+                    RETURNING id_utilisateur;
+                    """,
+                    {
+                        "nom": nom,
+                        "prenom": prenom,
+                        "adresse_mail": adresse_mail,
+                        "mdp": mdp,
+                        "pseudo": pseudo,
+                        "langue": langue,
+                        "sel": sel
+                    }
                 )
-                id_utilisateur = cursor.fetchone()["id_utilisateur"]
-            return id_utilisateur
+                res = cursor.fetchone()
+                if res:
+                    return res["id_utilisateur"]
+                else:
+                    raise ValueError("Erreur lors de la création de l'utilisateur.")
 
+    def trouver_par_id(self, id_utilisateur: int) -> Utilisateur:
+        """
+        Trouver un utilisateur grâce à son id.
 
-    def trouver_par_id(self, id_utilisateur) -> Utilisateur:
-        """Trouver un utilisateur grâce à son id
+        Parameters:
+        -----------
+        id_utilisateur : int
+            L'ID de l'utilisateur.
 
-        Parameters
-        ----------
-        id : int
-            id que l'on souhaite trouver
-
-        Returns
-        -------
-        utilisateur : Utilisateur
-            renvoie l'utilisateur que l'on cherche par son id
+        Returns:
+        --------
+        Utilisateur : Instance de la classe Utilisateur contenant les informations de l'utilisateur.
         """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                # Requête de sélection pour récupérer un utilisateur avec son id
                 cursor.execute(
                     "SELECT * FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s;",
-                    {"id_utilisateur": id},
+                    {"id_utilisateur": id_utilisateur}
                 )
                 res = cursor.fetchone()
 
-        utilisateur = None
         if res:
-            # Création de l'objet Utilisateur avec les informations, y compris le sel récupéré
-            utilisateur = Utilisateur(
-                pseudo=res["pseudo"],
-                mdp=res["mdp"],  # Mot de passe haché
-                nom=res["nom"],
-                prénom=res["prénom"],
-                adresse_mail=res["adresse_mail"],
-                langue=res["langue"],
-                sel=res["sel"],  # Récupération du sel associé à l'utilisateur
+            return Utilisateur(
                 id_utilisateur=res["id_utilisateur"],
+                nom=res["nom"],
+                prenom=res["prenom"],
+                pseudo=res["pseudo"],
+                adresse_mail=res["adresse_mail"],
+                mdp=res["mdp"],
+                langue=res["langue"],
+                sel=res["sel"]
             )
+        else:
+            raise ValueError("Utilisateur introuvable.")
 
-        return utilisateur
-
-    def modifier_DAO(self, utilisateur) -> bool:
-        """Modification d'un utilisateur dans la base de données
-
-        Parameters
-        ----------
-        utilisateur : Utilisateur
-
-        Returns
-        -------
-        modified : bool
-            True si la modification est un succès
-            False sinon
+    def se_connecter_DAO(self, pseudo: str) -> dict:
         """
-        res = None
+        Récupérer un utilisateur par pseudo pour vérifier le mot de passe.
 
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                # Mise à jour de l'utilisateur, ajout du champ `sel` si besoin d'être mis à jour
-                cursor.execute(
-                    "UPDATE projet11.utilisateur "
-                    "SET mdp = %(mdp)s, nom = %(nom)s, prénom = %(prénom)s, adresse_mail = %(adresse_mail)s, sel = %(sel)s "
-                    "WHERE pseudo = %(pseudo)s;",  # `sel` est ajouté pour s'assurer qu'il est aussi mis à jour si nécessaire
-                    {
-                        "mdp": utilisateur.mdp,  # Nouveau mot de passe haché
-                        "nom": utilisateur.nom,
-                        "prénom": utilisateur.prénom,
-                        "adresse_mail": utilisateur.adresse_mail,
-                        "pseudo": utilisateur.pseudo,
-                        "sel": utilisateur.sel,  # Mise à jour du sel associé
-                    },
-                )
-                res = cursor.rowcount
-
-        return res == 1
-
-    def supprimer_compte_DAO(self, utilisateur) -> bool:
-        """Suppression d'un utilisateur dans la base de données
-
-        Parameters
-        ----------
-        utilisateur : Utilisateur
-            utilisateur à supprimer de la base de données
-
-        Returns
-        -------
-            True si l'utilisateur a bien été supprimé
-        """
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                # Suppression de l'utilisateur par `id_utilisateur`
-                cursor.execute(
-                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
-                    {"id_utilisateur": utilisateur.id_utilisateur},
-                )
-                res = cursor.rowcount
-
-        return res > 0
-
-    def se_connecter_DAO(self, pseudo: str) -> Utilisateur:
-        """Récupérer l'utilisateur par pseudo pour vérifier le mot de passe
-
-        Parameters
-        ----------
+        Parameters:
+        -----------
         pseudo : str
-            pseudo de l'utilisateur
+            Le pseudo de l'utilisateur.
 
-        Returns
-        -------
-        utilisateur : Utilisateur
-            renvoie l'utilisateur que l'on cherche
+        Returns:
+        --------
+        dict : Dictionnaire contenant les informations de l'utilisateur.
         """
-        res = None
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                # Requête SQL pour récupérer toutes les informations de l'utilisateur
                 cursor.execute(
                     "SELECT * FROM projet11.utilisateur WHERE pseudo = %(pseudo)s;",
-                    {"pseudo": pseudo},
+                    {"pseudo": pseudo}
                 )
                 res = cursor.fetchone()
 
-        utilisateur = None
         if res:
-            return res
+            return {
+                "id_utilisateur": res["id_utilisateur"],
+                "nom": res["nom"],
+                "prenom": res["prenom"],
+                "pseudo": res["pseudo"],
+                "adresse_mail": res["adresse_mail"],
+                "mdp": res["mdp"],
+                "langue": res["langue"],
+                "sel": res["sel"]
+            }
         else:
             raise ValueError("Pseudo ou mot de passe incorrect.")
 
 
+    def supprimer_compte_DAO(self, id_utilisateur: int) -> bool:
+        """
+        Suppression d'un utilisateur dans la base de données.
 
-    def trouver_watchlist_correspondante(self, utilisateur) -> list:
+        Parameters:
+        ----------
+        id_utilisateur : int
+            L'ID de l'utilisateur à supprimer.
+
+        Returns:
+        --------
+            bool : True si l'utilisateur a bien été supprimé.
         """
-        Cette méthode cherche la watchlist correspondant à un utilisateur.
-        Si aucune watchlist n'est trouvée, elle retourne un message invitant à en créer une.
-        """
-        res = None
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
-                # Récupération des watchlists pour un utilisateur donné par `id_utilisateur`
                 cursor.execute(
-                    "SELECT w.id_watchlist, w.nom_watchlist "
-                    "FROM utilisateur AS u "
-                    "JOIN watchlist AS w "
-                    "ON u.id_utilisateur = w.id_utilisateur "
-                    "WHERE u.id_utilisateur = %(id_utilisateur)s",
-                    {"id_utilisateur": utilisateur.id_utilisateur},
+                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
+                    {"id_utilisateur": id_utilisateur},
                 )
-                res = (
-                    cursor.fetchall()
-                )  # Utiliser `fetchall` pour obtenir toutes les watchlists
+                res = cursor.rowcount
 
-        if res:
-            # Construire une liste de dictionnaires pour chaque watchlist
-            return [
-                {
-                    "id_watchlist": row["id_watchlist"],
-                    "nom_watchlist": row["nom_watchlist"],
-                }
-                for row in res
-            ]
-        else:
-            return []
+        return res > 0

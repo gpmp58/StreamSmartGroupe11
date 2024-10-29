@@ -1,6 +1,5 @@
 from src.webservice.business_object.film import Film
-
-
+from src.webservice.dao.db_connection import DBConnection 
 class FilmDao:
     def ajouter_film(self, film: Film) -> bool:
         try:
@@ -8,13 +7,13 @@ class FilmDao:
                 with connection.cursor() as cursor:
                     # Vérifier si le film est déjà présent
                     cursor.execute(
-                        "SELECT COUNT(*) FROM projet11.film WHERE id_film = %s;", (film.id_film)
+                        "SELECT COUNT(*) FROM projet11.film WHERE id_film = %s;", (film.id_film,)
                     )
                     count = cursor.fetchone()[0]
 
                     if count > 0:
                         print(
-                            f"Le film '{film.details["name"]}' est déjà présent dans la base de données."
+                            f"Le film '{film.details['name']}' est déjà présent dans la base de données."
                         )
                         return False  # Film déjà présent
 
@@ -23,7 +22,7 @@ class FilmDao:
                         "INSERT INTO film (id_film, nom) VALUES (%s, %s);",
                         (film.id_film, film.details["name"]),
                     )
-                    print(f"Le film '{film.details["name"]}' a été ajouté avec succès.")
+                    print(f"Le film '{film.details['name']}' a été ajouté avec succès.")
                     return True
 
         except Exception as e:
