@@ -55,20 +55,20 @@ class TestUtilisateurService(unittest.TestCase):
         # Configurer le mock pour renvoyer une valeur incorrecte (False)
         self.mock_utilisateur_dao.creer_compte_DAO.return_value = False
 
-        # Appeler la méthode à tester
-        resultat = self.utilisateur_service.creer_compte(
-            nom="Alice",
-            prenom="Dupont",
-            pseudo="alice123",
-            adresse_mail="alice@example.com",
-            mdp="password123",
-            langue="français"
-        )
+        # Vérifier qu'une ValueError est levée lors de la tentative de création de compte
+        with self.assertRaises(ValueError) as context:
+            self.utilisateur_service.creer_compte(
+                nom="Alice",
+                prenom="Dupont",
+                pseudo="alice123",
+                adresse_mail="alice@example.com",
+                mdp="password123",
+                langue="français"
+            )
 
-        # Vérifier que le résultat est un dictionnaire contenant une clé 'error'
-        self.assertIsInstance(resultat, dict)
-        self.assertIn('error', resultat)
-        self.assertEqual(resultat['error'], "Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
+        # Vérifier que le message d'erreur est bien celui attendu
+        self.assertEqual(str(context.exception), "Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
+
 
 
     def test_se_connecter_succes(self):

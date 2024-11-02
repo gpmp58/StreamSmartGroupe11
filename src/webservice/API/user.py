@@ -28,7 +28,7 @@ class UtilisateurDisplayModel(BaseModel):
     adresse_mail: str
     langue: str
 
-# 1. POST /utilisateurs : Créer un nouvel utilisateur
+#1.  POST : Créer un nouvel utilisateur 
 @router.post("/utilisateurs", response_model=UtilisateurDisplayModel)
 async def create_utilisateur(utilisateur: UtilisateurModel):
     """
@@ -43,22 +43,17 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
             mdp=utilisateur.mdp,
             langue=utilisateur.langue,
         )
-        # Si la création est réussie, retourner l'objet Utilisateur
-        if isinstance(nouvel_utilisateur, Utilisateur):
-            return UtilisateurDisplayModel(
-                nom=nouvel_utilisateur.nom,
-                prenom=nouvel_utilisateur.prenom,
-                pseudo=nouvel_utilisateur.pseudo,
-                adresse_mail=nouvel_utilisateur.adresse_mail,
-                mdp=nouvel_utilisateur.mdp,
-                langue=nouvel_utilisateur.langue,
-            )
-        else:
-            raise HTTPException(
-                status_code=400, detail="Erreur lors de la création de l'utilisateur."
-            )
+        # Retourner l'objet UtilisateurDisplayModel avec les informations nécessaires
+        return UtilisateurDisplayModel(
+            nom=nouvel_utilisateur.nom,
+            prenom=nouvel_utilisateur.prenom,
+            pseudo=nouvel_utilisateur.pseudo,
+            adresse_mail=nouvel_utilisateur.adresse_mail,
+            langue=nouvel_utilisateur.langue,
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 # 2. DELETE /utilisateurs/{id_utilisateur} : Supprimer un utilisateur
 @router.delete("/utilisateurs/{id_utilisateur}")

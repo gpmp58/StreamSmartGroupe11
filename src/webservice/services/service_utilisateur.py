@@ -52,15 +52,13 @@ class UtilisateurService:
         Exceptions :
         ------------
         ValueError
-            Si l'utilisateur existe déjà (vérification à implémenter au niveau
-            du DAO).
+            Si l'utilisateur existe déjà (vérification à implémenter au niveau du DAO).
         """
         try:
             # Hacher le mot de passe avec un sel aléatoire
             hashed_mdp, sel = hash_mdp(mdp)
 
             # Appeler le DAO pour créer un utilisateur en base de données
-            # creer_compte_DAO envoie l'id utilisateur ou renvoie False en cas d'échec
             id_utilisateur = self.utilisateur.creer_compte_DAO(
                 nom=nom,
                 prenom=prenom,
@@ -73,7 +71,7 @@ class UtilisateurService:
 
             # Vérifier le succès de la création
             if id_utilisateur is False:
-                return {"error": "Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé."}
+                raise ValueError("Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
             
             # Si l'id_utilisateur n'est pas un entier, lever une erreur
             if not isinstance(id_utilisateur, int):
@@ -95,8 +93,8 @@ class UtilisateurService:
             return nouvel_utilisateur
 
         except Exception as e:
-            # Retourner un dictionnaire contenant l'erreur
-            return {"error": str(e)}
+            # Lever l'exception au lieu de renvoyer un dictionnaire pour permettre une gestion des erreurs cohérente
+            raise ValueError(str(e))
 
 
 
