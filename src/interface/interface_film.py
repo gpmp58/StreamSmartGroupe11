@@ -232,3 +232,23 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Interface principale avec Streamlit
+def page():
+    query_params = st.experimental_get_query_params()
+
+    if "film_id" in query_params:
+        film_id = query_params["film_id"][0]
+        afficher_details_film(film_id)
+    else:
+        st.title("Recherche de films")
+        nom_film = st.text_input("Entrez le nom du film :")
+
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            if st.button("Rechercher"):
+                rechercher_films(nom_film)
+
+# Appeler la fonction `page()` pour l'exécution principale
+if __name__ == "__main__":
+    page()
