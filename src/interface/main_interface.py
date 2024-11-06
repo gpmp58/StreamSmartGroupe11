@@ -29,14 +29,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-""" 
-
-Etapes pour utiliser l'application :
-
--Lancer le serveur Uvicorn : src\main_api.py
--cd src
--cd interface
--cd .. pour revenir en arrière dans l'arborescence 
--streamlit run main_interface.py
-
-""" 
