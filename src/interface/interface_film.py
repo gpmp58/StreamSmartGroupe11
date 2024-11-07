@@ -215,7 +215,7 @@ def afficher_details_film(film_id):
 
 
 # Interface principale avec Streamlit
-def page():
+def main():
     query_params = st.query_params  # Utiliser la bonne méthode
 
     if "film_id" in query_params:
@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
 # Interface principale avec Streamlit
 def page():
-    query_params = st.get_query_params()
+    query_params = st.query_params()
 
     if "film_id" in query_params:
         film_id = query_params["film_id"][0]
