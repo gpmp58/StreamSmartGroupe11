@@ -144,6 +144,7 @@ class UtilisateurService:
         utilisateur_connecte=UtilisateurDAO().se_connecter_DAO(pseudo)
         mdp_stocke=utilisateur_connecte["mdp"]  # Mot de passe haché stocke dans la db
         sel=utilisateur_connecte["sel"]  # Le sel utilisé pour hacher le mot de passe
+        pseudo=utilisateur_connecte["pseudo"]
 
         # hacher le mdp
         hashed_mdp, _ = hash_mdp(mdp, sel)
@@ -152,7 +153,7 @@ class UtilisateurService:
         if mdp_stocke != hashed_mdp:
             raise ValueError("Pseudo ou mot de passe incorrect.")
 
-        return f"Bienvenue {utilisateur_connexion.pseudo} sur notre application"
+        return f"Bienvenue {pseudo} sur notre application"
 
 
     def se_deconnecter(self):

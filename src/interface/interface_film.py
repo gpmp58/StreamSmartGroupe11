@@ -3,12 +3,14 @@ from src.webservice.services.service_film import FilmService
 from src.webservice.business_object.film import Film
 
 # Configuration de la page
+"""
 st.set_page_config(
     page_title="Recherche de films",
     page_icon="🎬",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+"""
 
 # Définir le thème sombre
 st.markdown("""
@@ -229,6 +231,7 @@ def page():
         with col1:
             if st.button("Rechercher"):
                 rechercher_films(nom_film)
-
+"""
 if __name__ == "__main__":
     page()
+"""
