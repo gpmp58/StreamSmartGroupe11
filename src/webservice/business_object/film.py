@@ -96,7 +96,7 @@ class Film:
         content = json.loads(response.content)
 
         # Vérifie si la clé "posters" existe et qu'il y a au moins un poster
-        if "posters" in content:
+        if "posters" in content and content["posters"]:
             return "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + content["posters"][0]["file_path"]
         else:
             return "Image non disponible"
