@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
 # Interface principale avec Streamlit
 def page():
-    query_params = st.experimental_get_query_params()
+    query_params = st.get_query_params()
 
     if "film_id" in query_params:
         film_id = query_params["film_id"][0]
