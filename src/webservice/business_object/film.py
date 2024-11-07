@@ -143,5 +143,5 @@ class Film:
         else:
             return "Aucune information de streaming disponible pour ce film"
 
-a = Film("475557")
-print(a.details["name"])
+a = Film("889737")
+print(a.streaming)

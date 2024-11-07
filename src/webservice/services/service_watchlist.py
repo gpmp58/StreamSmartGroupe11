@@ -4,36 +4,6 @@ from src.webservice.business_object.utilisateur import Utilisateur
 
 class WatchlistService:
     """
-    Service de gestion des watchlists. Cette classe fournit des méthodes pour créer, supprimer des watchlists, ajouter ou supprimer des films d'une watchlist, et gérer les mises à jour de la base de données.
-    """    
-
-    def creer_nouvelle_watchlist(self, nom_watchlist, utilisateur):
-        """
-        Crée une nouvelle watchlist pour un utilisateur.
-
-        Args:
-            nom_watchlist (str) : Le nom de la nouvelle watchlist.
-            utilisateur (Utilisateur) : L'objet utilisateur auquel la watchlist sera associée.
-
-        Returns:
-            Watchlist : L'objet Watchlist créé si la création est réussie, sinon None.
-        """        
-        id_utilisateur = utilisateur.id_utilisateur
-        nouvelle_watchlist = Watchlist(nom_watchlist, id_utilisateur)
-        return nouvelle_watchlist if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist) else None
-    
-    def supprimer_watchlist(self, watchlist):
-
-Voici la documentation de la classe WatchlistService et de ses méthodes :
-
-python
-Copier le code
-from src.webservice.dao.watchlist_dao import WatchlistDao
-from src.webservice.business_object.watchlist import Watchlist
-from src.webservice.business_object.utilisateur import Utilisateur
-
-class WatchlistService:
-    """
     Service de gestion des watchlists. Cette classe fournit des méthodes pour créer, supprimer des watchlists,
     ajouter ou supprimer des films d'une watchlist, et gérer les mises à jour de la base de données.
 
@@ -73,9 +43,9 @@ class WatchlistService:
 
         Returns:
             bool : True si la suppression est réussie, sinon False.
-        """        
+        """
         return WatchlistDao().supprimer_watchlist_DAO(watchlist)
-    
+
     def ajouter_film(self, film, watchlist):
         """
         Ajoute un film à une watchlist.
@@ -86,7 +56,7 @@ class WatchlistService:
 
         Returns:
             bool : True si le film est ajouté avec succès, sinon False.
-        """        
+        """
         id_film = film.id_film
         id_watchlist = watchlist.id_watchlist
         deja_present = WatchlistDao().film_deja_present(id_watchlist, id_film)
@@ -102,7 +72,7 @@ class WatchlistService:
         else:
             print("Erreur lors de l'ajout du film.")
         return succes_ajout
-    
+
     def mise_jour_bases(self, film, watchlist):
         """
         Met à jour les informations liées au film dans les bases de données, en ajoutant le film à la watchlist, et les plateformes de streaming si nécessaire.
@@ -110,7 +80,7 @@ class WatchlistService:
         Args:
             film : L'objet Film à ajouter à la watchlist.
             watchlist (Watchlist) : L'objet Watchlist dans lequel il faut ajouter le film.
-        """        
+        """
         id_film = film.id_film
         id_watchlist = watchlist.id_watchlist
         if self.ajouter_film(film,watchlist):
@@ -132,7 +102,7 @@ class WatchlistService:
 
         Returns:
             bool : True si la suppression est réussie, sinon False.
-        """        
+        """
         id_film = Film.id_film
         id_watchlist = watchlist.id_watchlist
         deja_present = WatchlistDao().film_deja_present(id_watchlist, id_film)
@@ -151,10 +121,8 @@ class WatchlistService:
 
         Returns:
             list : Liste des films présents dans la watchlist.
-        """        
+        """
         id_watchlist = watchlist.id_watchlist
         films = WatchlistDao().recuperer_films_watchlist_DAO(id_watchlist)
         watchlist.list_film = film
         return watchlist.list_film
-
-    
