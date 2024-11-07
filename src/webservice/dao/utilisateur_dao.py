@@ -4,16 +4,30 @@ from src.webservice.utils.securite import verify_mdp
 
 
 class UtilisateurDAO:
-    """Classe contenant les méthodes pour accéder aux utilisateurs de la base de données"""
+    """
+    Classe contenant les méthodes pour accéder aux utilisateurs de la base de données.
+    """
 
     def creer_compte_DAO(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français", sel: str = None) -> int:
         """
         Création d'un utilisateur dans la base de données.
+        
+        Args:
+            nom (str) : Le nom de l'utilisateur.
+            prenom (str) : Le prénom de l'utilisateur.
+            pseudo (str) : Le pseudo de l'utilisateur.
+            adresse_mail (str) : L'adresse email de l'utilisateur.
+            mdp (str) : Le mot de passe de l'utilisateur.
+            langue (str) : La langue de l'utilisateur (par défaut "français").
+            sel (str) : Le sel utilisé pour le hachage du mot de passe.
 
         Returns:
-        --------
+
         id_utilisateur : int
             L'ID utilisateur créé.
+
+        Raises:
+            ValueError : Si l'insertion échoue.
         """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:

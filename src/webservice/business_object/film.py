@@ -8,6 +8,15 @@ load_dotenv()
 
 
 def transformer_duree(d=int):
+    """
+    Transforme une durée exprimée en minutes en un format lisible heures et minutes.
+
+    Args:
+        d (int) : La durée en minutes à convertir.
+
+    Returns:
+        str : La durée sous forme de chaîne de caractères au format "X h Y min", où X est le nombre d'heures et Y le nombre de minutes.
+    """
     h = d // 60
     m = d % 60
     duree = f"{h} h {m} min"
@@ -20,8 +29,12 @@ class Film:
     Création de la classe Film.
 
     Cette classe permet de récupérer les infos du film en fonction de l'ID donné.
-    """
 
+    Attributs
+    ----------
+    id_film : int
+        Identifiant du film.    
+    """
     def __init__(self, id_film: int):
         self.id_film = id_film
         self.image = self.recuperer_image()
@@ -29,6 +42,22 @@ class Film:
         self.details = self.afficher_film()
 
     def afficher_film(self):
+        """
+        Récupère les informations d'un film à partir de l'API de The Movie Database (TMDb) en utilisant l'identifiant du film.
+
+        Returns:
+            dict : Un dictionnaire contenant les informations du film avec les clés suivantes :
+            - "name" : Le titre original du film.
+            - "description" : Un résumé du film.
+            - "sortie" : à completer.
+            - "vote_average" : La note moyenne du film sur TMDb.
+            - "date_sortie" : La date de sortie du film.
+            - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
+            - "genres" : Liste des genres du film.
+    
+    Raises:
+        Exception : Si la requête échoue (code de statut HTTP différent de 200), l'identifiant n'est pas le bon.
+    """
         cle_api = os.environ.get("API_KEY")
         url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
         headers = {
@@ -53,6 +82,12 @@ class Film:
             raise Exception("Le film n'a pas été trouvé (pas le bon id).")
 
     def recuperer_image(self):
+        """
+        Récupère l'URL de l'image du film à partir de l'API de The Movie Database (TMDb).
+
+        Returns:
+            str: L'URL du poster du film si disponible, sinon le message "Image non disponible".
+        """
         cle_api = os.environ.get("API_KEY")
         url_search_movie_2 = (
             f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images")
@@ -71,6 +106,17 @@ class Film:
         # peut-être mettre un lien d'une image qui montre qu'on a pas d'image
 
     def recuperer_streaming(self):
+        """
+        Récupère les services de streaming disponibles pour un film en France à partir de l'API de The Movie Database (TMDb).
+
+        Returns:
+            list : Une liste de dictionnaires avec les informations des services de streaming disponibles en France.
+
+            ou 
+
+            str : Si aucun service de streaming n'est disponible, renvoie "Pas disponible en streaming en France".
+            str : Si aucune information de streaming n'est trouvée pour le film, renvoie "Aucune information de streaming disponible pour ce film".
+        """
         cle_api = os.environ.get("API_KEY")
         url_movie_providers = (
             f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"

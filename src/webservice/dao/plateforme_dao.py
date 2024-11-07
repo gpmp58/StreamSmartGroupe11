@@ -1,12 +1,21 @@
 from src.webservice.business_object.plateforme import PlateformeStreaming
+
 from src.webservice.dao.db_connection import DBConnection
 
 
 class PlateformeDAO:
+    """
+    Classe permettant d'interagir avec la base de données pour gérer les plateformes de streaming.
+    """    
     def ajouter_plateforme(self, plateforme: PlateformeStreaming):
         """
-        Ajoute une nouvelle plateforme dans la base de données avec un identifiant spécifique.
+        Ajoute une nouvelle plateforme dans la base de données avec un identifiant spécifique si elle n'existe pas déjà.
 
+        Args:
+            plateforme (PlateformeStreaming): Plateforme à ajouter.
+
+        Returns:
+            bool : True si la plateforme a été ajoutée avec succès, False si la plateforme existe déjà dans la base de données ou si une erreur survient.
         """
         try:
             with DBConnection().connection as connection:

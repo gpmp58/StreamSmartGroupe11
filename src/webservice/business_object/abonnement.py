@@ -1,6 +1,6 @@
 class Abonnement:
     """
-    Classe représentant un abonnement sur un abonnement
+    Classe représentant un abonnement.
 
     Attributs
     ----------
@@ -58,7 +58,12 @@ class Abonnement:
         self.nom_abonnement = nom_abonnement
 
     def info_abonnement(self) -> dict:
-        """Retourne les attributs de l'abonnement sous forme de dictionnaire"""
+        """
+        Retourne les attributs de l'abonnement sous forme de dictionnaire
+        
+        Returns:
+            dict : Attributs de l'abonnement.
+        """
         return {
             "Nom_abonnement": self.nom_abonnement,
             "prix": self.prix,
@@ -68,16 +73,46 @@ class Abonnement:
         }
 
     def get_nom_abonnement(self):
+        """
+        Retourne le nom de l'abonnement.
+
+        Returns:
+            str : Le nom de l'abonnement.
+        """
         return self.nom_abonnement
 
     def get_prix(self):
+        """
+        Retourne le prix de l'abonnement.
+
+        Returns:
+            float : Le prix de l'abonnement.
+        """        
         return self.prix
 
     def get_id_abonnement(self):
+        """
+        Retourne l'identifiant de l'abonnement.
+
+        Returns:
+            int : L'identifiant de l'abonnement.
+        """        
         return self.id_abonnement
 
     def get_qualite(self):
+        """
+        Retourne la qualité, ie la résolution d'ecran proposée par l'abonnement.
+
+        Returns:
+            str : Qualité de l'abonnement.
+        """        
         return self.qualite
 
     def get_pub(self):
+        """
+        Retourne l'agurment pub de l'abonnement, ie si l'abonnement diffuse des pubs ou non.
+
+        Returns:
+            bool : Pub de l'abonnement.
+        """            
         return self.pub

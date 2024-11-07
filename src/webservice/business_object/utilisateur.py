@@ -34,8 +34,7 @@ class Utilisateur:
         langue: str = "français",
         sel: str = None,
     ):
-        """Constructeur avec validation basique
-    
+        """
         Initialise un objet Utilisateur avec les attributs spécifiés.
 
         Args:
@@ -93,15 +92,35 @@ class Utilisateur:
 
     @staticmethod
     def is_valid_email(adresse_mail: str):
+        """
+        Vérifie si l'adresse email fournie est valide selon une expression régulière : une partie avant le "@" suivie d'une partie après le "@", et une extension après un "." 
+
+        Args :
+            adresse_mail (str) : L'adresse email de l'utilisateur à valider.
+
+        Returns :
+            bool : Retourne True si l'adresse email respecte le format de base, sinon False.
+        """
         return re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
 
 
     def message(self):
-        """Permet d'afficher un message de bienvenue"""
+        """
+        Permet d'afficher un message de bienvenue
+
+        Returns:
+            str : Message de bienvenue.
+        """ 
         return f"Bienvenue {self.prenom} sur notre application !"
 
+
     def info_utilisateur(self) -> dict:
-        """Retourne les attributs de l'utilisateur sous forme de dictionnaire"""
+        """
+        Retourne les attributs de l'utilisateur sous forme de dictionnaire
+        
+        Returns : 
+            dict : Attributs de l'utilisateur
+        """
         return {
             "Nom": self.nom,
             "Prénom": self.prenom,
@@ -113,22 +132,64 @@ class Utilisateur:
         }
 
     def get_nom(self):
+        """
+        Retourne le nom de l'utilisateur.
+
+        Returns:
+            str : Nom de l'utilisateur.
+        """ 
         return self.nom
 
     def get_prenom(self):
+        """
+        Retourne le prénom de l'utilisateur.
+
+        Returns:
+            str : Prenom de l'utilisateur.
+        """        
         return self.prenom
 
     def get_pseudo(self):
+        """
+        Retourne le psuedo de l'utilisateur.
+
+        Returns:
+            str : Pseudo de l'utilisateur.
+        """        
         return self.pseudo
 
     def get_adresse_mail(self):
+        """
+        Retourne l'adresse mail de l'utilisateur.
+
+        Returns:
+            str : Adresse mail de l'utilisateur.
+        """        
         return self.adresse_mail
 
     def get_langue(self):
+        """
+        Retourne la langue de l'utilisateur (bien que considérée comme étant le français pour tous les utilisateurs).
+
+        Returns:
+            str : Langue de l'utilisateur.
+        """        
         return self.langue
 
     def get_id_utilisateur(self):
+        """
+        Retourne l'identifiant de l'utilisateur.
+
+        Returns:
+            int : Identifiant de l'utilisateur.
+        """        
         return self.id_utilisateur
 
     def get_sel(self):
+        """
+        Retourne le sel pour l'utilisateur.
+
+        Returns:
+            str : Sel pour l'utilisateur.
+        """        
         return self.sel  # Ajout d'un getter pour récupérer le sel

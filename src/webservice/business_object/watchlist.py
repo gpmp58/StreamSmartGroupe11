@@ -5,9 +5,10 @@ class Watchlist:
     def __init__(
         self, nom_watchlist: str, id_utilisateur, list_film=[], id_watchlist: int = None
     ):
-        """Constructeur avec validation basique et initialisation des attributs.
+        """
+        Classe représentant une watchlist. 
 
-        Parameters
+        Attributs
         ----------
         nom_watchlist : str
             Nom de la watchlist.
@@ -47,15 +48,28 @@ class Watchlist:
         self.list_film = list_film 
 
     def get_nom_watchlist(self):
+        """
+        Retourne le nom de la watchlist.
+
+        Returns:
+            str : Nom de la watchlist.
+        """         
         return self.nom_watchlist
 
     def get_list_film(self):
+        """
+        Retourne la liste des films dans la watchlist.
+
+        Returns:
+            list : Films de la watchlist.
+        """          
         return self.list_film
 
     def verifier_utilisateur(self, utilisateur: Utilisateur) -> bool:
-        """Vérifie si l'utilisateur est une instance de Utilisateur et si c'est le bon utilisateur.
+        """
+        Vérifie si l'utilisateur est une instance de Utilisateur et si c'est le bon utilisateur.
 
-        Parameters
+        Arguments
         ----------
         utilisateur : Utilisateur
             L'utilisateur à vérifier.

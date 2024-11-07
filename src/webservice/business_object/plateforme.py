@@ -1,6 +1,6 @@
 class PlateformeStreaming:
     """
-    Classe représentant une Plateforme de streaming
+    Classe représentant une Plateforme de streaming.
 
     Attributs
     ----------
@@ -13,7 +13,6 @@ class PlateformeStreaming:
     """
 
     def __init__(self, nom_plateforme: str, id_plateforme: int, logo_plateforme = None):                                
-        """Constructeur avec validation basique"""
         """
         Initialise un objet PlateformeStreaming avec les attributs spécifiés.
 
@@ -44,7 +43,12 @@ class PlateformeStreaming:
         self.logo_plateforme = logo_plateforme
 
     def info_plateforme(self) -> dict:
-        """Retourne les attributs de la plateforme sous forme de dictionnaire"""
+        """
+        Retourne les attributs de la plateforme sous forme de dictionnaire
+        
+        Returns:
+            dict : Attributs de la plateforme.
+        """
         return {
             "Nom_plateforme": self.nom_plateforme,
             "logo_plateforme": self.logo_plateforme,
@@ -52,10 +56,28 @@ class PlateformeStreaming:
         }
 
     def get_nom_plateforme(self):
+        """
+        Retourne le nom de la plateforme de streaming.
+
+        Returns:
+            str : Nom de la plateforme.
+        """         
         return self.nom_plateforme
 
     def get_logo_plateforme(self):
+        """
+        Retourne le logo de la plateforme de streaming.
+
+        Returns:
+            str : Logo de la plateforme.
+        """         
         return self.logo_plateforme
 
     def get_id_plateforme(self):
+        """
+        Retourne l'identifiant de la plateforme de streaming. 
+
+        Returns:
+            int : Identifiant de la plateforme.
+        """         
         return self.id_plateforme
