@@ -9,11 +9,11 @@ Installer les packages pré-requis :
 pip install streamlit requests
 
 ====================================
-Lancer le serveur Uvicorn (API) : 
+Lancer le serveur Uvicorn (API) :
 ====================================
 
 cd src
-cd werbservice
+cd webservice
 python main_api.py
 
 Documentation de l'API : http://127.0.0.1:8000/docs
@@ -28,4 +28,3 @@ ouvrir un autre terminal (ctrl + maj + ù)
 cd src
 cd interface
 streamlit run main_interface.py
-

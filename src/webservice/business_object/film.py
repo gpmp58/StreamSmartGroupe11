@@ -33,7 +33,7 @@ class Film:
     Attributs
     ----------
     id_film : int
-        Identifiant du film.    
+        Identifiant du film.
     """
     def __init__(self, id_film: int):
         self.id_film = id_film
@@ -54,7 +54,7 @@ class Film:
             - "date_sortie" : La date de sortie du film.
             - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
             - "genres" : Liste des genres du film.
-    
+
     Raises:
         Exception : Si la requête échoue (code de statut HTTP différent de 200), l'identifiant n'est pas le bon.
     """
@@ -78,8 +78,6 @@ class Film:
             }
 
             return result
-        else:
-            raise Exception("Le film n'a pas été trouvé (pas le bon id).")
 
     def recuperer_image(self):
         """
@@ -89,8 +87,7 @@ class Film:
             str: L'URL du poster du film si disponible, sinon le message "Image non disponible".
         """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = (
-            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images")
+        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}"
@@ -98,12 +95,12 @@ class Film:
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
 
-        if content["posters"]:
-            return ("https://image.tmdb.org/t/p/w600_and_h900_bestv2" +
-                    content["posters"][0]["file_path"])
+        # Vérifie si la clé "posters" existe et qu'il y a au moins un poster
+        if "posters" in content:
+            return "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + content["posters"][0]["file_path"]
         else:
             return "Image non disponible"
-        # peut-être mettre un lien d'une image qui montre qu'on a pas d'image
+
 
     def recuperer_streaming(self):
         """
@@ -112,7 +109,7 @@ class Film:
         Returns:
             list : Une liste de dictionnaires avec les informations des services de streaming disponibles en France.
 
-            ou 
+            ou
 
             str : Si aucun service de streaming n'est disponible, renvoie "Pas disponible en streaming en France".
             str : Si aucune information de streaming n'est trouvée pour le film, renvoie "Aucune information de streaming disponible pour ce film".
@@ -145,3 +142,6 @@ class Film:
                 return "Pas disponible en streaming en France"
         else:
             return "Aucune information de streaming disponible pour ce film"
+
+a = Film("475557")
+print(a.details["name"])

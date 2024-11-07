@@ -19,13 +19,12 @@ def main():
             - Rechercher et afficher des informations sur des films.
             Utilisez le menu de navigation à gauche pour commencer.
         """)
-    
+
     elif option == "Se connecter":
         connexion.page()  # Appelle la fonction `page()` d'interface_connexion.py
-    
+
     elif option == "Recherche de Films":
         film.page()  # Appelle la fonction `page()` d'interface_film.py
 
 if __name__ == "__main__":
     main()
-

@@ -163,7 +163,7 @@ def rechercher_films(nom_film):
 # Fonction pour afficher les détails du film
 def afficher_details_film(film_id):
     film = Film(film_id)  # Récupérer les détails du film
-    st.title(film.details.get("title", "Titre non disponible"))
+    st.title(film.details.get("name", "Titre non disponible"))
 
     # Conteneur pour l'image et les informations
     details_container = st.container()
@@ -171,12 +171,12 @@ def afficher_details_film(film_id):
         col1, col2 = st.columns([1, 2])
         with col1:
             if film.image:
-                st.image(film.image, use_column_width=False, width=250)  # Ajuste la taille de l'image à 250px
+                st.image(film.image, use_container_width=False, width=250)  # Ajuste la taille de l'image à 250px
             else:
                 st.write("Image non disponible.")
 
         with col2:
-            st.markdown(f"<div class='details-title'>{film.details.get('title', 'Titre non disponible')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-title'>{film.details.get('name', 'Titre non disponible')}</div>", unsafe_allow_html=True)
 
             # Section pour la description
             st.markdown("<div class='details-section'>", unsafe_allow_html=True)
@@ -215,7 +215,7 @@ def afficher_details_film(film_id):
 
 
 # Interface principale avec Streamlit
-def main():
+def page():
     query_params = st.query_params  # Utiliser la bonne méthode
 
     if "film_id" in query_params:
@@ -230,25 +230,5 @@ def main():
             if st.button("Rechercher"):
                 rechercher_films(nom_film)
 
-if __name__ == "__main__":
-    main()
-
-# Interface principale avec Streamlit
-def page():
-    query_params = st.experimental_get_query_params()
-
-    if "film_id" in query_params:
-        film_id = query_params["film_id"][0]
-        afficher_details_film(film_id)
-    else:
-        st.title("Recherche de films")
-        nom_film = st.text_input("Entrez le nom du film :")
-
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            if st.button("Rechercher"):
-                rechercher_films(nom_film)
-
-# Appeler la fonction `page()` pour l'exécution principale
 if __name__ == "__main__":
     page()
