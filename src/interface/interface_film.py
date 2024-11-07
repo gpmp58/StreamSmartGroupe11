@@ -215,7 +215,7 @@ def afficher_details_film(film_id):
 
 
 # Interface principale avec Streamlit
-def main():
+def page():
     query_params = st.query_params  # Utiliser la bonne méthode
 
     if "film_id" in query_params:
@@ -230,25 +230,5 @@ def main():
             if st.button("Rechercher"):
                 rechercher_films(nom_film)
 
-if __name__ == "__main__":
-    main()
-
-# Interface principale avec Streamlit
-def page():
-    query_params = st.query_params()
-
-    if "film_id" in query_params:
-        film_id = query_params["film_id"][0]
-        afficher_details_film(film_id)
-    else:
-        st.title("Recherche de films")
-        nom_film = st.text_input("Entrez le nom du film :")
-
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            if st.button("Rechercher"):
-                rechercher_films(nom_film)
-
-# Appeler la fonction `page()` pour l'exécution principale
 if __name__ == "__main__":
     page()
