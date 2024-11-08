@@ -12,7 +12,12 @@ class DBConnection:
     """
 
     def __init__(self):
-        """Ouverture de la connexion"""
+        """
+        Ouverture de la connexion à la base de données PostgreSQL.
+# à verifier pour raises
+        Raises:
+            psycopg2.OperationalError: Si la connexion à la base de données échoue.
+        """
         dotenv.load_dotenv()
 
         self.__connection = psycopg2.connect(
@@ -26,4 +31,10 @@ class DBConnection:
 
     @property
     def connection(self):
+        """
+        Propriété pour accéder à la connexion à la base de données.
+
+        Returns:
+            psycopg2.connection: L'objet de connexion PostgreSQL.
+        """
         return self.__connection

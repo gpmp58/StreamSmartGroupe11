@@ -6,7 +6,7 @@ from src.webservice.dao.watchlist_dao import watchlistDao
 from src.webservice.business_object.watchlist import watchlist
  
 # Pour remplacer la connexion à la base de données par une version simulée.
-@patch('dao.db_connection.DBConnection')
+@patch('src.webservice.dao.db_connection.DBConnection')
 def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection
@@ -38,7 +38,7 @@ def test_creer_nouvelle_watchlist_DAO(MockDBConnection):
     )
 
 
-@patch('dao.db_connection.DBConnection')
+@patch('src.webservice.dao.db_connection.DBConnection')
 def test_supprimer_watchlist_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection
@@ -65,7 +65,7 @@ def test_supprimer_watchlist_DAO(MockDBConnection):
     )
 
 
-@patch('dao.db_connection.DBConnection')
+@patch('src.webservice.dao.db_connection.DBConnection')
 def test_ajouter_film_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection
@@ -89,7 +89,7 @@ def test_ajouter_film_DAO(MockDBConnection):
     )
 
 
-@patch('dao.db_connection.DBConnection')
+@patch('src.webservice.dao.db_connection.DBConnection')
 def test_supprimer_film_DAO(MockDBConnection):
     # Given : Simuler une connexion à la base de données et un curseur
     mock_connection = MockDBConnection.return_value.connection

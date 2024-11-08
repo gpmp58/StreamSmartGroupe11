@@ -73,6 +73,46 @@ def test_utilisateur_init_succes():
             "Dupont",
             "Alice",
             "alice123",
+            "aliceexample.com",
+            "password123",
+            1234,
+            Exception,
+            "L'adresse mail n'est pas valide.",
+        ),
+        (
+            "Dupont",
+            "Alice",
+            "alice123",
+            "alice@examplecom",
+            "password123",
+            1234,
+            Exception,
+            "L'adresse mail n'est pas valide.",
+        ),
+        (
+            "Dupont",
+            "Alice",
+            "alice123",
+            "alice@",
+            "password123",
+            1234,
+            Exception,
+            "L'adresse mail n'est pas valide.",
+        ),
+        (
+            "Dupont",
+            "Alice",
+            "alice123",
+            "@example.com",
+            "password123",
+            1234,
+            Exception,
+            "L'adresse mail n'est pas valide.",
+        ),
+        (
+            "Dupont",
+            "Alice",
+            "alice123",
             "alice@example.com",
             12,
             1234,
@@ -87,7 +127,7 @@ def test_utilisateur_init_succes():
             "password123",
             "1234",
             Exception,
-            "id_utilisateur n'est pas un entier.",
+            "L'identifiant de l'utilisateur n'est pas un entier.",
         ),
     ],
 )
@@ -105,7 +145,7 @@ def test_message():
         "alice123",
         "alice@example.com",
         "password123",
-        "id_utilisateur",
+        1234,
     )
     assert utilisateur.message() == "Bienvenue Alice sur notre application !"
 
@@ -117,7 +157,9 @@ def test_info_utilisateur():
         "alice123",
         "alice@example.com",
         "password123",
-        "id_utilisateur",
+        1234,
+        "français",
+        "selalice",
     )
     assert utilisateur.info_utilisateur() == {
         "Nom": "Dupont",
@@ -125,7 +167,8 @@ def test_info_utilisateur():
         "Pseudo": "alice123",
         "Adresse mail": "alice@example.com",
         "Langue": "français",
-        "id_utilisateur": "id_utilisateur",
+        "id_utilisateur": 1234,
+        "sel": "selalice",
     }
 
 
@@ -136,6 +179,75 @@ def test_get_nom():
         "alice123",
         "alice@example.com",
         "password123",
-        "id_utilisateur",
+        1234,
     )
     assert utilisateur.get_nom() == "Dupont"
+
+
+def test_get_prenom():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_prenom() == "Alice"
+
+def test_get_pseudo():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_pseudo() == "alice123"
+
+def test_get_adresse_mail():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_adresse_mail() == "alice@example.com"
+
+def test_get_langue():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_langue() == "français"
+
+
+def test_get_id_utilisateur():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_id_utilisateur() == 1234
+
+def test_get_sel():
+    utilisateur = Utilisateur(
+        "Dupont",
+        "Alice",
+        "alice123",
+        "alice@example.com",
+        "password123",
+        1234,
+    )
+    assert utilisateur.get_sel() == None
+    

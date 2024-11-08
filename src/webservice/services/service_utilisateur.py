@@ -25,15 +25,7 @@ class UtilisateurService:
         """
         self.utilisateur = utilisateur
 
-    def creer_compte(
-        self,
-        nom: str,
-        prenom: str,
-        pseudo: str,
-        adresse_mail: str,
-        mdp: str,
-        langue: str = "français",
-    ):
+    def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
         """
         Crée un nouvel utilisateur dans la base de données.
 
@@ -60,38 +52,51 @@ class UtilisateurService:
         Exceptions :
         ------------
         ValueError
-            Si l'utilisateur existe déjà (vérification à implémenter au niveau
-            du DAO).
+            Si l'utilisateur existe déjà (vérification à implémenter au niveau du DAO).
         """
         try:
             # Hacher le mot de passe avec un sel aléatoire
             hashed_mdp, sel = hash_mdp(mdp)
 
-            # Créer un objet Utilisateur avec le mot de passe haché et le sel
-            nouvel_utilisateur = Utilisateur(
+            # Appeler le DAO pour créer un utilisateur en base de données
+            id_utilisateur = self.utilisateur.creer_compte_DAO(
                 nom=nom,
                 prenom=prenom,
                 pseudo=pseudo,
                 adresse_mail=adresse_mail,
                 mdp=hashed_mdp,
                 langue=langue,
+                sel=sel
             )
-            # Ajouter le sel en tant qu'attribut à l'utilisateur
-            nouvel_utilisateur.sel = sel
 
-            # Créer l'utilisateur dans la base de données
-            if not self.utilisateur.creer_compte_DAO(nouvel_utilisateur):
-                raise ValueError(
-                    "Erreur lors de la création du compte. "
-                    "Le pseudo est peut-être déjà utilisé."
-                )
+            # Vérifier le succès de la création
+            if id_utilisateur is False:
+                raise ValueError("Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
+            
+            # Si l'id_utilisateur n'est pas un entier, lever une erreur
+            if not isinstance(id_utilisateur, int):
+                raise ValueError("id_utilisateur n'est pas un entier.")
+
+            # Créer l'objet Utilisateur avec les informations de l'utilisateur
+            nouvel_utilisateur = Utilisateur(
+                id_utilisateur=id_utilisateur,
+                nom=nom,
+                prenom=prenom,
+                pseudo=pseudo,
+                adresse_mail=adresse_mail,
+                mdp=hashed_mdp,
+                langue=langue,
+                sel=sel
+            )
 
             # Retourner l'utilisateur créé en cas de succès
             return nouvel_utilisateur
 
         except Exception as e:
-            # Retourner un dictionnaire contenant l'erreur
-            return {"error": str(e)}
+            # Lever l'exception au lieu de renvoyer un dictionnaire pour permettre une gestion des erreurs cohérente
+            raise ValueError(str(e))
+
+
 
     def supprimer_compte(self, id_utilisateur: str):
         """
@@ -139,6 +144,7 @@ class UtilisateurService:
         utilisateur_connecte=UtilisateurDAO().se_connecter_DAO(pseudo)
         mdp_stocke=utilisateur_connecte["mdp"]  # Mot de passe haché stocke dans la db
         sel=utilisateur_connecte["sel"]  # Le sel utilisé pour hacher le mot de passe
+        pseudo=utilisateur_connecte["pseudo"]
 
         # hacher le mdp
         hashed_mdp, _ = hash_mdp(mdp, sel)
@@ -147,7 +153,7 @@ class UtilisateurService:
         if mdp_stocke != hashed_mdp:
             raise ValueError("Pseudo ou mot de passe incorrect.")
 
-        return f"Bienvenue {utilisateur_connexion.pseudo} sur notre application"
+        return f"Bienvenue {pseudo} sur notre application"
 
 
     def se_deconnecter(self):

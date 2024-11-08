@@ -12,8 +12,9 @@ CREATE TABLE projet11.utilisateur (
     nom TEXT NOT NULL,
     prenom TEXT NOT NULL,
     mdp TEXT NOT NULL,
-    adresse_mail TEXT NOT NULL
-);
+    sel TEXT NOT NULL,
+    adresse_mail TEXT NOT NULL,
+    langue TEXT NOT NULL);
 
 --------------------------------------------------------------
 -- Watchlist

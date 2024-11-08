@@ -89,3 +89,23 @@ def test_info_abonnement():
 def test_get_prix():
     abonnement = Abonnement(2334, "abonnement_familial", "HD", 12.3, True)
     assert abonnement.get_prix() == 12.3
+
+
+def test_get_nom_abonnement():
+    abonnement = Abonnement(2334, "abonnement_familial", "HD", 12.3, True)
+    assert abonnement.get_nom_abonnement() == "abonnement_familial"
+
+
+def test_get_id_abonnement():
+    abonnement = Abonnement(2334, "abonnement_familial", "HD", 12.3, True)
+    assert abonnement.get_id_abonnement() == 2334
+
+
+def test_get_qualite():
+    abonnement = Abonnement(2334, "abonnement_familial", "HD", 12.3, True)
+    assert abonnement.get_qualite() == "HD"
+
+
+def test_get_pub():
+    abonnement = Abonnement(2334, "abonnement_familial", "HD", 12.3, True)
+    assert abonnement.get_pub() == True

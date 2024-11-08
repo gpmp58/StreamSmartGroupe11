@@ -2,29 +2,26 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
-from googletrans import Translator
+
 
 load_dotenv()
 
 
 def transformer_duree(d=int):
+    """
+    Transforme une durée exprimée en minutes en un format lisible heures et minutes.
+
+    Args:
+        d (int) : La durée en minutes à convertir.
+
+    Returns:
+        str : La durée sous forme de chaîne de caractères au format "X h Y min", où X est le nombre d'heures et Y le nombre de minutes.
+    """
     h = d // 60
     m = d % 60
     duree = f"{h} h {m} min"
     return duree
 
-
-translator = Translator()
-
-def traduire_texte(texte, target_lang="fr"):
-    if not texte:
-        return ""
-    detection = translator.detect(texte)
-    lang_source = detection.lang
-    if lang_source != target_lang:
-        translation = translator.translate(texte, dest=target_lang)
-        return translation.text
-    return texte
 
 
 class Film:
@@ -32,8 +29,12 @@ class Film:
     Création de la classe Film.
 
     Cette classe permet de récupérer les infos du film en fonction de l'ID donné.
-    """
 
+    Attributs
+    ----------
+    id_film : int
+        Identifiant du film.
+    """
     def __init__(self, id_film: int):
         self.id_film = id_film
         self.image = self.recuperer_image()
@@ -41,8 +42,24 @@ class Film:
         self.details = self.afficher_film()
 
     def afficher_film(self):
+        """
+        Récupère les informations d'un film à partir de l'API de The Movie Database (TMDb) en utilisant l'identifiant du film.
+
+        Returns:
+            dict : Un dictionnaire contenant les informations du film avec les clés suivantes :
+            - "name" : Le titre original du film.
+            - "description" : Un résumé du film.
+            - "sortie" : à completer.
+            - "vote_average" : La note moyenne du film sur TMDb.
+            - "date_sortie" : La date de sortie du film.
+            - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
+            - "genres" : Liste des genres du film.
+
+    Raises:
+        Exception : Si la requête échoue (code de statut HTTP différent de 200), l'identifiant n'est pas le bon.
+    """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}"
+        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}"
@@ -52,7 +69,7 @@ class Film:
             content = json.loads(response.content)
             result = {
                 "name": content["original_title"],
-                "description": traduire_texte(content["overview"]),
+                "description": content["overview"],
                 "sortie": content["status"],
                 "vote_average": content["vote_average"],
                 "date_sortie": content["release_date"],
@@ -61,13 +78,16 @@ class Film:
             }
 
             return result
-        else:
-            raise Exception("Le film n'a pas été trouvé (pas le bon id).")
 
     def recuperer_image(self):
+        """
+        Récupère l'URL de l'image du film à partir de l'API de The Movie Database (TMDb).
+
+        Returns:
+            str: L'URL du poster du film si disponible, sinon le message "Image non disponible".
+        """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = (
-            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images")
+        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}"
@@ -75,14 +95,25 @@ class Film:
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
 
-        if content["posters"]:
-            return ("https://image.tmdb.org/t/p/w600_and_h900_bestv2" +
-                    content["posters"][0]["file_path"])
+        # Vérifie si la clé "posters" existe et qu'il y a au moins un poster
+        if "posters" in content and content["posters"]:
+            return "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + content["posters"][0]["file_path"]
         else:
             return "Image non disponible"
-        # peut-être mettre un lien d'une image qui montre qu'on a pas d'image
+
 
     def recuperer_streaming(self):
+        """
+        Récupère les services de streaming disponibles pour un film en France à partir de l'API de The Movie Database (TMDb).
+
+        Returns:
+            list : Une liste de dictionnaires avec les informations des services de streaming disponibles en France.
+
+            ou
+
+            str : Si aucun service de streaming n'est disponible, renvoie "Pas disponible en streaming en France".
+            str : Si aucune information de streaming n'est trouvée pour le film, renvoie "Aucune information de streaming disponible pour ce film".
+        """
         cle_api = os.environ.get("API_KEY")
         url_movie_providers = (
             f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
@@ -94,15 +125,23 @@ class Film:
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
+
         if "results" in data and "FR" in data["results"]:
             result_fr = data["results"]["FR"]
             if "flatrate" in result_fr.keys():
-                streaming = dict()
+                streaming = []
                 result_flatrate = result_fr["flatrate"]
                 for provider in result_flatrate:
-                    streaming[provider["provider_id"]] = provider["provider_name"]
-                return streaming
+                    streaming.append({
+                        "id": provider["provider_id"],  # Ajoute l'ID du provider
+                        "name": provider["provider_name"],
+                        "logo" : "https://image.tmdb.org/t/p/w780" + provider["logo_path"]
+                    })
+                return streaming  # Renvoie une liste de services de streaming disponibles
             else:
-                return "Pas disponible en streaming en France."
+                return "Pas disponible en streaming en France"
         else:
-            return "Aucune information de streaming disponible pour ce film."
+            return "Aucune information de streaming disponible pour ce film"
+
+a = Film("889737")
+print(a.streaming)
