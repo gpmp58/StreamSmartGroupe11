@@ -109,10 +109,6 @@ class Film:
         Returns:
             list : Une liste de dictionnaires avec les informations des services de streaming disponibles en France.
 
-            ou
-
-            str : Si aucun service de streaming n'est disponible, renvoie "Pas disponible en streaming en France".
-            str : Si aucune information de streaming n'est trouvée pour le film, renvoie "Aucune information de streaming disponible pour ce film".
         """
         cle_api = os.environ.get("API_KEY")
         url_movie_providers = (
@@ -138,7 +134,5 @@ class Film:
                         "logo" : "https://image.tmdb.org/t/p/w780" + provider["logo_path"]
                     })
                 return streaming  # Renvoie une liste de services de streaming disponibles
-            else:
-                return "Pas disponible en streaming en France"
-        else:
-            return "Aucune information de streaming disponible pour ce film"
+
+# Modifier certaines méthodes pour gérer les différentes erreurs (Pas d'infos sur les streamings, pas de description .....)
