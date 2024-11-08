@@ -142,6 +142,3 @@ class Film:
                 return "Pas disponible en streaming en France"
         else:
             return "Aucune information de streaming disponible pour ce film"
-
-a = Film("889737")
-print(a.streaming)
