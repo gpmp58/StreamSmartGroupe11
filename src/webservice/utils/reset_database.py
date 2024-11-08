@@ -1,5 +1,5 @@
-from utils.singleton import Singleton
-from dao.db_connection import DBConnection
+from src.webservice.utils.singleton import Singleton
+from src.webservice.dao.db_connection import DBConnection
 
 
 class ResetDatabase(metaclass=Singleton):
