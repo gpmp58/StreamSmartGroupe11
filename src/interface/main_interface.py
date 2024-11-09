@@ -64,7 +64,7 @@ elif st.session_state['current_page'] == "Déconnexion":
     st.session_state['logged_in'] = False
     st.session_state['user'] = None
     st.session_state['current_page'] = "Accueil"
-    st.experimental_rerun()  # Recharge l'application pour revenir à la page d'accueil
+    st.rerun()  # Recharge l'application pour revenir à la page d'accueil
 
 # Afficher l'état de la session pour le débogage
 st.sidebar.markdown("---")
