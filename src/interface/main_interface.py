@@ -3,14 +3,7 @@ import interface_connexion as connexion  # Importer l'interface pour la connexio
 import interface_film as film  # Importer l'interface pour les films
 
 # Configuration globale de la page
-"""
-st.set_page_config(
-    page_title="Application de films 🎬",
-    page_icon="🎬",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-"""
+
 
 # Initialiser `st.session_state` pour suivre l'état de connexion et la page actuelle
 if 'logged_in' not in st.session_state:
