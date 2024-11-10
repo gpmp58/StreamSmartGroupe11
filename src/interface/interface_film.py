@@ -3,31 +3,24 @@ from src.webservice.services.service_film import FilmService
 from src.webservice.business_object.film import Film
 
 # Configuration de la page
-"""
-st.set_page_config(
-    page_title="Recherche de films",
-    page_icon="🎬",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-"""
 
-# Définir le thème sombre
-st.markdown("""
-    <style>
-    .reportview-container {
-        background-color: #1e1e1e; /* Couleur de fond sombre */
-    }
-    .sidebar .sidebar-content {
-        background-color: #2e2e2e; /* Couleur de fond de la barre latérale */
-    }
-    h1, h2, h3, h4, h5, h6 {
-        color: #ffffff; /* Couleur des titres */
-    }
-    p, li {
-        color: #cccccc; /* Couleur du texte normal */
-    }
-    .film-card {
+# Injecter le CSS global
+def inject_css():
+    st.markdown("""
+        <style>
+            .reportview-container {
+                background-color: #1e1e1e;
+            }
+            .sidebar .sidebar-content {
+                background-color: #2e2e2e;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                color: #ffffff;
+            }
+            p, li {
+                color: #cccccc;
+            }
+            .film-card {
         position: relative;
         overflow: hidden;
         margin: 10px;
@@ -108,8 +101,19 @@ st.markdown("""
         border-radius: 5px; /* Coins arrondis */
         margin-right: 5px; /* Espacement entre les logos */
     }
-    </style>
-""", unsafe_allow_html=True)
+        </style>
+    """, unsafe_allow_html=True)
+
+# Configurer la page
+st.set_page_config(
+    page_title="Recherche de films",
+    page_icon="🎬",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# Injecter le CSS
+
 
 # Fonction pour tronquer le texte
 def tronquer_texte(texte, max_longueur):
@@ -182,19 +186,26 @@ def afficher_details_film(film_id):
 
             # Section pour la description
             st.markdown("<div class='details-section'>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-description'>{film.details.get('description', 'Pas de description disponible.')}</div>", unsafe_allow_html=True)
+            description = film.details.get('description')
+            if len(description) > 0:
+                st.markdown(f"<div class='details-description'>{description}</div>", unsafe_allow_html=True)
+            else:
+                st.markdown("<div class='details-description'>Pas de description disponible.</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
             # Informations sur le film
             st.markdown("<div class='details-section'>", unsafe_allow_html=True)
             st.markdown(f"<div class='details-info'>Date de sortie : {film.details.get('date_sortie', 'Date non disponible')}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-info'>Durée : {film.details.get('duree', 'Durée non disponible')} minutes</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-info'>Durée : {film.details.get('duree', 'Durée non disponible')} </div>", unsafe_allow_html=True)
             st.markdown(f"<div class='details-info'>Genres : {', '.join(film.details.get('genres', ['Pas de genres disponibles']))}</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
             # Recherche des sites de streaming
             streaming_sites = film.streaming  # Assurez-vous que cette méthode existe
-            if streaming_sites:
+
+            if streaming_sites == None :
+                        st.write("Pas de plateformes de streaming disponibles.")
+            else :
                 st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
 
                 # Conteneur flex pour les logos
@@ -208,16 +219,11 @@ def afficher_details_film(film_id):
                                 </a>
                             </div>
                         """, unsafe_allow_html=True)
-                    else:
-                        st.write(f"Pas de logo pour {site['name']}.")
-                st.markdown("</div>", unsafe_allow_html=True)  # Ferme le conteneur flex
-
-                if len(streaming_sites) == 0:
-                    st.write("Pas de plateformes de streaming disponibles.")
 
 
 # Interface principale avec Streamlit
 def page():
+    inject_css()
     query_params = st.query_params  # Utiliser la bonne méthode
 
     if "film_id" in query_params:
@@ -231,7 +237,6 @@ def page():
         with col1:
             if st.button("Rechercher"):
                 rechercher_films(nom_film)
-"""
+
 if __name__ == "__main__":
     page()
-"""
