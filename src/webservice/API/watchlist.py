@@ -10,7 +10,7 @@ from src.webservice.business_object.film import Film
 router = APIRouter()
 
 # Initialisation des services et DAO
-watchlist_service = WatchlistService()
+service_watchlist = WatchlistService()
 utilisateur_dao = UtilisateurDAO()
 
 # Modèle pour la création de Watchlist
@@ -31,7 +31,7 @@ async def creer_watchlist(watchlist_data: WatchlistCreateModel):
             raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
 
         # Étape 2 : Créer la nouvelle watchlist
-        nouvelle_watchlist = watchlist_service.creer_nouvelle_watchlist(
+        nouvelle_watchlist = service_watchlist.creer_nouvelle_watchlist(
             nom_watchlist=watchlist_data.nom_watchlist,
             utilisateur=utilisateur
         )
@@ -65,7 +65,7 @@ async def supprimer_watchlist(id_watchlist: int):
         watchlist = Watchlist(nom_watchlist="", id_utilisateur=0, id_watchlist=id_watchlist)
 
         # Étape 2 : Supprimer la watchlist
-        succes = watchlist_service.supprimer_watchlist(watchlist)
+        succes = service_watchlist.supprimer_watchlist(watchlist)
 
         # Étape 3 : Vérifier la suppression et retourner une réponse
         if succes:
@@ -95,12 +95,14 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
     try:
         # Étape 1 : Créer un objet Watchlist pour identifier la watchlist concernée
         watchlist = Watchlist(nom_watchlist="", id_utilisateur=0, id_watchlist=ajouter_film_data.id_watchlist)
+        print(f"Watchlist créée : {watchlist.id_watchlist}")
 
         # Étape 2 : Créer un objet Film à partir de l'id_film
         film = Film(id_film=ajouter_film_data.id_film)
+        print(f"Film à ajouter : {film.id_film}")
 
         # Étape 3 : Appeler le service pour ajouter le film à la watchlist
-        succes_ajout = watchlist_service.ajouter_film(film=film, watchlist=watchlist)
+        succes_ajout = service_watchlist.ajouter_film(film=film, watchlist=watchlist)
 
         # Étape 4 : Vérifier le succès de l'ajout et retourner une réponse
         if succes_ajout:
@@ -109,10 +111,12 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
             raise HTTPException(status_code=400, detail="Erreur lors de l'ajout du film à la watchlist.")
 
     except ValueError as e:
+        print(f"Erreur de valeur : {e}")  # Affichage supplémentaire pour identifier les problèmes
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        print(f"Erreur interne : {e}")
+        print(f"Erreur interne : {e}")  # Affichage pour déboguer l'exception non prévue
         raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
+
 
 
 # Route pour supprimer un film d'une watchlist
@@ -129,7 +133,7 @@ async def supprimer_film_watchlist(id_watchlist: int, id_film: int):
         film = Film(id_film=id_film)
 
         # Étape 3 : Appeler le service pour supprimer le film de la watchlist
-        succes_suppression = watchlist_service.supprimer_film(film=film, watchlist=watchlist)
+        succes_suppression = service_watchlist.supprimer_film(film=film, watchlist=watchlist)
 
         # Étape 4 : Vérifier la suppression et retourner une réponse
         if succes_suppression:
@@ -155,7 +159,7 @@ async def recuperer_films_watchlist(id_watchlist: int):
         watchlist = Watchlist(nom_watchlist="", id_utilisateur=0, id_watchlist=id_watchlist)
 
         # Étape 2 : Sauvegarder la watchlist et récupérer les films
-        films = watchlist_service.sauvegarder_watchlist(watchlist)
+        films = service_watchlist.sauvegarder_watchlist(watchlist)
 
         return {"films": films}
 
