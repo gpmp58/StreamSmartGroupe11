@@ -7,20 +7,20 @@ from src.webservice.business_object.film import Film
 # Injecter le CSS global
 def inject_css():
     st.markdown("""
-        <style>
-            .reportview-container {
-                background-color: #1e1e1e;
-            }
-            .sidebar .sidebar-content {
-                background-color: #2e2e2e;
-            }
-            h1, h2, h3, h4, h5, h6 {
-                color: #ffffff;
-            }
-            p, li {
-                color: #cccccc;
-            }
-            .film-card {
+    <style>
+    .reportview-container {
+        background-color: #1e1e1e; /* Couleur de fond sombre */
+    }
+    .sidebar .sidebar-content {
+        background-color: #2e2e2e; /* Couleur de fond de la barre latérale */
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff; /* Couleur des titres */
+    }
+    p, li {
+        color: #cccccc; /* Couleur du texte normal */
+    }
+    .film-card {
         position: relative;
         overflow: hidden;
         margin: 10px;
@@ -101,8 +101,8 @@ def inject_css():
         border-radius: 5px; /* Coins arrondis */
         margin-right: 5px; /* Espacement entre les logos */
     }
-        </style>
-    """, unsafe_allow_html=True)
+    </style>
+""", unsafe_allow_html=True)
 
 # Configurer la page
 st.set_page_config(
@@ -112,8 +112,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Injecter le CSS
-
 
 # Fonction pour tronquer le texte
 def tronquer_texte(texte, max_longueur):
@@ -121,7 +119,6 @@ def tronquer_texte(texte, max_longueur):
         return texte[:max_longueur] + "..."
     return texte
 
-# Fonction pour rechercher les films et afficher les résultats
 def rechercher_films(nom_film):
     try:
         film_service = FilmService(nom_film)
@@ -139,15 +136,15 @@ def rechercher_films(nom_film):
                         description = film.details.get("description", "Pas de description disponible.")
                         description_tronquee = tronquer_texte(description, 300)  # Tronquer à 300 caractères
 
+                        # Vérifie si l'image est disponible, sinon met une image noire
+                        image_url = film.image if film.image and film.image != "Image non disponible" else "https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible"
+
                         st.markdown(f"""
                             <a href="/?film_id={film_id}" target="_self" style="text-decoration: none;">
                                 <div class="film-card">
-                                    {f'<img src="{film.image}" alt="{film_name}"/>' if film.image else ''}
+                                    <img src="{image_url}" alt="{film_name}" />
                                     <div class="film-info">
                                         {description_tronquee} <!-- Afficher le résumé ici -->
-                                    </div>
-                                    <div class="placeholder-image" style="{'display: none;' if film.image else ''}">
-                                        Image non disponible
                                     </div>
                                     <div style="padding: 5px 0; font-weight: bold; font-size: 14px; color: #ffffff; text-align: center;">
                                         {film_name}
@@ -163,10 +160,9 @@ def rechercher_films(nom_film):
     except Exception as e:
         st.error(str(e))
 
-# Fonction pour afficher les détails du film
-# ... (le reste du code reste inchangé)
 
-# Fonction pour afficher les détails du film
+
+
 def afficher_details_film(film_id):
     film = Film(film_id)  # Récupérer les détails du film
     st.title(film.details.get("name", "Titre non disponible"))
@@ -176,10 +172,11 @@ def afficher_details_film(film_id):
     with details_container:
         col1, col2 = st.columns([1, 2])
         with col1:
-            if film.image:
-                st.image(film.image, use_container_width=False, width=250)  # Ajuste la taille de l'image à 250px
+            if film.image != "Image non disponible":
+                st.image(film.image, use_container_width=False, width=250)  # Affiche l'image réelle
             else:
-                st.write("Image non disponible.")
+                # Affichage d'une image noire de remplacement si l'image est manquante
+                st.image("https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible", use_container_width=False, width=250)
 
         with col2:
             st.markdown(f"<div class='details-title'>{film.details.get('name', 'Titre non disponible')}</div>", unsafe_allow_html=True)
@@ -203,9 +200,9 @@ def afficher_details_film(film_id):
             # Recherche des sites de streaming
             streaming_sites = film.streaming  # Assurez-vous que cette méthode existe
 
-            if streaming_sites == None :
-                        st.write("Pas de plateformes de streaming disponibles.")
-            else :
+            if streaming_sites == None:
+                st.write("Pas de plateformes de streaming disponibles.")
+            else:
                 st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
 
                 # Conteneur flex pour les logos
@@ -219,6 +216,7 @@ def afficher_details_film(film_id):
                                 </a>
                             </div>
                         """, unsafe_allow_html=True)
+
 
 
 # Interface principale avec Streamlit
