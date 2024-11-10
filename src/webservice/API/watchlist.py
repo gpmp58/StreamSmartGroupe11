@@ -46,14 +46,7 @@ async def creer_watchlist(watchlist_data: WatchlistCreateModel):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-from fastapi import APIRouter, HTTPException
-from src.webservice.services.service_watchlist import WatchlistService
-from src.webservice.business_object.watchlist import Watchlist
 
-router = APIRouter()
-
-# Instance du service de gestion des watchlists
-watchlist_service = WatchlistService()
 
 # Route pour supprimer une watchlist
 @router.delete("/watchlists/{id_watchlist}")
