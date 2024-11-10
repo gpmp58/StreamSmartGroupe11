@@ -127,16 +127,19 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT COUNT(*)                              "
-                    " FROM projet11.film_watchlist                         "
-                    "WHERE id_watchlist = %(id_watchlist)s        "
-                    "      AND id_film = %(id_film)s;             ",
+                    """
+                    SELECT COUNT(*) AS count
+                    FROM projet11.film_watchlist
+                    WHERE id_watchlist = %(id_watchlist)s
+                    AND id_film = %(id_film)s;
+                    """,
                     {"id_watchlist": id_watchlist, "id_film": id_film},
                 )
-                res = cursor.fetchone()[0]
-
-        # Si le nombre de lignes trouvées > 0, le film est déjà présent
-        return res > 0
+                result = cursor.fetchone()
+                if result and 'count' in result:
+                    count = int(result['count'])  # Conversion explicite en entier
+                    return count > 0
+        return False
 
     def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:
         """
@@ -146,9 +149,9 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT f.id_film, f.nom_film "
+                    "SELECT f.id_film, f.nom "
                     "FROM projet11.film_watchlist fw "
-                    "JOIN projet11.film f ON fw.id_film = f.id_film "
+                    "JOIN film f ON fw.id_film = f.id_film "
                     "WHERE fw.id_watchlist = %(id_watchlist)s;",
                     {"id_watchlist": id_watchlist},
                 )
