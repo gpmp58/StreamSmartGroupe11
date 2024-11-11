@@ -11,26 +11,11 @@ class UtilisateurService:
     base de données.
     """
 
-<<<<<<< HEAD
-    """def __init__(self, utilisateur: Utilisateur):
-        Initialise un nouvel objet UtilisateurService avec un DAO utilisateur
-        donné.
-
-        Paramètres :
-        ------------
-        utilisateur : Utilisateur
-            Une instance de la classe Utilisateur utilisée pour interagir
-            avec la base de données.
-        
-        self.utilisateur = utilisateur"""
-        
-=======
     def __init__(self, utilisateur: Utilisateur):
         """
         Initialise un nouvel objet UtilisateurService.
         """
         self.utilisateur = utilisateur
->>>>>>> 8902d9776dcf3804ddae5103d0b801e38cb2435c
 
     def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
         """
