@@ -149,9 +149,9 @@ class WatchlistDao:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT f.id_film, f.nom "
+                    "SELECT f.id_film, f.nom_film "
                     "FROM projet11.film_watchlist fw "
-                    "JOIN film f ON fw.id_film = f.id_film "
+                    "JOIN projet11.film f ON fw.id_film = f.id_film "
                     "WHERE fw.id_watchlist = %(id_watchlist)s;",
                     {"id_watchlist": id_watchlist},
                 )
