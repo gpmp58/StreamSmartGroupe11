@@ -1,6 +1,15 @@
 from src.webservice.dao.watchlist_dao import WatchlistDao
 from src.webservice.business_object.watchlist import Watchlist
 from src.webservice.business_object.utilisateur import Utilisateur
+from src.webservice.services.service_utilisateur import UtilisateurService
+from src.webservice.business_object.film import Film
+from src.webservice.services.service_film import FilmService
+from src.webservice.dao.film_dao import FilmDao
+from src.webservice.dao.plateforme_dao import PlateformeDAO
+from src.webservice.services.service_plateforme import ServicePlateforme
+from src.webservice.business_object.plateforme import PlateformeStreaming
+
+import logging
 
 class WatchlistService:
     """
@@ -30,9 +39,16 @@ class WatchlistService:
         Returns:
             Watchlist : L'objet `Watchlist` créé si la création est réussie, sinon `None`.
         """
+        if not nom_watchlist or not utilisateur or not utilisateur.id_utilisateur:
+            logging.error("Paramètres invalides pour la création de la watchlist.")
+            return None
         id_utilisateur = utilisateur.id_utilisateur
-        nouvelle_watchlist = Watchlist(nom_watchlist, id_utilisateur)
-        return nouvelle_watchlist if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist) else None
+        nouvelle_watchlist = Watchlist(nom_watchlist, utilisateur.id_utilisateur)
+        if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist):
+            return nouvelle_watchlist
+        else:
+            logging.error("Échec de la création de la watchlist dans la base de données.")
+            return None
 
     def supprimer_watchlist(self, watchlist: Watchlist) -> bool:
         """
@@ -46,7 +62,7 @@ class WatchlistService:
         """
         return WatchlistDao().supprimer_watchlist_DAO(watchlist)
 
-    def ajouter_film(self, film, watchlist):
+    def ajouter_film(self, film : Film, watchlist):
         """
         Ajoute un film à une watchlist.
 
@@ -59,38 +75,20 @@ class WatchlistService:
         """
         id_film = film.id_film
         id_watchlist = watchlist.id_watchlist
-        deja_present = WatchlistDao().film_deja_present(id_watchlist, id_film)
-        if deja_present:
-            print(f"Erreur: Le film est déjà dans la watchlist.")
+        if WatchlistDao().film_deja_present(id_watchlist, id_film):
+            logging.warning(f"Le film {id_film} est déjà dans la watchlist {id_watchlist}.")
             return False
-
+        succes_ajout_film = FilmDao().ajouter_film(film)
+        if not succes_ajout_film:
+            raise Exception(f"Le film {id_film} n'a pas pu être ajouté à la base de données.")
         succes_ajout = WatchlistDao().ajouter_film_DAO(id_watchlist, id_film)
 
-
         if succes_ajout:
-            print(f"Le film {nom_film} a été ajouté avec succès.")
+            logging.info(f"Le film {id_film} a été ajouté avec succès à la watchlist {id_watchlist}.")
         else:
-            print("Erreur lors de l'ajout du film.")
+            logging.error(f"Erreur lors de l'ajout du film {id_film} à la watchlist {id_watchlist}.")
+        
         return succes_ajout
-
-    def mise_jour_bases(self, film, watchlist):
-        """
-        Met à jour les informations liées au film dans les bases de données, en ajoutant le film à la watchlist, et les plateformes de streaming si nécessaire.
-
-        Args:
-            film : L'objet Film à ajouter à la watchlist.
-            watchlist (Watchlist) : L'objet Watchlist dans lequel il faut ajouter le film.
-        """
-        id_film = film.id_film
-        id_watchlist = watchlist.id_watchlist
-        if self.ajouter_film(film,watchlist):
-            succes_ajout_film = FilmDAO().ajouter_film(id_film)
-            if succes_ajout_film :
-                streaming_info = film.recuperer_streaming()
-                for id_plateforme, nom_plateforme in streaming_info.items():
-                    # Mettre à jour les plateformes récupérées dans la base de données
-                    success_ajout_plateforme = ServicePlateforme().mettre_a_jour_plateforme(id_plateforme, nom_plateforme)
-
 
     def supprimer_film(self, Film, watchlist):
         """
@@ -107,7 +105,7 @@ class WatchlistService:
         id_watchlist = watchlist.id_watchlist
         deja_present = WatchlistDao().film_deja_present(id_watchlist, id_film)
         if not deja_present:
-            print(f"Erreur: Le film n'est pas présent dans la watchlist.")
+            logging.warning(f"Le film {id_film} n'est pas présent dans la watchlist {id_watchlist}.")
             return False
         succes_suppression = WatchlistDao().supprimer_film_DAO(id_watchlist, id_film)
         return succes_suppression
@@ -123,6 +121,45 @@ class WatchlistService:
             list : Liste des films présents dans la watchlist.
         """
         id_watchlist = watchlist.id_watchlist
+        if not watchlist.id_watchlist:
+            logging.error(f"Erreur: l'identifiant de la watchlist est invalide ou manquant.")
+            return []
         films = WatchlistDao().recuperer_films_watchlist_DAO(id_watchlist)
-        watchlist.list_film = film
+        watchlist.list_film = films
         return watchlist.list_film
+    
+    
+
+if __name__ == "__main__":
+    """utilisateur = Utilisateur(
+        id_utilisateur=123,
+        nom="Alice",
+        prenom="Dupont",
+        pseudo="alice123",
+        adresse_mail="alice@example.com",
+        mdp="hashed_password",
+        langue="français",
+        sel="random_salt"
+    )"""
+    creationu = UtilisateurService().creer_compte(nom="Alice", prenom="Dupont",
+            pseudo="alice123",
+            adresse_mail="alice@example.com",
+            mdp="password123",
+            langue="français"
+        )
+
+
+    creation1 = WatchlistService().creer_nouvelle_watchlist("favories" ,creationu)
+    print(creation1.id_watchlist)
+    #delete = WatchlistService().supprimer_watchlist(Watchlist("favories",1,[],1))
+    #print(delete)
+    film = Film(268)
+    print(film.recuperer_streaming())
+    #print(film.details['name'])
+    #ajout = FilmDao().ajouter_film(film)
+    ajoutfilm = WatchlistService().ajouter_film(film, creation1)
+    present = WatchlistDao().film_deja_present(1,268)
+    #print(present)
+    #delete = WatchlistService().supprimer_film(film,creation1)
+    liste_film = WatchlistService().sauvegarder_watchlist(creation1)
+    plateforme = ServicePlateforme().ajouter_plateforme(film)

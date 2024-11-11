@@ -21,3 +21,6 @@ def search_film(titre: str):
             liste_film.append(titre)
             liste_film.append(film["id"])
         return liste_film
+if __name__ == "__main__":
+    film = search_film("Batman")
+    print(film)

@@ -1,12 +1,15 @@
 from src.webservice.business_object.plateforme import PlateformeStreaming
 from src.webservice.dao.plateforme_dao import PlateformeDAO
+from src.webservice.dao.film_dao import FilmDao
+from src.webservice.services.service_film import FilmService
+from src.webservice.business_object.film import Film
 
 
-class service_plateforme:
+class ServicePlateforme:
     """
     Service de gestion des plateformes de streaming.Cette classe fournit une méthode pour mettre à jour une plateforme dans la base de données.
     """
-    def mettre_a_jour_plateforme(self, id_plateforme, nom_plateforme):
+    def mettre_a_jour_plateforme(self, nom_plateforme, id_plateforme):
         """
         Met à jour ou ajoute une nouvelle plateforme de streaming dans la base de données.
 
@@ -17,5 +20,31 @@ class service_plateforme:
         Returns:
             bool : True si la plateforme a été ajoutée avec succès, False si la plateforme existe déjà.
         """
-        nouvelle_plateforme = PlateformeStreaming(id_plateforme, nom_plateforme)
-        return PlateformeDAO().ajouter_plateforme(nouvelle_plateforme)
+        try:
+            plateforme_existante = PlateformeDAO().verifier_plateforme_existe(id_plateforme, nom_plateforme)
+
+            if plateforme_existante:
+                print(f"La plateforme {nom_plateforme} existe déjà.")
+                return False
+                
+            nouvelle_plateforme = PlateformeStreaming(nom_plateforme, id_plateforme)
+            return PlateformeDAO().ajouter_plateforme(nouvelle_plateforme)
+        
+        except Exception as e:
+            print(f"Erreur lors de l'ajout de la plateforme {nom_plateforme}: {e}")
+            return False
+    
+    def ajouter_plateforme(self, film: Film):
+        streaming_info = film.recuperer_streaming()
+        for plateforme in streaming_info:
+            id_plateforme = plateforme['id']
+            nom_plateforme = plateforme['name']
+            print(f"Nom de la plateforme : {nom_plateforme}")
+            print(f"Type de nom_plateforme : {type(nom_plateforme)}")
+            success_ajout_plateforme = self.mettre_a_jour_plateforme(nom_plateforme, id_plateforme)
+            if success_ajout_plateforme:
+                print(f"La plateforme {nom_plateforme} a été ajoutée avec succès.")
+            else:
+                print(f"La plateforme {nom_plateforme} existe déjà.")
+            PlateformeDAO().ajouter_relation_film_plateforme(film.id_film, id_plateforme)
+

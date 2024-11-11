@@ -12,8 +12,7 @@ class UtilisateurService:
     base de données.
     """
 
-    def __init__(self, utilisateur: Utilisateur):
-        """
+    """def __init__(self, utilisateur: Utilisateur):
         Initialise un nouvel objet UtilisateurService avec un DAO utilisateur
         donné.
 
@@ -22,8 +21,9 @@ class UtilisateurService:
         utilisateur : Utilisateur
             Une instance de la classe Utilisateur utilisée pour interagir
             avec la base de données.
-        """
-        self.utilisateur = utilisateur
+        
+        self.utilisateur = utilisateur"""
+        
 
     def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
         """
@@ -59,7 +59,7 @@ class UtilisateurService:
             hashed_mdp, sel = hash_mdp(mdp)
 
             # Appeler le DAO pour créer un utilisateur en base de données
-            id_utilisateur = self.utilisateur.creer_compte_DAO(
+            id_utilisateur = UtilisateurDAO().creer_compte_DAO(
                 nom=nom,
                 prenom=prenom,
                 pseudo=pseudo,

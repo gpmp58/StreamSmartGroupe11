@@ -16,7 +16,7 @@ class Abonnement:
         qualité de l'abonnement 
     """
 
-    def __init__(self, id_abonnement: int, nom_abonnement : str, qualite : str, prix : float, pub : bool):
+    def __init__(self, id_abonnement: int, nom_plateforme):
         """
         Initialise un objet Abonnement avec les attributs spécifiés.
 
@@ -47,15 +47,16 @@ class Abonnement:
         if not isinstance(pub, bool):
             raise Exception(
                 "Pub n'est pas un booléen.")
-        if not isinstance(nom_abonnement, str):
+        if not isinstance(nom_plateforme, str):
             raise Exception(
-                "Le nom de l'abonnement n'est pas une chaîne de caractère.")
+                "Le nom de la plateforme n'est pas une chaîne de caractère.")
 
         self.id_abonnement = id_abonnement
-        self.qualite = qualite
-        self.prix = prix
-        self.pub = pub
-        self.nom_abonnement = nom_abonnement
+        self.nom_palteforme = nom_plateforme
+        self.qualite = AbonnementDao().get_qualite_abonnement_DAO(id_abonnement)
+        self.prix = AbonnementDao().get_prix_abonnement_DAO(id_abonnement)
+        self.pub = AbonnementDao().get_pub_abonnement_DAO(id_abonnement)
+        self.nom_abonnement = AbonnementDao().get_nom_abonnement_DAO(id_abonnement)
 
     def info_abonnement(self) -> dict:
         """
