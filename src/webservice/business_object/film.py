@@ -25,8 +25,11 @@ def transformer_duree(d=int):
 
 
 def transformer_date(date_str):
-    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-    return date_obj.strftime("%d/%m/%Y")
+    if not date_str :
+        return "Date pas disponible"
+    else:
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        return date_obj.strftime("%d/%m/%Y")
 
 
 class Film:

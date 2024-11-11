@@ -1,5 +1,6 @@
 import streamlit as st
-from src.webservice.services.service_film import FilmService
+import requests
+
 from src.webservice.business_object.film import Film
 
 # Configuration de la page
@@ -23,13 +24,16 @@ def inject_css():
     .film-card {
         position: relative;
         overflow: hidden;
-        margin: 10px;
+        margin: 15px; /* Augmenter la marge pour espacer les cartes */
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
         background-color: #2e2e2e;
-        width: 220px;
-        height: 360px;
+        width: 160px; /* Réduire la largeur de la carte */
+        height: 270px; /* Réduire la hauteur de la carte */
+        margin-right: 20px;
+        margin-left: 20px
     }
+
     .film-card img {
         width: 100%;
         height: auto;
@@ -67,10 +71,17 @@ def inject_css():
         box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2); /* Ombre */
     }
     .details-image {
-        width: 250px; /* Augmenter la taille de l'image à 250px */
-        height: auto;
-        margin-right: 20px; /* Espace entre l'image et le texte */
+        background-color: #FFDD57; /* Couleur jaune pour le fond */
+        padding: 10px;  /* Espacement autour de l'image pour laisser de la place au fond */
+        border-radius: 10px;  /* Coins arrondis pour le fond */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 350px;  /* Taille plus grande pour l'image */
+        height: 450px; /* Hauteur plus grande pour l'image */
+        margin-right: 20px; /* Espacement entre l'image et le texte */
     }
+
     .details-title {
         font-size: 24px; /* Taille du titre */
         font-weight: bold;
@@ -101,6 +112,24 @@ def inject_css():
         border-radius: 5px; /* Coins arrondis */
         margin-right: 5px; /* Espacement entre les logos */
     }
+    .watchlist-button {
+        background-color: #FFDD57; /* Jaune lumineux */
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        width: 100%;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .watchlist-button:hover {
+        background-color: #ffcc00; /* Couleur au survol */
+        transform: scale(1.05); /* Légère animation d'agrandissement */
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -121,8 +150,13 @@ def tronquer_texte(texte, max_longueur):
 
 def rechercher_films(nom_film):
     try:
-        film_service = FilmService(nom_film)
-        films = film_service.rechercher_film()
+        # Appel de l'API FastAPI pour rechercher les films
+        url = "http://127.0.0.1:8000/films/recherche"  # Lien vers ton endpoint FastAPI
+        response = requests.post(url, json={"nom_film": nom_film})
+        response.raise_for_status()  # Vérifie les erreurs HTTP
+
+        # Récupération des données des films depuis la réponse JSON
+        films = response.json().get("films", {})
 
         if films:
             film_items = list(films.items())
@@ -154,12 +188,10 @@ def rechercher_films(nom_film):
                         """, unsafe_allow_html=True)
 
                 st.markdown("<hr style='border: 0; height: 1px; background-color: #444; margin: 5px 0;'>", unsafe_allow_html=True)
-
         else:
             st.write("Aucun film trouvé avec ce nom.")
-    except Exception as e:
-        st.error(str(e))
-
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur lors de l'appel API: {e}")
 
 
 
@@ -172,14 +204,23 @@ def afficher_details_film(film_id):
     with details_container:
         col1, col2 = st.columns([1, 2])
         with col1:
+            # Ajouter un carré jaune autour de l'image
             if film.image != "Image non disponible":
-                st.image(film.image, use_container_width=False, width=250)  # Affiche l'image réelle
+                st.markdown(f"""
+                    <div class="details-image">
+                        <img src="{film.image}" alt="{film.details.get('name', 'Titre non disponible')}" width="300" height="400"/>
+                    </div>
+                """, unsafe_allow_html=True)
             else:
                 # Affichage d'une image noire de remplacement si l'image est manquante
-                st.image("https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible", use_container_width=False, width=250)
+                st.markdown(f"""
+                    <div class="details-image">
+                        <img src="https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible" alt="Image non disponible" width="300" height="400"/>
+                    </div>
+                """, unsafe_allow_html=True)
 
         with col2:
-            st.markdown(f"<div class='details-title'>{film.details.get('name', 'Titre non disponible')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='details-title'>{film.details.get('name', 'Titre non disponible')} </div>", unsafe_allow_html=True)
 
             # Section pour la description
             st.markdown("<div class='details-section'>", unsafe_allow_html=True)
@@ -197,25 +238,36 @@ def afficher_details_film(film_id):
             st.markdown(f"<div class='details-info'>Genres : {', '.join(film.details.get('genres', ['Pas de genres disponibles']))}</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
-            # Recherche des sites de streaming
-            streaming_sites = film.streaming  # Assurez-vous que cette méthode existe
+            streaming_sites = film.streaming  # Assurez-vous que cette méthode renvoie bien une liste de sites
 
-            if streaming_sites == None:
+            if not streaming_sites:
                 st.write("Pas de plateformes de streaming disponibles.")
             else:
                 st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
 
-                # Conteneur flex pour les logos
-                st.markdown("<div style='display: flex; flex-wrap: wrap; margin-top: 10px;'>", unsafe_allow_html=True)
-                for site in streaming_sites:
-                    if "logo" in site:  # Vérifie que l'image du logo existe
-                        st.markdown(f"""
-                            <div style='margin-right: 10px;'>
-                                <a href='{site["id"]}' target='_blank'>
-                                    <img src='https://image.tmdb.org/t/p/w45{site["logo"]}' alt='{site["name"]}' style='width: 30px; height: auto; border-radius: 5px;' />
-                                </a>
-                            </div>
-                        """, unsafe_allow_html=True)
+                # Créer une grille de 3 colonnes pour les logos de streaming
+                cols = st.columns(len(streaming_sites))
+
+                for i, site in enumerate(streaming_sites):
+                    logo_url = site.get("logo")
+                    site_url = site.get("id")
+
+                    if logo_url and site_url:
+                        with cols[i]:
+                            st.markdown(f"""
+                                <div style='border: 1px solid #444; padding: 10px; border-radius: 10px; background-color: #333;
+                                            display: flex; justify-content: center; align-items: center; height: 60px; width : 60px'>
+                                    <a href='{site_url}' target='_blank'>
+                                        <img src='https://image.tmdb.org/t/p/w45{logo_url}' alt='{site["name"]}'
+                                            style='width: 50px; height: auto; border-radius: 5px;' />
+                                    </a>
+                                </div>
+                            """, unsafe_allow_html=True)
+
+                st.markdown("</div>", unsafe_allow_html=True)
+
+            # Bouton "Ajouter à la watchlist"
+            st.markdown("""<button class="watchlist-button">Ajouter à la watchlist</button>""", unsafe_allow_html=True)
 
 
 
