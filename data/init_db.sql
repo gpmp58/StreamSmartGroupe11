@@ -35,7 +35,7 @@ CREATE TABLE projet11.watchlist (
 DROP TABLE IF EXISTS projet11.film CASCADE;
 
 CREATE TABLE projet11.film (
-    id_film SERIAL PRIMARY KEY NOT NULL, -- Utilisation de SERIAL pour autoincrémentation
+    id_film INT PRIMARY KEY NOT NULL, -- Utilisation de SERIAL pour autoincrémentation
     nom_film TEXT NOT NULL
 );
 
@@ -58,7 +58,7 @@ CREATE TABLE projet11.film_watchlist (
 DROP TABLE IF EXISTS projet11.plateforme_abonnement CASCADE;
 
 CREATE TABLE projet11.plateforme_abonnement (
-    id_plateforme SERIAL PRIMARY KEY NOT NULL, -- Utilisation de SERIAL pour autoincrémentation
+    id_plateforme INT PRIMARY KEY NOT NULL, -- Utilisation de SERIAL pour autoincrémentation
     nom_plateforme TEXT NOT NULL
 );
 
