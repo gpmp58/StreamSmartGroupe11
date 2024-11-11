@@ -159,30 +159,6 @@ class WatchlistDao:
             return False
 
     def film_deja_present(self, id_watchlist: int, id_film: int) -> bool:
-<<<<<<< HEAD
-
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT COUNT(*)                              "
-                        " FROM projet11.film_watchlist                         "
-                        "WHERE id_watchlist = %(id_watchlist)s        "
-                        "      AND id_film = %(id_film)s;             ",
-                        {"id_watchlist": id_watchlist, "id_film": id_film},
-                    )
-                    res = cursor.fetchone()
-                    logging.debug(f"Résultat de la requête : {res}")
-                    if res and res['count'] > 0:
-                        return True
-
-                # Si COUNT(*) > 0, cela signifie que le film est présent dans la watchlist
-                    return False
-
-        except Exception as e:
-            logging.error(f"Erreur lors de la vérification de la présence du film {id_film} dans la watchlist {id_watchlist}: {e}")
-            return False
-=======
         res = None
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
@@ -200,30 +176,12 @@ class WatchlistDao:
                     count = int(result['count'])  # Conversion explicite en entier
                     return count > 0
         return False
->>>>>>> 8902d9776dcf3804ddae5103d0b801e38cb2435c
 
     def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:
         """
         Récupère tous les films d'une watchlist spécifique.
         """
         films = []
-<<<<<<< HEAD
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT f.id_film, f.nom_film "
-                        "FROM projet11.film_watchlist fw "
-                        "JOIN projet11.film f ON fw.id_film = f.id_film "
-                        "WHERE fw.id_watchlist = %(id_watchlist)s;",
-                        {"id_watchlist": id_watchlist},
-                    )
-                    films_data = cursor.fetchall()
-                    films = [{"id_film": film['id_film'], "nom_film": film['nom_film']} for film in films_data]
-
-        except Exception as e:
-            logging.error(f"Erreur lors de la récupération des films pour la watchlist {id_watchlist}: {e}")
-=======
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -236,7 +194,6 @@ class WatchlistDao:
                 films_data = cursor.fetchall()
                 
                 films = [{"id_film": film[0], "nom": film[1]} for film in films_data]
->>>>>>> 8902d9776dcf3804ddae5103d0b801e38cb2435c
 
         return films
 
