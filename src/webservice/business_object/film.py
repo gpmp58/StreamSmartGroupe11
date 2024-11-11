@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
+from datetime import datetime
 
 
 load_dotenv()
@@ -22,6 +23,13 @@ def transformer_duree(d=int):
     duree = f"{h} h {m} min"
     return duree
 
+
+def transformer_date(date_str):
+    if not date_str :
+        return "Date pas disponible"
+    else:
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        return date_obj.strftime("%d/%m/%Y")
 
 
 class Film:
@@ -49,7 +57,6 @@ class Film:
             dict : Un dictionnaire contenant les informations du film avec les clés suivantes :
             - "name" : Le titre original du film.
             - "description" : Un résumé du film.
-            - "sortie" : à completer.
             - "vote_average" : La note moyenne du film sur TMDb.
             - "date_sortie" : La date de sortie du film.
             - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
@@ -72,7 +79,7 @@ class Film:
                 "description": content["overview"],
                 "sortie": content["status"],
                 "vote_average": content["vote_average"],
-                "date_sortie": content["release_date"],
+                "date_sortie": transformer_date(content["release_date"]),
                 "duree": transformer_duree(content["runtime"]),
                 "genres": [genre["name"] for genre in content["genres"]],
             }
@@ -134,5 +141,3 @@ class Film:
                         "logo" : "https://image.tmdb.org/t/p/w780" + provider["logo_path"]
                     })
                 return streaming  # Renvoie une liste de services de streaming disponibles
-
-# Modifier certaines méthodes pour gérer les différentes erreurs (Pas d'infos sur les streamings, pas de description .....)

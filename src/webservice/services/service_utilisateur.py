@@ -2,7 +2,6 @@ from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.utils.securite import hash_mdp, verify_mdp
 from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
-
 class UtilisateurService:
     """
     La classe UtilisateurService fournit des méthodes de haut niveau pour la
@@ -12,6 +11,7 @@ class UtilisateurService:
     base de données.
     """
 
+<<<<<<< HEAD
     """def __init__(self, utilisateur: Utilisateur):
         Initialise un nouvel objet UtilisateurService avec un DAO utilisateur
         donné.
@@ -24,6 +24,13 @@ class UtilisateurService:
         
         self.utilisateur = utilisateur"""
         
+=======
+    def __init__(self, utilisateur: Utilisateur):
+        """
+        Initialise un nouvel objet UtilisateurService.
+        """
+        self.utilisateur = utilisateur
+>>>>>>> 8902d9776dcf3804ddae5103d0b801e38cb2435c
 
     def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
         """
@@ -70,12 +77,8 @@ class UtilisateurService:
             )
 
             # Vérifier le succès de la création
-            if id_utilisateur is False:
+            if id_utilisateur is None:
                 raise ValueError("Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
-            
-            # Si l'id_utilisateur n'est pas un entier, lever une erreur
-            if not isinstance(id_utilisateur, int):
-                raise ValueError("id_utilisateur n'est pas un entier.")
 
             # Créer l'objet Utilisateur avec les informations de l'utilisateur
             nouvel_utilisateur = Utilisateur(
@@ -94,17 +97,15 @@ class UtilisateurService:
 
         except Exception as e:
             # Lever l'exception au lieu de renvoyer un dictionnaire pour permettre une gestion des erreurs cohérente
-            raise ValueError(str(e))
+            raise ValueError(f"Erreur lors de la création de l'utilisateur : {e}")
 
-
-
-    def supprimer_compte(self, id_utilisateur: str):
+    def supprimer_compte(self, id_utilisateur: int):
         """
         Supprime un compte utilisateur basé sur l'id de l'utilisateur.
 
         Paramètres :
         ------------
-        id_utilisateur : str
+        id_utilisateur : int
             L'identifiant de l'utilisateur à supprimer.
 
         Exceptions :
@@ -112,12 +113,14 @@ class UtilisateurService:
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        utilisateur = self.utilisateur.trouver_par_id(id_utilisateur)
-        if utilisateur:
-            self.utilisateur.supprimer_compte_DAO(utilisateur)
+        try:
+            # Utiliser le DAO pour supprimer l'utilisateur
+            succes = UtilisateurDAO().supprimer_compte_DAO(id_utilisateur)
+            if not succes:
+                raise ValueError("Utilisateur introuvable ou suppression échouée.")
             print(f"Compte avec l'id '{id_utilisateur}' supprimé avec succès.")
-        else:
-            raise ValueError("Utilisateur introuvable.")
+        except Exception as e:
+            raise ValueError(f"Erreur lors de la suppression de l'utilisateur : {e}")
 
     def se_connecter(self, pseudo: str, mdp: str):
         """
@@ -126,8 +129,8 @@ class UtilisateurService:
 
         Paramètres :
         ------------
-        id_utilisateur : str
-            L'id de l'utilisateur.
+        pseudo : str
+            Le pseudo de l'utilisateur.
         mdp : str
             Le mot de passe de l'utilisateur.
 
@@ -141,20 +144,22 @@ class UtilisateurService:
         ValueError
             Si les informations de connexion sont incorrectes.
         """
-        utilisateur_connecte=UtilisateurDAO().se_connecter_DAO(pseudo)
-        mdp_stocke=utilisateur_connecte["mdp"]  # Mot de passe haché stocke dans la db
-        sel=utilisateur_connecte["sel"]  # Le sel utilisé pour hacher le mot de passe
-        pseudo=utilisateur_connecte["pseudo"]
+        try:
+            # Récupérer l'utilisateur par pseudo
+            utilisateur_connecte = UtilisateurDAO().se_connecter_DAO(pseudo)
+            mdp_stocke = utilisateur_connecte["mdp"]  # Mot de passe haché stocké dans la db
+            sel = utilisateur_connecte["sel"]  # Le sel utilisé pour hacher le mot de passe
 
-        # hacher le mdp
-        hashed_mdp, _ = hash_mdp(mdp, sel)
+            # Hacher le mot de passe fourni par l'utilisateur avec le sel récupéré
+            hashed_mdp, _ = hash_mdp(mdp, sel)
 
-        # Vérifier si le mot de passe haché correspond à celui stocké
-        if mdp_stocke != hashed_mdp:
-            raise ValueError("Pseudo ou mot de passe incorrect.")
+            # Vérifier si le mot de passe haché correspond à celui stocké
+            if mdp_stocke != hashed_mdp:
+                raise ValueError("Pseudo ou mot de passe incorrect.")
 
-        return f"Bienvenue {pseudo} sur notre application"
-
+            return f"Bienvenue {pseudo} sur notre application"
+        except Exception as e:
+            raise ValueError(f"Erreur lors de la connexion de l'utilisateur : {e}")
 
     def se_deconnecter(self):
         """
@@ -164,28 +169,39 @@ class UtilisateurService:
         """
         pass
 
-    def afficher(self, id_utilisateur):
+    def afficher(self, id_utilisateur: int):
         """
         Affiche les informations d'un utilisateur basé sur son id.
 
         Paramètres :
         ------------
-        id_utilisateur : str
+        id_utilisateur : int
             L'identifiant de l'utilisateur dont on souhaite afficher les
             informations.
 
+        Returns:
+        --------
+        dict
+            Les informations de l'utilisateur.
+        
         Exceptions :
         ------------
         ValueError
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
-        utilisateur = self.utilisateur.trouver_par_id(id_utilisateur)
+        try:
+            utilisateur = UtilisateurDAO().trouver_par_id(id_utilisateur)
 
-        if utilisateur:
-            print(
-                f"Nom: {utilisateur.nom}, Prénom: {utilisateur.prenom}, "
-                f"Email: {utilisateur.adresse_mail}, Langue: "
-                f"{utilisateur.langue}"
-            )
-        else:
-            raise ValueError("Utilisateur introuvable.")
+            if utilisateur:
+                utilisateur_info = {
+                    "Nom": utilisateur.nom,
+                    "Prénom": utilisateur.prenom,
+                    "Pseudo": utilisateur.pseudo,
+                    "Adresse mail": utilisateur.adresse_mail,
+                    "Langue": utilisateur.langue
+                }
+                return utilisateur_info
+            else:
+                raise ValueError("Utilisateur introuvable.")
+        except Exception as e:
+            raise ValueError(f"Erreur lors de l'affichage des informations de l'utilisateur : {e}")

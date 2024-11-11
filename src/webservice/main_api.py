@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from API import user, movie, watchlist
+from src.webservice.API import user, movie, watchlist
 
 app = FastAPI()
 

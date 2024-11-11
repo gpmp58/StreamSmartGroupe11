@@ -24,7 +24,7 @@ class FilmService:
         if not isinstance(nom_film, str):
             raise TypeError("Le film doit être en format caractères")
         for caractere in nom_film:
-            if not (caractere.isalnum() or caractere == " "):
+            if not (caractere.isalnum() or caractere == " " or caractere == "&"):
                 raise Exception("Il y a des caratères spéciaux dans le film, Veuillez réécrire le nom du film")
         self.nom_film = nom_film
 

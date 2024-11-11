@@ -1,111 +1,163 @@
-import unittest
-from unittest.mock import MagicMock
-from src.webservice.services.service_utilisateur import UtilisateurService
+import pytest
+from unittest.mock import patch, MagicMock
 from src.webservice.business_object.utilisateur import Utilisateur
-from src.webservice.dao.utilisateur_dao import UtilisateurDAO
+from src.webservice.utils.securite import hash_mdp
+from src.webservice.services.service_utilisateur import UtilisateurService
 
-class TestUtilisateurService(unittest.TestCase):
+@pytest.fixture
+def utilisateur_service():
+    """
+    Fixture pour créer une instance de UtilisateurService pour les tests.
+    """
+    utilisateur = Utilisateur(
+        id_utilisateur=1,
+        nom="TestNom",
+        prenom="TestPrenom",
+        pseudo="TestPseudo",
+        adresse_mail="test@test.com",
+        mdp="hashed_password",
+        langue="français",
+        sel="test_sel"
+    )
+    return UtilisateurService(utilisateur)
 
-    def setUp(self):
-        # Créer un mock pour UtilisateurDAO
-        self.mock_utilisateur_dao = MagicMock()
 
-        # Créer une instance de UtilisateurService avec le DAO simulé
-        self.utilisateur_service = UtilisateurService(utilisateur=self.mock_utilisateur_dao)
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.creer_compte_DAO')
+def test_creer_compte_succes(mock_creer_compte, utilisateur_service):
+    """
+    Test pour vérifier la création d'un compte utilisateur avec succès.
+    """
+    mock_creer_compte.return_value = 1
 
-        # Définir un utilisateur pour les tests
-        self.utilisateur = Utilisateur(
-            id_utilisateur=123,
-            nom="Alice",
-            prenom="Dupont",
-            pseudo="alice123",
-            adresse_mail="alice@example.com",
-            mdp="hashed_password",
-            langue="français",
-            sel="random_salt"
-        )
+    utilisateur = utilisateur_service.creer_compte(
+        nom="TestNom",
+        prenom="TestPrenom",
+        pseudo="TestPseudo",
+        adresse_mail="test@test.com",
+        mdp="test_mdp",
+        langue="français"
+    )
 
-    def test_creer_compte_succes(self):
-        """
-        Test de création de compte réussi
-        """
-        # Configurer le mock pour renvoyer un id_utilisateur (par exemple, 1)
-        self.mock_utilisateur_dao.creer_compte_DAO.return_value = 1
+    assert utilisateur.id_utilisateur == 1
+    assert utilisateur.nom == "TestNom"
+    assert utilisateur.pseudo == "TestPseudo"
 
-        # Appeler la méthode à tester
-        resultat = self.utilisateur_service.creer_compte(
-            nom="Alice",
-            prenom="Dupont",
-            pseudo="alice123",
-            adresse_mail="alice@example.com",
-            mdp="password123",
+
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.creer_compte_DAO')
+def test_creer_compte_echec(mock_creer_compte, utilisateur_service):
+    """
+    Test pour vérifier l'échec de la création d'un compte utilisateur (pseudo déjà utilisé).
+    """
+    mock_creer_compte.return_value = None
+
+    with pytest.raises(ValueError, match="Erreur lors de la création du compte"):
+        utilisateur_service.creer_compte(
+            nom="TestNom",
+            prenom="TestPrenom",
+            pseudo="TestPseudo",
+            adresse_mail="test@test.com",
+            mdp="test_mdp",
             langue="français"
         )
 
-        # Vérifier si le résultat est une instance de Utilisateur
-        self.assertIsInstance(resultat, Utilisateur)
-        self.assertEqual(resultat.nom, "Alice")
-        self.assertEqual(resultat.pseudo, "alice123")
+
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.supprimer_compte_DAO')
+def test_supprimer_compte_succes(mock_supprimer_compte, utilisateur_service):
+    """
+    Test pour vérifier la suppression d'un compte utilisateur avec succès.
+    """
+    mock_supprimer_compte.return_value = True
+
+    try:
+        utilisateur_service.supprimer_compte(id_utilisateur=1)
+    except ValueError:
+        pytest.fail("Suppression d'utilisateur a levé une exception imprévue.")
 
 
-    def test_creer_compte_echec(self):
-        """
-        Test de création de compte échoué (pseudo déjà utilisé)
-        """
-        # Configurer le mock pour renvoyer une valeur incorrecte (False)
-        self.mock_utilisateur_dao.creer_compte_DAO.return_value = False
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.supprimer_compte_DAO')
+def test_supprimer_compte_echec(mock_supprimer_compte, utilisateur_service):
+    """
+    Test pour vérifier l'échec de la suppression d'un compte utilisateur (utilisateur introuvable).
+    """
+    mock_supprimer_compte.return_value = False
 
-        # Vérifier qu'une ValueError est levée lors de la tentative de création de compte
-        with self.assertRaises(ValueError) as context:
-            self.utilisateur_service.creer_compte(
-                nom="Alice",
-                prenom="Dupont",
-                pseudo="alice123",
-                adresse_mail="alice@example.com",
-                mdp="password123",
-                langue="français"
-            )
-
-        # Vérifier que le message d'erreur est bien celui attendu
-        self.assertEqual(str(context.exception), "Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
+    with pytest.raises(ValueError, match="Utilisateur introuvable ou suppression échouée"):
+        utilisateur_service.supprimer_compte(id_utilisateur=1)
 
 
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.se_connecter_DAO')
+def test_se_connecter_succes(mock_se_connecter, utilisateur_service):
+    """
+    Test pour vérifier la connexion d'un utilisateur avec succès.
+    """
+    # Hash un mot de passe test pour correspondre
+    hashed_mdp, sel = hash_mdp("test_mdp")
 
-    def test_se_connecter_succes(self):
-        pass
+    mock_se_connecter.return_value = {
+        "id_utilisateur": 1,
+        "nom": "TestNom",
+        "prenom": "TestPrenom",
+        "pseudo": "TestPseudo",
+        "adresse_mail": "test@test.com",
+        "mdp": hashed_mdp,
+        "langue": "français",
+        "sel": sel
+    }
+
+    message = utilisateur_service.se_connecter(pseudo="TestPseudo", mdp="test_mdp")
+    assert message == "Bienvenue TestPseudo sur notre application"
 
 
-    def test_se_connecter_echec(self):
-        pass
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.se_connecter_DAO')
+def test_se_connecter_echec(mock_se_connecter, utilisateur_service):
+    """
+    Test pour vérifier l'échec de la connexion d'un utilisateur (mot de passe incorrect).
+    """
+    # Hash un mot de passe test différent pour simuler un mauvais mot de passe
+    hashed_mdp, sel = hash_mdp("wrong_mdp")
 
-    def test_supprimer_compte_succes(self):
-        """
-        Test de suppression de compte réussie
-        """
-        # Configurer le mock pour renvoyer l'utilisateur
-        self.mock_utilisateur_dao.trouver_par_id.return_value = self.utilisateur
-        self.mock_utilisateur_dao.supprimer_compte_DAO.return_value = True
+    mock_se_connecter.return_value = {
+        "id_utilisateur": 1,
+        "nom": "TestNom",
+        "prenom": "TestPrenom",
+        "pseudo": "TestPseudo",
+        "adresse_mail": "test@test.com",
+        "mdp": hashed_mdp,
+        "langue": "français",
+        "sel": sel
+    }
 
-        # Appeler la méthode à tester
-        self.utilisateur_service.supprimer_compte(id_utilisateur="123")
+    with pytest.raises(ValueError, match="Pseudo ou mot de passe incorrect"):
+        utilisateur_service.se_connecter(pseudo="TestPseudo", mdp="test_mdp")
 
-        # Vérifier que la méthode de suppression a été appelée
-        self.mock_utilisateur_dao.trouver_par_id.assert_called_once_with("123")
-        self.mock_utilisateur_dao.supprimer_compte_DAO.assert_called_once_with(self.utilisateur)
 
-    def test_supprimer_compte_utilisateur_inexistant(self):
-        """
-        Test de suppression de compte avec un utilisateur inexistant
-        """
-        # Configurer le mock pour renvoyer None (utilisateur non trouvé)
-        self.mock_utilisateur_dao.trouver_par_id.return_value = None
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.trouver_par_id')
+def test_afficher_succes(mock_trouver_par_id, utilisateur_service):
+    """
+    Test pour vérifier l'affichage des informations d'un utilisateur avec succès.
+    """
+    mock_trouver_par_id.return_value = Utilisateur(
+        id_utilisateur=1,
+        nom="TestNom",
+        prenom="TestPrenom",
+        pseudo="TestPseudo",
+        adresse_mail="test@test.com",
+        mdp="hashed_password",
+        langue="français",
+        sel="test_sel"
+    )
 
-        # Vérifier qu'une ValueError est levée
-        with self.assertRaises(ValueError) as context:
-            self.utilisateur_service.supprimer_compte(id_utilisateur="999")
+    utilisateur_info = utilisateur_service.afficher(id_utilisateur=1)
+    assert utilisateur_info["Nom"] == "TestNom"
+    assert utilisateur_info["Pseudo"] == "TestPseudo"
 
-        self.assertEqual(str(context.exception), "Utilisateur introuvable.")
-        self.mock_utilisateur_dao.trouver_par_id.assert_called_once_with("999")
 
-if __name__ == "__main__":
-    unittest.main()
+@patch('src.webservice.dao.utilisateur_dao.UtilisateurDAO.trouver_par_id')
+def test_afficher_echec(mock_trouver_par_id, utilisateur_service):
+    """
+    Test pour vérifier l'échec de l'affichage des informations d'un utilisateur (utilisateur introuvable).
+    """
+    mock_trouver_par_id.return_value = None
+
+    with pytest.raises(ValueError, match="Utilisateur introuvable"):
+        utilisateur_service.afficher(id_utilisateur=1)

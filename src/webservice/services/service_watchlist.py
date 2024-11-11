@@ -126,6 +126,7 @@ class WatchlistService:
             return []
         films = WatchlistDao().recuperer_films_watchlist_DAO(id_watchlist)
         watchlist.list_film = films
+        watchlist.list_film = films
         return watchlist.list_film
     
     
