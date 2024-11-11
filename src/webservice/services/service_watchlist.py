@@ -126,3 +126,17 @@ class WatchlistService:
         films = WatchlistDao().recuperer_films_watchlist_DAO(id_watchlist)
         watchlist.list_film = films
         return watchlist.list_film
+
+    def afficher_watchlist(self, utilisateur: Utilisateur) -> list:
+        """
+        Récupère toutes les watchlists pour un utilisateur spécifique, avec les films associés.
+
+        Args:
+            utilisateur (Utilisateur): L'objet utilisateur pour lequel on veut récupérer les watchlists.
+
+        Returns:
+            list: Liste des watchlists avec les films associés pour chaque watchlist.
+        """
+        id_utilisateur = utilisateur.id_utilisateur
+        watchlists = WatchlistDao().afficher_watchlist_DAO(id_utilisateur)
+        return watchlists

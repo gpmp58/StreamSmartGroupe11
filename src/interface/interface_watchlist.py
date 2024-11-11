@@ -15,7 +15,8 @@ option = st.selectbox(
         "Supprimer une Watchlist",
         "Ajouter un Film à une Watchlist",
         "Supprimer un Film d'une Watchlist",
-        "Récupérer les Films d'une Watchlist"
+        "Récupérer les Films d'une Watchlist",
+        "Afficher les Watchlists d'un Utilisateur"
     ]
 )
 
@@ -35,6 +36,34 @@ def creer_watchlist():
                     st.error(response.json().get("detail", "Erreur inconnue lors de la création."))
             except requests.exceptions.RequestException as e:
                 st.error(f"Erreur de connexion à l'API : {e}")
+
+# Fonction pour afficher toutes les watchlists d'un utilisateur
+def afficher_watchlist_utilisateur():
+    st.subheader("📂 Afficher les Watchlists d'un Utilisateur")
+    id_utilisateur = st.number_input("Numéro utilisateur", min_value=1, step=1)
+    if st.button("Afficher les Watchlists"):
+        try:
+            # Requête pour récupérer les watchlists de l'utilisateur
+            response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+            if response.status_code == 200:
+                watchlists = response.json().get("watchlists", [])
+                if watchlists:
+                    for watchlist in watchlists:
+                        st.write(f"**Watchlist :** {watchlist['nom_watchlist']} (ID : {watchlist['id_watchlist']})")
+                        films = watchlist.get("films", [])
+                        if films:
+                            st.write("Films dans cette watchlist :")
+                            for film in films:
+                                st.write(f"- {film['nom_film']} (ID : {film['id_film']})")
+                        else:
+                            st.write("Aucun film dans cette watchlist.")
+                        st.write("---")  # Séparateur entre les watchlists
+                else:
+                    st.warning("Cet utilisateur n'a pas de watchlists.")
+            else:
+                st.error(response.json().get("detail", "Erreur lors de la récupération des watchlists."))
+        except requests.exceptions.RequestException as e:
+            st.error(f"Erreur de connexion à l'API : {e}")
 
 # Fonction pour supprimer une watchlist
 def supprimer_watchlist():
@@ -108,3 +137,5 @@ elif option == "Supprimer un Film d'une Watchlist":
     supprimer_film()
 elif option == "Récupérer les Films d'une Watchlist":
     recuperer_films_watchlist()
+elif option == "Afficher les Watchlists d'un Utilisateur":
+    afficher_watchlist_utilisateur()

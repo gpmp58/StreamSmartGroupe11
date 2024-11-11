@@ -158,7 +158,7 @@ async def supprimer_film_watchlist(id_watchlist: int, id_film: int):
         film = Film(id_film=id_film)
 
         # Étape 3 : Appeler le service pour supprimer le film de la watchlist
-        succes_suppression = service_watchlist.supprimer_film(film=film, watchlist=watchlist)
+        succes_suppression = service_watchlist.supprimer_film(Film=film, watchlist=watchlist)
 
         # Étape 4 : Vérifier la suppression et retourner une réponse
         if succes_suppression:
@@ -196,4 +196,30 @@ async def recuperer_films_watchlist(id_watchlist: int):
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         logger.exception(f"Erreur interne lors de la récupération des films de la watchlist : {e}")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
+
+@router.get("/watchlists/utilisateur/{id_utilisateur}", response_model=dict)
+async def afficher_watchlist(id_utilisateur: int):
+    """
+    Récupère toutes les watchlists d'un utilisateur spécifique, avec les films associés.
+    """
+    try:
+        # Étape 1 : Récupérer l'utilisateur par son ID
+        utilisateur = utilisateur_dao.trouver_par_id(id_utilisateur)
+        if not utilisateur:
+            logger.warning(f"Utilisateur avec id {id_utilisateur} introuvable.")
+            raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+
+        # Étape 2 : Utiliser le service pour récupérer les watchlists de l'utilisateur
+        watchlists = service_watchlist.afficher_watchlist(utilisateur)
+
+        # Étape 3 : Retourner les watchlists et leurs films associés
+        logger.info(f"Watchlists récupérées pour l'utilisateur {id_utilisateur}.")
+        return {"watchlists": watchlists}
+
+    except ValueError as e:
+        logger.error(f"Erreur de valeur lors de la récupération des watchlists : {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.exception(f"Erreur interne lors de la récupération des watchlists : {e}")
         raise HTTPException(status_code=500, detail="Erreur interne du serveur.")

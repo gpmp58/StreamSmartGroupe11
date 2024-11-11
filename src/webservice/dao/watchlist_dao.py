@@ -160,3 +160,60 @@ class WatchlistDao:
                 films = [{"id_film": film[0], "nom": film[1]} for film in films_data]
 
         return films
+
+    def afficher_watchlist_DAO(self, id_utilisateur: int) -> list:
+        """
+        Récupère toutes les watchlists pour un utilisateur spécifique, avec les films associés.
+
+        Parameters
+        ----------
+        id_utilisateur : int
+            L'identifiant de l'utilisateur dont on veut récupérer les watchlists
+
+        Returns
+        -------
+        list
+            Liste des watchlists avec les films associés pour chaque watchlist
+        """
+        watchlists = []
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT w.id_watchlist, w.nom_watchlist, f.id_film, f.nom_film
+                    FROM projet11.watchlist w
+                    LEFT JOIN projet11.film_watchlist fw ON w.id_watchlist = fw.id_watchlist
+                    LEFT JOIN projet11.film f ON fw.id_film = f.id_film
+                    WHERE w.id_utilisateur = %(id_utilisateur)s;
+                    """,
+                    {"id_utilisateur": id_utilisateur},
+                )
+                results = cursor.fetchall()
+
+                # Organisation des résultats pour grouper les films par watchlist
+                watchlist_dict = {}
+                for row in results:
+                    id_watchlist = row['id_watchlist']
+                    nom_watchlist = row['nom_watchlist']
+                    id_film = row['id_film']
+                    nom_film = row['nom_film']
+
+                    # Si la watchlist n'existe pas encore dans le dictionnaire, on l'ajoute
+                    if id_watchlist not in watchlist_dict:
+                        watchlist_dict[id_watchlist] = {
+                            "id_watchlist": id_watchlist,
+                            "nom_watchlist": nom_watchlist,
+                            "films": []
+                        }
+
+                    # Si un film est associé, on l'ajoute à la liste des films de la watchlist
+                    if id_film and nom_film:
+                        watchlist_dict[id_watchlist]["films"].append({
+                            "id_film": id_film,
+                            "nom_film": nom_film
+                        })
+
+                # Transformer le dictionnaire en liste pour faciliter l'utilisation
+                watchlists = list(watchlist_dict.values())
+
+        return watchlists
