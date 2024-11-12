@@ -187,8 +187,6 @@ class WatchlistDao:
         Récupère tous les films d'une watchlist spécifique.
         """
         films = []
-<<<<<<< HEAD
-<<<<<<< HEAD
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -204,7 +202,6 @@ class WatchlistDao:
 
         except Exception as e:
             logging.error(f"Erreur lors de la récupération des films pour la watchlist {id_watchlist}: {e}")
-=======
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -217,7 +214,6 @@ class WatchlistDao:
                 films_data = cursor.fetchall()
                 
                 films = [{"id_film": film[0], "nom": film[1]} for film in films_data]
->>>>>>> b18ed612abb4048d4f90227aae27f862d8d3e196
 
         return films
 
@@ -278,6 +274,7 @@ class WatchlistDao:
 
         return watchlists
         return films
+        
     def afficher_watchlist_DAO(self, id_utilisateur: int) -> list:
         """
         Récupère toutes les watchlists pour un utilisateur spécifique, avec les films associés.
