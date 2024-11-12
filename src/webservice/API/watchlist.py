@@ -116,7 +116,7 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
             id_film=ajouter_film_data.id_film
         )
         logger.debug(f"Film à ajouter : {film.id_film} ")
-
+        """
         # Étape 3 : Créer une instance de FilmDao et ajouter le film à la table 'film'
         film_dao = FilmDao()
         film_ajoute = film_dao.ajouter_film(film=film)
@@ -124,7 +124,7 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
         if not film_ajoute:
             logger.warning(f"Le film avec l'id {ajouter_film_data.id_film} existe déjà ou n'a pas pu être ajouté.")
             # Vous pouvez choisir de continuer ou d'arrêter ici en fonction de votre logique métier
-            # Par exemple, si le film existe déjà, continuez pour l'ajouter à la watchlist
+            # Par exemple, si le film existe déjà, continuez pour l'ajouter à la watchlist"""
 
         # Étape 4 : Appeler le service pour ajouter le film à la watchlist
         succes_ajout = service_watchlist.ajouter_film(film=film, watchlist=watchlist)
