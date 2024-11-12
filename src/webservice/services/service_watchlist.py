@@ -79,8 +79,8 @@ class WatchlistService:
             logging.warning(f"Le film {id_film} est déjà dans la watchlist {id_watchlist}.")
             return False
         succes_ajout_film = FilmDao().ajouter_film(film)
-        if not succes_ajout_film:
-            raise Exception(f"Le film {id_film} n'a pas pu être ajouté à la base de données.")
+        """if not succes_ajout_film:
+            raise Exception(f"Le film {id_film} n'a pas pu être ajouté à la base de données.")"""
         succes_ajout = WatchlistDao().ajouter_film_DAO(id_watchlist, id_film)
 
         if succes_ajout:
@@ -154,12 +154,12 @@ if __name__ == "__main__":
     print(creation1.id_watchlist)
     #delete = WatchlistService().supprimer_watchlist(Watchlist("favories",1,[],1))
     #print(delete)
-    film = Film(268)
+    film = Film(152)
 
     print(film.details['name'])
     #print(film.details['name'])
     #ajout = FilmDao().ajouter_film(film)
-    #ajoutfilm = WatchlistService().ajouter_film(film, creation1)
+    ajoutfilm = WatchlistService().ajouter_film(film, creation1)
     #present = WatchlistDao().film_deja_present(1,268)
     #print(present)
     #delete = WatchlistService().supprimer_film(film,creation1)
