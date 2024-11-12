@@ -202,19 +202,6 @@ class WatchlistDao:
 
         except Exception as e:
             logging.error(f"Erreur lors de la récupération des films pour la watchlist {id_watchlist}: {e}")
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT f.id_film, f.nom_film "
-                    "FROM projet11.film_watchlist fw "
-                    "JOIN projet11.film f ON fw.id_film = f.id_film "
-                    "WHERE fw.id_watchlist = %(id_watchlist)s;",
-                    {"id_watchlist": id_watchlist},
-                )
-                films_data = cursor.fetchall()
-                
-                films = [{"id_film": film[0], "nom": film[1]} for film in films_data]
-
         return films
 
     def afficher_watchlist_DAO(self, id_utilisateur: int) -> list:
