@@ -12,13 +12,11 @@ class RechercheFilmModel(BaseModel):
 
 # Modèle de réponse pour les films trouvés
 class FilmTrouve(BaseModel):
-    id: int
-    titre_original: str
-    date_sortie: str
-    vote_average: float
+    nom_film : int
 
 class RechercheFilmResponse(BaseModel):
-    films: List[FilmTrouve]
+    films: Dict[int, str]
+
 
 # Modèle pour les services de streaming
 class StreamingProvider(BaseModel):
