@@ -146,3 +146,31 @@ class UtilisateurDAO:
                 res = cursor.rowcount
 
         return res > 0
+
+    def existe_pseudo_DAO(self, pseudo: str) -> bool:
+        """
+        Vérifie si un pseudo existe déjà dans la base de données.
+
+        Parameters:
+        -----------
+        pseudo : str
+            Le pseudo à vérifier.
+
+        Returns:
+        --------
+        bool
+            True si le pseudo existe, False sinon.
+        """
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT 1 FROM projet11.utilisateur
+                    WHERE pseudo = %(pseudo)s
+                    LIMIT 1;
+                    """,
+                    {"pseudo": pseudo}
+                )
+                res = cursor.fetchone()
+
+        return res is not None
