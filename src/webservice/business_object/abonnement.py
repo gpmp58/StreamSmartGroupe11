@@ -1,3 +1,4 @@
+from src.webservice.dao.abonnement_dao import AbonnementDao
 class Abonnement:
     """
     Classe représentant un abonnement.
@@ -38,15 +39,6 @@ class Abonnement:
         if not isinstance(id_abonnement, int):
             raise Exception(
                 "L'identifiant de l'abonnement n'est pas un entier.")
-        if not isinstance(prix, float):
-            raise Exception(
-                "Le prix de l'abonnement n'est pas un nombre.")
-        if not isinstance(qualite, str):
-            raise Exception(
-                "La qualité de l'abonnement n'est pas une chaîne de caractère.")
-        if not isinstance(pub, bool):
-            raise Exception(
-                "Pub n'est pas un booléen.")
         if not isinstance(nom_plateforme, str):
             raise Exception(
                 "Le nom de la plateforme n'est pas une chaîne de caractère.")
@@ -117,3 +109,8 @@ class Abonnement:
             bool : Pub de l'abonnement.
         """            
         return self.pub
+
+if __name__ == "__main__":
+    abonnement_test = Abonnement(1,"Canal+")
+    information = abonnement_test.info_abonnement()
+    print(abonnement_test.nom_palteforme)
