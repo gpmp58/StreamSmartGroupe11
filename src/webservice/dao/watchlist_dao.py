@@ -202,7 +202,6 @@ class WatchlistDao:
 
         except Exception as e:
             logging.error(f"Erreur lors de la récupération des films pour la watchlist {id_watchlist}: {e}")
-
         return films
 
     def afficher_watchlist_DAO(self, id_utilisateur: int) -> list:

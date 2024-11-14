@@ -24,7 +24,7 @@ class UtilisateurService:
         self.utilisateur = utilisateur"""
         
 
-    def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français"):
+    def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français") -> Utilisateur:
         """
         Crée un nouvel utilisateur dans la base de données.
 
@@ -51,9 +51,13 @@ class UtilisateurService:
         Exceptions :
         ------------
         ValueError
-            Si l'utilisateur existe déjà (vérification à implémenter au niveau du DAO).
+            Si le pseudo est déjà utilisé ou si une erreur survient lors de la création.
         """
         try:
+            # Vérifier si le pseudo existe déjà
+            if self.verifier_pseudo(pseudo):
+                raise ValueError("Le pseudo est déjà utilisé. Veuillez en choisir un autre.")
+
             # Hacher le mot de passe avec un sel aléatoire
             hashed_mdp, sel = hash_mdp(mdp)
 
@@ -70,7 +74,7 @@ class UtilisateurService:
 
             # Vérifier le succès de la création
             if id_utilisateur is None:
-                raise ValueError("Erreur lors de la création du compte. Le pseudo est peut-être déjà utilisé.")
+                raise ValueError("Erreur lors de la création du compte.")
 
             # Créer l'objet Utilisateur avec les informations de l'utilisateur
             nouvel_utilisateur = Utilisateur(
@@ -197,3 +201,28 @@ class UtilisateurService:
                 raise ValueError("Utilisateur introuvable.")
         except Exception as e:
             raise ValueError(f"Erreur lors de l'affichage des informations de l'utilisateur : {e}")
+
+    def verifier_pseudo(self, pseudo: str) -> bool:
+        """
+        Vérifie si un pseudo existe déjà dans la base de données.
+
+        Paramètres :
+        ------------
+        pseudo : str
+            Le pseudo à vérifier.
+
+        Returns :
+        ---------
+        bool
+            True si le pseudo existe, False sinon.
+
+        Exceptions :
+        ------------
+        ValueError
+            Si une erreur survient lors de la vérification.
+        """
+        try:
+            existe = UtilisateurDAO().existe_pseudo_DAO(pseudo)
+            return existe
+        except Exception as e:
+            raise ValueError(f"Erreur lors de la vérification du pseudo : {e}")

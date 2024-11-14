@@ -43,5 +43,5 @@ class FilmDao:
 
         except Exception as e:
             print(f"Une erreur est survenue lors de l'ajout du film : {e}")
-            print(f"Détails du film : id_film={film.id_film}, nom={film.details.get('name', 'Nom manquant')}")
+            #print(f"Détails du film : id_film={film.id_film}, nom={film.details.get('name', 'Nom manquant')}")
             return False
