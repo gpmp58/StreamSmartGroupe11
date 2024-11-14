@@ -63,7 +63,7 @@ async def rechercher_film(film: RechercheFilmModel):
 
 # 2. GET /api/films/{id_film} : Obtenir les détails d'un film par ID
 @router.get("/films/{id_film}", response_model=FilmDetails)
-async def get_film_details(id_film: int):
+async def obtenir_details_film(id_film: int):
     """
     Récupère les détails d'un film en fonction de son ID TMDb.
 
