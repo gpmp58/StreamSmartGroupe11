@@ -10,7 +10,7 @@ class ResetDatabase(metaclass=Singleton):
     def lancer(self):
         print("Ré-initialisation de la base de données")
 
-        init_db = open("data/init_db.sql", encoding="utf-8")
+        init_db = open("Groupe11/data/init_db.sql", encoding="utf-8")
         init_db_as_string = init_db.read()
 
         try:
