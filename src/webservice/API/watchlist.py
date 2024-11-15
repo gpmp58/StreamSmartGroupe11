@@ -204,7 +204,7 @@ async def afficher_watchlist(id_utilisateur: int):
             raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
 
         # Étape 2 : Utiliser le service pour récupérer les watchlists de l'utilisateur
-        watchlists = service_watchlist.afficher_watchlist(utilisateur)
+        watchlists = service_watchlist.afficher_watchlist(id_utilisateur)
 
         # Étape 3 : Retourner les watchlists et leurs films associés
         logger.info(f"Watchlists récupérées pour l'utilisateur {id_utilisateur}.")

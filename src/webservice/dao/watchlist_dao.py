@@ -239,3 +239,30 @@ class WatchlistDao:
 
         except Exception as e:
             logging.error(f"Erreur lors de la récupération des watchlists pour l'utilisateur ID: {id_utilisateur}: {str(e)}")
+
+    def verifier_film_existe(self, id_film):
+        """
+        Vérifie si un film existe déjà dans la base de données en fonction de son ID ou de son nom.
+
+        Args:
+            id_film (int) : L'identifiant du film à vérifier..
+
+        Returns:
+            bool : Retourne True si le film existe déjà, sinon False.
+        """
+        try:
+            # Connexion à la base de données
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    # Exécution de la requête pour vérifier si l'id ou le nom existe déjà dans la base
+                    cursor.execute(
+                        "SELECT 1 FROM projet11.film WHERE id_film = %s ;",
+                        (id_film,)  
+                    )
+                    result = cursor.fetchone() 
+
+                    return result is not None 
+
+        except Exception as e:
+            print(f"Erreur lors de la vérification du film {id_film}: {e}")
+            return False 
