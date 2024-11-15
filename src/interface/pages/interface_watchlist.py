@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-from src.main_interface import afficher_etat_connexion
+from src.interface.main_interface import afficher_etat_connexion
 
 # URL de base de l'API
 LIEN_API = "http://127.0.0.1:8000"

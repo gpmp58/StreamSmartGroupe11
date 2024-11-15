@@ -1,5 +1,5 @@
 import streamlit as st
-from src.main_interface import afficher_etat_connexion
+from src.interface.main_interface import afficher_etat_connexion
 
 # Configuration de la page principale
 st.set_page_config(page_title="Utilisateur connecté ", layout="wide")
