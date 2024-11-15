@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+from src.main_interface import afficher_etat_connexion
 
 from src.webservice.business_object.film import Film
 
@@ -141,6 +142,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+afficher_etat_connexion()
 
 # Fonction pour tronquer le texte
 def tronquer_texte(texte, max_longueur):

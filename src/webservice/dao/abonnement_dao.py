@@ -40,7 +40,7 @@ class AbonnementDao:
                     pub = cursor.fetchone()
             if pub is None:
                 logging.warning(f"Aucune information sur la publicité trouvée pour l'abonnement ID: {abonnement.id_abonnement}")
-                return False 
+                return False
             return pub
 
     def get_qualite_abonnement_DAO(self, abonnement: Abonnement) -> tuple:
