@@ -9,6 +9,7 @@ from src.webservice.dao.plateforme_dao import PlateformeDAO
 from src.webservice.services.service_plateforme import ServicePlateforme
 from src.webservice.business_object.plateforme import PlateformeStreaming
 
+
 import logging
 
 class WatchlistService:
@@ -78,9 +79,8 @@ class WatchlistService:
         if WatchlistDao().film_deja_present(id_watchlist, id_film):
             logging.warning(f"Le film {id_film} est déjà dans la watchlist {id_watchlist}.")
             return False
-        succes_ajout_film = FilmDao().ajouter_film(film)
-        """if not succes_ajout_film:
-            raise Exception(f"Le film {id_film} n'a pas pu être ajouté à la base de données.")"""
+        if not WatchlistDao().verifier_film_existe(id_film):
+            succes_ajout_film = FilmDao().ajouter_film(film)
         succes_ajout = WatchlistDao().ajouter_film_DAO(id_watchlist, id_film)
 
         if succes_ajout:
@@ -181,10 +181,8 @@ if __name__ == "__main__":
     #print(delete)
     film = Film(268)
     film2 = Film(152)
-    #print(film.recuperer_streaming())
-    film = Film(152)
-
-    print(film.details['name'])
+    print(film.recuperer_streaming())
+    #print(film.details['name'])
     #print(film.details['name'])
     #ajout = FilmDao().ajouter_film(film)
     ajoutfilm = WatchlistService().ajouter_film(film, creation1)
@@ -200,6 +198,6 @@ if __name__ == "__main__":
     liste_film = WatchlistService().sauvegarder_watchlist(creation1)
     #print(creation1.list_film)
     #plateforme = ServicePlateforme().ajouter_plateforme(film)
-    utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
+    """utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
     film_w = WatchlistService().afficher_watchlist(creationu.id_utilisateur)
-    print(film_w)
+    print(film_w)"""
