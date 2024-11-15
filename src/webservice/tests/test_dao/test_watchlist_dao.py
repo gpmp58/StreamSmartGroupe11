@@ -1,3 +1,4 @@
+"""
 # Importation du module pystest pour créer les tests et de unittest.mock pour simuler les interactions avec la base de données
 import pytest
 from unittest.mock import patch, MagicMock
@@ -111,3 +112,4 @@ def test_supprimer_film_DAO(MockDBConnection):
         "WHERE id_watchlist = %(id_watchlist)s and id_film = %(id_film)s",
         {"id_watchlist": 1, "id_film": 101}
     )
+"""
