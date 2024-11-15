@@ -22,18 +22,12 @@ class Abonnement:
         Initialise un objet Abonnement avec les attributs spécifiés.
 
         Args:
-            nom_abonnement (str) : Le nom de l'abonnement renseigné.
+            nom_plateforme (str) : Le nom de l'abonnement renseigné.
             id_abonnement (int) : L'id de l'abonnement renseigné.
-            prix (float) : Prix de l'abonnement renseigné. 
-            pub (bool) : Dis si un abonnement contient des pub ou non.
-            qualité (str) : Qualité de l'abonnement renseignée. 
 
         Raises:
-            Exception: Si le nom de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si le nom de la plateforme n'est pas une chaîne de caractères.
             Exception: Si l'identifiant de l'abonnement n'est pas un entier.
-            Exception: Si le prix de l'abonnement n'est pas un nombre.
-            Exception: Si la qualité de l'abonnement n'est pas une chaîne de caractères.
-            Exception: Si pub n'est pas un booléen.
         """
 
         if not isinstance(id_abonnement, int):
