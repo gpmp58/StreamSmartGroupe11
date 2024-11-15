@@ -22,18 +22,12 @@ class Abonnement:
         Initialise un objet Abonnement avec les attributs spécifiés.
 
         Args:
-            nom_abonnement (str) : Le nom de l'abonnement renseigné.
+            nom_plateforme (str) : Le nom de l'abonnement renseigné.
             id_abonnement (int) : L'id de l'abonnement renseigné.
-            prix (float) : Prix de l'abonnement renseigné. 
-            pub (bool) : Dis si un abonnement contient des pub ou non.
-            qualité (str) : Qualité de l'abonnement renseignée. 
 
         Raises:
-            Exception: Si le nom de l'abonnement n'est pas une chaîne de caractères.
+            Exception: Si le nom de la plateforme n'est pas une chaîne de caractères.
             Exception: Si l'identifiant de l'abonnement n'est pas un entier.
-            Exception: Si le prix de l'abonnement n'est pas un nombre.
-            Exception: Si la qualité de l'abonnement n'est pas une chaîne de caractères.
-            Exception: Si pub n'est pas un booléen.
         """
 
         if not isinstance(id_abonnement, int):
@@ -44,7 +38,7 @@ class Abonnement:
                 "Le nom de la plateforme n'est pas une chaîne de caractère.")
 
         self.id_abonnement = id_abonnement
-        self.nom_palteforme = nom_plateforme
+        self.nom_plateforme = nom_plateforme
         self.qualite = AbonnementDao().get_qualite_abonnement_DAO(id_abonnement)
         self.prix = AbonnementDao().get_prix_abonnement_DAO(id_abonnement)
         self.pub = AbonnementDao().get_pub_abonnement_DAO(id_abonnement)

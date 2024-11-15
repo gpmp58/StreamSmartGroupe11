@@ -95,12 +95,14 @@ async def supprimer_watchlist(id_watchlist: int):
 class AjouterFilmModel(BaseModel):
     id_watchlist: int
     id_film: int
-    nom_film: str  # Nom du film pour l'ajout à la table 'film'
+    #nom_film: str  # Nom du film pour l'ajout à la table 'film'
 
 @router.post("/watchlists/ajouter_film", response_model=dict)
 async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
     """
     Ajoute un film à une watchlist.
+    #Il faut d'abord sauvegarder PUIS ajouter
+    
     """
     try:
         # Étape 1 : Créer un objet Watchlist pour identifier la watchlist concernée
@@ -115,6 +117,7 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
         film = Film(
             id_film=ajouter_film_data.id_film
         )
+        nom_film=film.details["name"]
         logger.debug(f"Film à ajouter : {film.id_film} ")
         # Étape 4 : Appeler le service pour ajouter le film à la watchlist
         succes_ajout = service_watchlist.ajouter_film(film=film, watchlist=watchlist)
@@ -201,7 +204,7 @@ async def afficher_watchlist(id_utilisateur: int):
             raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
 
         # Étape 2 : Utiliser le service pour récupérer les watchlists de l'utilisateur
-        watchlists = service_watchlist.afficher_watchlist(utilisateur)
+        watchlists = service_watchlist.afficher_watchlist(id_utilisateur)
 
         # Étape 3 : Retourner les watchlists et leurs films associés
         logger.info(f"Watchlists récupérées pour l'utilisateur {id_utilisateur}.")

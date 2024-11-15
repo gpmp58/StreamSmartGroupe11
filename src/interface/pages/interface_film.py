@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-
+from src.interface.main_interface import afficher_etat_connexion
 
 # Configuration de la page
 
