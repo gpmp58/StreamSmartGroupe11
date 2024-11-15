@@ -8,7 +8,8 @@ import logging
 class CritereService():
  
     def recuperer_plateformes_film(self,critere : Critere):
-        watchlist_critere = critere.watchlist
+        id_watchlist = critere.id_watchlist
+        watchlist_critere = WatchlistService().trouver_par_id(id_watchlist)
         films = WatchlistService().sauvegarder_watchlist(watchlist_critere)
         id_films = [film["id_film"] for film in films]
         films_et_plateformes = {}

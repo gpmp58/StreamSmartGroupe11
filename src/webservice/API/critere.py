@@ -11,11 +11,6 @@ from typing import Optional
 
 router = APIRouter()
 
-class WatchlistCreateModel(BaseModel):
-    nom_watchlist: str
-    id_utilisateur: int
-    id_watchlist: int
-
 class CriteresModel(BaseModel):
     prix: Optional[bool] = None
     qualite: Optional[str]= None
@@ -23,7 +18,7 @@ class CriteresModel(BaseModel):
     rapport_quantite_prix: Optional[bool] = None
 
 class CritereRequestModel(BaseModel):
-    watchlist: WatchlistCreateModel
+    id_watchlist: int
     criteres: CriteresModel
 
 @router.post("/plateformes_film/")

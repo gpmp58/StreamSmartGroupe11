@@ -1,20 +1,19 @@
-from src.webservice.business_object.watchlist import Watchlist
 
 class Critere():
 
-    def __init__(self, watchlist, criteres):
+    def __init__(self, id_watchlist, criteres):
 
-        if not isinstance(watchlist, Watchlist):
+        if not isinstance(id_watchlist, int):
             raise Exception(
-                "La watchlist n'est pas une instance Watchlist.")
+                "L'id watchlist n'est pas un entier.")
         if not isinstance(criteres, dict):
             raise Exception(
                 "critere n'est pas un dictionnaire.")
 
-        self.watchlist = watchlist
+        self.id_watchlist = id_watchlist
         self.criteres = criteres
 
-    def get_watchlist(self):
-        return self.watchlist
+    def get_id_watchlist(self):
+        return self.id_watchlist
     def get_critere(self):
         return self.criteres
