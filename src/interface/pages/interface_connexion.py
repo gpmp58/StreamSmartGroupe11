@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+from src.interface.main_interface import afficher_etat_connexion
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
@@ -30,14 +31,14 @@ def page_connexion():
                 try:
                     response_json = response.json()
                     if response.status_code == 200:
-                        st.session_state['logged_in'] = True
-                        st.session_state['user'] = pseudo
+                        # Mettre à jour l'état pour l'utilisateur connecté
+                        st.session_state['pseudo'] = pseudo
                         st.success(response_json.get('message'))
-                        st.write("Connexion réussie. Redirection vers la recherche de films.")
-                        st.rerun()  # Appeler directement la page de recherche de films
+                        st.write("Connexion réussie.")
+                        
+                        # Rediriger vers l'interface connectée
+                        st.switch_page("pages/interface_utilisateur_connecte.py")
                     else:
-                        st.session_state['logged_in'] = False
-                        st.session_state['user'] = 'Inconnu Non connecté'
                         st.error(f"Erreur : {response_json.get('detail', 'Erreur inconnue')}")
                 except ValueError:
                     st.error("Erreur : La réponse de l'API n'est pas au format JSON.")

@@ -43,8 +43,8 @@ class AbonnementDao():
             if pub is not None and "pub" in pub:
                 pub = pub["pub"]
             if pub is None:
-                logging.warning(f"Aucune information sur la publicité trouvée pour l'abonnement ID: {id_abonnement}")
-                return False 
+                logging.warning(f"Aucune information sur la publicité trouvée pour l'abonnement ID: {abonnement.id_abonnement}")
+                return False
             return pub
         except Exception as e:
             logging.error(f"Erreur lors de la récupération du pub de l'abonnement ID:{id_abonnement} - {e}")
