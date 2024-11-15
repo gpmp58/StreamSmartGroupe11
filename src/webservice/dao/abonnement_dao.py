@@ -121,10 +121,12 @@ class AbonnementDao():
 
     def abonnement_filtrés(self, preferences: dict):
         try:
+            qualite_map = {'HD': 1, '4K': 2, '8K': 3}
+            qualite_valeur = qualite_map.get(preferences['qualite'], 0)
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT id_abonnement, nom_plateforme "
+                        "SELECT id_abonnement, nom_plateforme, prix "
                         "FROM projet11.abonnement "
                         "WHERE pub = %s "
                         "AND (CASE "
@@ -134,11 +136,11 @@ class AbonnementDao():
                         "   ELSE 0 "
                         "END) >= %s "
                         "ORDER BY prix ASC;",
-                        (preferences['pub'], preferences['qualite_num']),
+                        (preferences['pub'], qualite_valeur),
                     )
                     abonnements_filtres = cursor.fetchall()
                     abonnements_list = [
-                    {'id_abonnement': row['id_abonnement'], 'nom_plateforme': row['nom_plateforme']} for row in abonnements_filtres
+                    {'id_abonnement': row['id_abonnement'], 'nom_plateforme': row['nom_plateforme'],'prix': row['prix']} for row in abonnements_filtres
                 ]
                     return abonnements_list
         except Exception as e:

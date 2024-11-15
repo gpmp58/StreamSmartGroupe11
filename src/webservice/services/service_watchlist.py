@@ -198,6 +198,6 @@ if __name__ == "__main__":
     liste_film = WatchlistService().sauvegarder_watchlist(creation1)
     #print(creation1.list_film)
     #plateforme = ServicePlateforme().ajouter_plateforme(film)
-    """utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
+    utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
     film_w = WatchlistService().afficher_watchlist(creationu.id_utilisateur)
-    print(film_w)"""
+    print(film_w)

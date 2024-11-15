@@ -44,7 +44,7 @@ class Abonnement:
                 "Le nom de la plateforme n'est pas une chaîne de caractère.")
 
         self.id_abonnement = id_abonnement
-        self.nom_palteforme = nom_plateforme
+        self.nom_plateforme = nom_plateforme
         self.qualite = AbonnementDao().get_qualite_abonnement_DAO(id_abonnement)
         self.prix = AbonnementDao().get_prix_abonnement_DAO(id_abonnement)
         self.pub = AbonnementDao().get_pub_abonnement_DAO(id_abonnement)
