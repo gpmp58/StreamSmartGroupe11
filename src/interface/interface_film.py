@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 
-from src.webservice.business_object.film import Film
 
 # Configuration de la page
 
@@ -150,12 +149,10 @@ def tronquer_texte(texte, max_longueur):
 
 def rechercher_films(nom_film):
     try:
-        # Appel de l'API FastAPI pour rechercher les films
-        url = "http://127.0.0.1:8000/films/recherche"  # Lien vers ton endpoint FastAPI
+        url = "http://127.0.0.1:8000/films/recherche"
         response = requests.post(url, json={"nom_film": nom_film})
-        response.raise_for_status()  # Vérifie les erreurs HTTP
+        response.raise_for_status()
 
-        # Récupération des données des films depuis la réponse JSON
         films = response.json().get("films", {})
 
         if films:
@@ -165,14 +162,16 @@ def rechercher_films(nom_film):
                 cols = st.columns(4)
 
                 for j, (film_id, film_name) in enumerate(film_items[i:i+4]):
-                    film = Film(film_id)
+                    # Utilisation de l'API pour obtenir tous les détails du film
+                    film_details_url = f"http://127.0.0.1:8000/films/{film_id}"
+                    film_details_response = requests.get(film_details_url)
+                    film_details_response.raise_for_status()
+                    film_details = film_details_response.json()
                     with cols[j]:
-                        description = film.details.get("description", "Pas de description disponible.")
-                        description_tronquee = tronquer_texte(description, 300)  # Tronquer à 300 caractères
-
-                        # Vérifie si l'image est disponible, sinon met une image noire
-                        image_url = film.image if film.image and film.image != "Image non disponible" else "https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible"
-
+                        description_tronquee = tronquer_texte(film_details.get("description", "Pas de description disponible"), 200)
+                        image_url = film_details.get("image", "")
+                        if not image_url:  # Si l'image n'est pas présente ou vide
+                            image_url = "https://via.placeholder.com/250x360/000000/000000?text=Pas+d'image+disponible"
                         st.markdown(f"""
                             <a href="/?film_id={film_id}" target="_self" style="text-decoration: none;">
                                 <div class="film-card">
@@ -194,82 +193,86 @@ def rechercher_films(nom_film):
         st.error(f"Erreur lors de l'appel API: {e}")
 
 
-
 def afficher_details_film(film_id):
-    film = Film(film_id)  # Récupérer les détails du film
-    st.title(film.details.get("name", "Titre non disponible"))
+    try:
+        film_details_url = f"http://127.0.0.1:8000/films/{film_id}"
+        response = requests.get(film_details_url)
+        response.raise_for_status()
 
-    # Conteneur pour l'image et les informations
-    details_container = st.container()
-    with details_container:
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            # Ajouter un carré jaune autour de l'image
-            if film.image != "Image non disponible":
-                st.markdown(f"""
-                    <div class="details-image">
-                        <img src="{film.image}" alt="{film.details.get('name', 'Titre non disponible')}" width="300" height="400"/>
-                    </div>
-                """, unsafe_allow_html=True)
-            else:
-                # Affichage d'une image noire de remplacement si l'image est manquante
-                st.markdown(f"""
-                    <div class="details-image">
-                        <img src="https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible" alt="Image non disponible" width="300" height="400"/>
-                    </div>
-                """, unsafe_allow_html=True)
+        film_details = response.json()
 
-        with col2:
-            st.markdown(f"<div class='details-title'>{film.details.get('name', 'Titre non disponible')} </div>", unsafe_allow_html=True)
+        st.title(film_details.get("name", "Titre non disponible"))
 
-            # Section pour la description
-            st.markdown("<div class='details-section'>", unsafe_allow_html=True)
-            description = film.details.get('description')
-            if len(description) > 0:
-                st.markdown(f"<div class='details-description'>{description}</div>", unsafe_allow_html=True)
-            else:
-                st.markdown("<div class='details-description'>Pas de description disponible.</div>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
+        # Conteneur pour l'image et les informations
+        details_container = st.container()
+        with details_container:
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                if film_details.get("image") != "Image non disponible":
+                    st.markdown(f"""
+                        <div class="details-image">
+                            <img src="{film_details.get('image')}" alt="{film_details.get('name')}" width="300" height="400"/>
+                        </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""
+                        <div class="details-image">
+                            <img src="https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible" alt="Image non disponible" width="300" height="400"/>
+                        </div>
+                    """, unsafe_allow_html=True)
 
-            # Informations sur le film
-            st.markdown("<div class='details-section'>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-info'>Date de sortie : {film.details.get('date_sortie', 'Date non disponible')}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-info'>Durée : {film.details.get('duree', 'Durée non disponible')} </div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='details-info'>Genres : {', '.join(film.details.get('genres', ['Pas de genres disponibles']))}</div>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
+            with col2:
+                st.markdown(f"<div class='details-title'>{film_details.get('name', 'Titre non disponible')} </div>", unsafe_allow_html=True)
 
-            streaming_sites = film.streaming  # Assurez-vous que cette méthode renvoie bien une liste de sites
-
-            if not streaming_sites:
-                st.write("Pas de plateformes de streaming disponibles.")
-            else:
-                st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
-
-                # Créer une grille de 3 colonnes pour les logos de streaming
-                cols = st.columns(len(streaming_sites))
-
-                for i, site in enumerate(streaming_sites):
-                    logo_url = site.get("logo")
-                    site_url = site.get("id")
-
-                    if logo_url and site_url:
-                        with cols[i]:
-                            st.markdown(f"""
-                                <div style='border: 1px solid #444; padding: 10px; border-radius: 10px; background-color: #333;
-                                            display: flex; justify-content: center; align-items: center; height: 60px; width : 60px'>
-                                    <a href='{site_url}' target='_blank'>
-                                        <img src='https://image.tmdb.org/t/p/w45{logo_url}' alt='{site["name"]}'
-                                            style='width: 50px; height: auto; border-radius: 5px;' />
-                                    </a>
-                                </div>
-                            """, unsafe_allow_html=True)
-
+                # Description
+                st.markdown("<div class='details-section'>", unsafe_allow_html=True)
+                description = film_details.get('description')
+                if len(description) > 0:
+                    st.markdown(f"<div class='details-description'>{description}</div>", unsafe_allow_html=True)
+                else:
+                    st.markdown("<div class='details-description'>Pas de description disponible.</div>", unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
 
+                # Informations
+                st.markdown("<div class='details-section'>", unsafe_allow_html=True)
+                st.markdown(f"<div class='details-info'>Date de sortie : {film_details.get('date_sortie', 'Date non disponible')}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='details-info'>Durée : {film_details.get('duree', 'Durée non disponible')} </div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='details-info'>Genres : {', '.join(film_details.get('genres', []))} </div>", unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
+
+                # Lien vers les plateformes de streaming
+                streaming_sites = film_details.get("streaming")
+                if not streaming_sites:
+                    st.write("Pas de plateformes de streaming disponibles.")
+                else:
+                    st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
+
+                # Créer une grille de 3 colonnes pour les logos de streaming
+                    cols = st.columns(len(streaming_sites))
+
+                    for i, site in enumerate(streaming_sites):
+                        logo_url = site.get("logo")
+                        site_url = site.get("id")
+
+                        if logo_url and site_url:
+                            with cols[i]:
+                                st.markdown(f"""
+                                    <div style='border: 1px solid #444; padding: 10px; border-radius: 10px; background-color: #333;
+                                                display: flex; justify-content: center; align-items: center; height: 60px; width : 60px'>
+                                        <a href='{site_url}' target='_blank'>
+                                            <img src='https://image.tmdb.org/t/p/w45{logo_url}' alt='{site["name"]}'
+                                                style='width: 50px; height: auto; border-radius: 5px;' />
+                                        </a>
+                                    </div>
+                                """, unsafe_allow_html=True)
+
+                    st.markdown("</div>", unsafe_allow_html=True)
+
             # Bouton "Ajouter à la watchlist"
-            st.markdown("""<button class="watchlist-button">Ajouter à la watchlist</button>""", unsafe_allow_html=True)
+                st.markdown("""<button class="watchlist-button">Ajouter à la watchlist</button>""", unsafe_allow_html=True)
 
-
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur lors de l'appel API: {e}")
 
 # Interface principale avec Streamlit
 def page():

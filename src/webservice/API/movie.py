@@ -47,14 +47,14 @@ async def rechercher_film(film: RechercheFilmModel):
     try:
         # Initialiser le service FilmService avec le nom du film
         film_service = FilmService(nom_film=film.nom_film)
-        
+
         # Rechercher les films correspondant au nom donné
         films_trouves = film_service.rechercher_film()
-        
+
         # Vérifier si une erreur est présente
         if isinstance(films_trouves, dict) and 'error' in films_trouves:
             raise ValueError(films_trouves['error'])
-        
+
         return {"films": films_trouves}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -76,12 +76,12 @@ async def obtenir_details_film(id_film: int):
             "name": film.details["name"],
             "description": film.details["description"],
             "sortie": film.details["sortie"],
-            "vote_average": float(film.details["vote_average"]),  
+            "vote_average": float(film.details["vote_average"]),
             "date_sortie": film.details["date_sortie"],
             "duree": film.details["duree"],
             "genres": film.details["genres"],
             "image": film.image,
-            "streaming": film.streaming  
+            "streaming": film.streaming
         }
         return response
     except KeyError as e:
