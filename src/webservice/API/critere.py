@@ -34,6 +34,7 @@ async def recuperer_plateformes_film(critere: CritereRequestModel):
 @router.post("/filtrer_abonnement/")
 async def filtrer_abonnement(critere: CritereRequestModel):
     critere_service = CritereService()
+    critere.criteres=critere.criteres.dict()
     try:
         abonnements_filtrees = critere_service.filtrer_abonnement(critere)
         return abonnements_filtrees
@@ -44,6 +45,7 @@ async def filtrer_abonnement(critere: CritereRequestModel):
 @router.post("/calculer_occurrences_plateformes/")
 async def calculer_occurrences_plateformes(critere: CritereRequestModel):
     critere_service = CritereService()
+    critere.criteres=critere.criteres.dict()
     try:
         occurrences = critere_service.calculer_occurrences_plateformes(critere)
         return occurrences
@@ -54,6 +56,7 @@ async def calculer_occurrences_plateformes(critere: CritereRequestModel):
 @router.post("/optimiser_abonnement/")
 async def optimiser_abonnement(critere: CritereRequestModel):
     critere_service = CritereService()
+    critere.criteres=critere.criteres.dict()
     try:
         abonnement_optimise = critere_service.optimiser_abonnement(critere)
         if abonnement_optimise:
@@ -71,6 +74,7 @@ async def optimiser_abonnement(critere: CritereRequestModel):
 @router.post("/afficher_abonnement_optimise/")
 async def afficher_abonnement_optimise(critere: CritereRequestModel):
     critere_service = CritereService()
+    critere.criteres=critere.criteres.dict()
     try:
         abonnement_resume = critere_service.afficher_abonnement_optimise(critere)
         return {"abonnement_optimise": abonnement_resume}
