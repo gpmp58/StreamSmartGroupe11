@@ -141,3 +141,9 @@ class Film:
                         "logo" : "https://image.tmdb.org/t/p/w780" + provider["logo_path"]
                     })
                 return streaming  # Renvoie une liste de services de streaming disponibles
+            else:
+                streaming = []
+                return streaming
+        else :
+            streaming =[]
+            return streaming

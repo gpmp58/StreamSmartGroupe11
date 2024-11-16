@@ -163,6 +163,11 @@ class WatchlistService:
         except Exception as e:
             logging.error(f"Erreur lors de la récupération des watchlists et films pour l'utilisateur ID: {id_utilisateur} - {e}")
     
+    def trouver_par_id(self, id_watchlist):
+        watchlist = WatchlistDao().trouver_par_id_w(id_watchlist)
+        films = self.sauvegarder_watchlist(watchlist)
+        return watchlist
+    
     
 
 if __name__ == "__main__":
@@ -186,6 +191,8 @@ if __name__ == "__main__":
 
     creation1 = WatchlistService().creer_nouvelle_watchlist("favories" ,creationu)
     creation2 = WatchlistService().creer_nouvelle_watchlist("favories2" ,creationu)
+    test = WatchlistService().trouver_par_id(id_watchlist=1)
+    print(test.list_film)
     #print(creation1.id_watchlist)
     #delete = WatchlistService().supprimer_watchlist(Watchlist("favories",1,[],1))
     #print(delete)
@@ -208,6 +215,6 @@ if __name__ == "__main__":
     liste_film = WatchlistService().sauvegarder_watchlist(creation1)
     #print(creation1.list_film)
     #plateforme = ServicePlateforme().ajouter_plateforme(film)
-    """utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
+    utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
     film_w = WatchlistService().afficher_watchlist(creationu.id_utilisateur)
-    print(film_w)"""
+    #print(film_w)

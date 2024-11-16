@@ -265,4 +265,34 @@ class WatchlistDao:
 
         except Exception as e:
             print(f"Erreur lors de la vérification du film {id_film}: {e}")
-            return False 
+            return False
+
+    def trouver_par_id_w(self, id_watchlist: int):
+        """
+        Trouver un utilisateur grâce à son id.
+
+        Parameters:
+        -----------
+        id_utilisateur : int
+            L'ID de l'utilisateur.
+
+        Returns:
+        --------
+        Utilisateur : Instance de la classe Utilisateur contenant les informations de l'utilisateur.
+        """
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT * FROM projet11.watchlist WHERE id_watchlist = %(id_watchlist)s;",
+                    {"id_watchlist": id_watchlist}
+                )
+                res = cursor.fetchone()
+
+        if res:
+            return Watchlist(
+                id_utilisateur=res["id_utilisateur"],
+                nom_watchlist=res["nom_watchlist"],
+                id_watchlist = res["id_watchlist"]
+            )
+        else:
+            raise ValueError("Watchlist introuvable.")

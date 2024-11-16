@@ -43,8 +43,8 @@ class AbonnementDao():
             if pub is not None and "pub" in pub:
                 pub = pub["pub"]
             if pub is None:
-                logging.warning(f"Aucune information sur la publicité trouvée pour l'abonnement ID: {id_abonnement}")
-                return False 
+                logging.warning(f"Aucune information sur la publicité trouvée pour l'abonnement ID: {abonnement.id_abonnement}")
+                return False
             return pub
         except Exception as e:
             logging.error(f"Erreur lors de la récupération du pub de l'abonnement ID:{id_abonnement} - {e}")
@@ -124,10 +124,12 @@ class AbonnementDao():
         Récupère les abonnements filtrés sous forme de dictionnaire selon les préférences spécifiées par l'utilisateur.
         """
         try:
+            qualite_map = {'HD': 1, '4K': 2, '8K': 3}
+            qualite_valeur = qualite_map.get(preferences['qualite'], 0)
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT id_abonnement, nom_plateforme "
+                        "SELECT id_abonnement, nom_plateforme, prix "
                         "FROM projet11.abonnement "
                         "WHERE pub = %s "
                         "AND (CASE "
@@ -137,11 +139,11 @@ class AbonnementDao():
                         "   ELSE 0 "
                         "END) >= %s "
                         "ORDER BY prix ASC;",
-                        (preferences['pub'], preferences['qualite_num']),
+                        (preferences['pub'], qualite_valeur),
                     )
                     abonnements_filtres = cursor.fetchall()
                     abonnements_list = [
-                    {'id_abonnement': row['id_abonnement'], 'nom_plateforme': row['nom_plateforme']} for row in abonnements_filtres
+                    {'id_abonnement': row['id_abonnement'], 'nom_plateforme': row['nom_plateforme'],'prix': row['prix']} for row in abonnements_filtres
                 ]
                     return abonnements_list
         except Exception as e:
