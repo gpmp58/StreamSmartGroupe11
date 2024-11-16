@@ -35,6 +35,13 @@ class ServicePlateforme:
             return False
     
     def ajouter_plateforme(self, film: Film):
+        """
+        Ajoute des plateformes de streaming pour un film donné en utilisant les informations récupérées via la méthode recuperer_streaming de l'objet Film.
+
+        Attributs
+        ----------
+        Film : Le film ( de type Film) pour lequel les plateformes de streaming doivent être ajoutées. 
+        """
         streaming_info = film.recuperer_streaming()
         for plateforme in streaming_info:
             id_plateforme = plateforme['id']

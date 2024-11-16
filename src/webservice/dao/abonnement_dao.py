@@ -120,6 +120,9 @@ class AbonnementDao():
             return abonnements
 
     def abonnement_filtrés(self, preferences: dict):
+        """
+        Récupère les abonnements filtrés sous forme de dictionnaire selon les préférences spécifiées par l'utilisateur.
+        """
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:

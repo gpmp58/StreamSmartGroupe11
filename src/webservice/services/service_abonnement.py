@@ -23,6 +23,17 @@ class AbonnementService():
         return prix
 
     def pub_abonnement(self, id_abonnement):
+        """
+        Vérifie si un abonnement spécifique contient des publicités.
+
+        Attributs
+        ----------
+        id_abonnement : L'identifiant de l'abonnement pour lequel on souhaite vérifier la présence de publicités.
+
+        Returns : 
+        str : Une chaîne de caractères indiquant si l'abonnement contient ou non des publicités.
+        """
+        
         abonnement = Abonnement(id_abonnement, "ds")
         pub = AbonnementDao().get_pub_abonnement_DAO(abonnement)
         if pub :
