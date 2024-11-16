@@ -94,6 +94,22 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Initialisation de l'état de session si nécessaire
+if 'pseudo' not in st.session_state:
+    st.session_state['pseudo'] = None
+if 'id_utilisateur' not in st.session_state:
+    st.session_state['id_utilisateur'] = None
+
+# Barre latérale pour afficher les informations de l'utilisateur
+with st.sidebar:
+    if st.session_state['pseudo']:
+        st.write(f"**Utilisateur :** {st.session_state['pseudo']}")
+        st.write(f"**ID Utilisateur :** {st.session_state['id_utilisateur']}")
+        st.write("**État : Connecté**")
+    else:
+        st.write("Utilisateur : Non connecté")
+        st.write("État : Déconnecté")
+
 # Fonction pour tronquer le texte
 def tronquer_texte(texte, max_longueur):
     if len(texte) > max_longueur:
