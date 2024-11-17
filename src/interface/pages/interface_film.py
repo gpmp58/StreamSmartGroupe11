@@ -146,7 +146,7 @@ def rechercher_films(nom_film):
 
                     with cols[j]:
                         st.markdown(f"""
-                            <a href="/interface_details_film?film_id={film_id}" target="_self" style="text-decoration: none;">
+                            <a href="/interface_details_film?film_id={film_id}&pseudo={st.session_state['pseudo']}&id_utilisateur={st.session_state['id_utilisateur']}" target="_self" style="text-decoration: none;">
                                 <div class="film-card">
                                     <img src="{image_url}" alt="{film_name}" />
                                     <div class="film-info">
