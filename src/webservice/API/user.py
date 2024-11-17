@@ -28,6 +28,10 @@ class UtilisateurDisplayModel(BaseModel):
     adresse_mail: str
     langue: str
 
+class UtilisateurPseudoModel(BaseModel):
+    pseudo: str
+
+
 #1.  POST : Créer un nouvel utilisateur 
 @router.post("/utilisateurs", response_model=UtilisateurDisplayModel)
 async def create_utilisateur(utilisateur: UtilisateurModel):
@@ -102,3 +106,21 @@ async def afficher_utilisateur(id_utilisateur: str):
         )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+# Route API pour récupérer l'ID utilisateur via le pseudo
+@router.post("/utilisateurs/id")
+async def obtenir_id_utilisateur(data: UtilisateurPseudoModel):
+    """
+    Récupère l'ID utilisateur à partir du pseudo fourni.
+    """
+    utilisateur_service = UtilisateurService()  
+    try:
+        utilisateur = utilisateur_service.get_id_utilisateur(pseudo=data.pseudo)
+        if utilisateur:
+            return {"id_utilisateur": utilisateur.get("id_utilisateur")}
+        else:
+            raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

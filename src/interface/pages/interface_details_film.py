@@ -1,7 +1,5 @@
 import streamlit as st
 from src.webservice.business_object.film import Film
-import requests
-from src.interface.main_interface import afficher_etat_connexion
 
 # Injecter le CSS global
 def inject_css2():
@@ -115,38 +113,6 @@ def inject_css2():
         border-radius: 5px;
         margin-right: 5px;
     }
-
-    /* Bouton "Ajouter à la watchlist" */
-    .watchlist-button {
-        background-color: #FFDD57;
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        text-align: center;
-        width: 100%;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-    .watchlist-button:hover {
-        background-color: #ffcc00;
-        transform: scale(1.05);
-    }
-
-    /* Grille de logos de streaming */
-    .streaming-logo {
-        border: 1px solid #444;
-        padding: 10px;
-        border-radius: 10px;
-        background-color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60px;
-        width: 60px;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -155,25 +121,18 @@ if 'pseudo' not in st.session_state:
     st.session_state['pseudo'] = None
 if 'id_utilisateur' not in st.session_state:
     st.session_state['id_utilisateur'] = None
+if 'id_film_selected' not in st.session_state:
+    st.session_state['id_film_selected'] = None
 
-# Barre latérale pour afficher les informations de l'utilisateur
-with st.sidebar:
-    if st.session_state['pseudo']:
-        st.write(f"**Utilisateur :** {st.session_state['pseudo']}")
-        st.write(f"**ID Utilisateur :** {st.session_state['id_utilisateur']}")
-        st.write("**État : Connecté**")
-    else:
-        st.write("Utilisateur : Non connecté")
-        st.write("État : Déconnecté")
-
-
-query_params = st.query_params  # Utiliser la bonne méthode
+# Utiliser st.query_params pour extraire l'ID du film
+query_params = st.query_params
 if "film_id" in query_params:
     film_id = query_params["film_id"]
 else:
-    raise Exception("Pas d'id pour le film")
+    st.error("Pas d'id pour le film.")
+    st.stop()
 
-print(f"afficher détail film pour le film {film_id}")
+print(f"Afficher détail film pour le film {film_id}")
 film = Film(film_id)  # Récupérer les détails du film
 st.title(film.details.get("name", "Titre non disponible"))
 
@@ -193,7 +152,7 @@ with details_container:
         # Section pour la description
         st.markdown("<div class='details-section'>", unsafe_allow_html=True)
         description = film.details.get('description')
-        if len(description) > 0:
+        if description:
             st.markdown(f"<div class='details-description'>{description}</div>", unsafe_allow_html=True)
         else:
             st.markdown("<div class='details-description'>Pas de description disponible.</div>", unsafe_allow_html=True)
@@ -202,27 +161,12 @@ with details_container:
         # Informations sur le film
         st.markdown("<div class='details-section'>", unsafe_allow_html=True)
         st.markdown(f"<div class='details-info'>Date de sortie : {film.details.get('date_sortie', 'Date non disponible')}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='details-info'>Durée : {film.details.get('duree', 'Durée non disponible')} </div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='details-info'>Durée : {film.details.get('duree', 'Durée non disponible')}</div>", unsafe_allow_html=True)
         st.markdown(f"<div class='details-info'>Genres : {', '.join(film.details.get('genres', ['Pas de genres disponibles']))}</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # Bouton "Ajouter à la watchlist"
-        st.markdown("""<button class="watchlist-button">Ajouter à la watchlist</button>""", unsafe_allow_html=True)
-
-        # Recherche des sites de streaming
-        streaming_sites = film.streaming
-        if not streaming_sites:
-            st.write("Pas de plateformes de streaming disponibles.")
-        else:
-            st.markdown("<div class='streaming-links'>Disponibles sur :</div>", unsafe_allow_html=True)
-
-            st.markdown("<div style='display: flex; flex-wrap: wrap; margin-top: 10px;'>", unsafe_allow_html=True)
-            for site in streaming_sites:
-                if "logo" in site:
-                    st.markdown(f"""
-                        <div style='margin-right: 10px;'>
-                            <a href='{site["id"]}' target='_blank'>
-                                <img src='https://image.tmdb.org/t/p/w45{site["logo"]}' alt='{site["name"]}' style='width: 30px; height: auto; border-radius: 5px;' />
-                            </a>
-                        </div>
-                    """, unsafe_allow_html=True)
+        # Bouton "Ajouter à la Watchlist"
+        if st.button("Ajouter à la Watchlist"):
+            # Sauvegarder l'ID du film dans l'état de session et rediriger
+            st.session_state["id_film_selected"] = film_id
+            st.switch_page("pages/interface_ajout_film_watchlist.py")

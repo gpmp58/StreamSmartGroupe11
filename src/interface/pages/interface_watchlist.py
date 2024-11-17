@@ -53,7 +53,7 @@ if st.session_state['pseudo']:
                 if response.status_code == 200:
                     st.success("✅ Watchlist créée avec succès !")
                 else:
-                    st.error(f"Erreur : {response.json().get('detail', 'Message d\'erreur non spécifié.')}")
+                    st.error(f"Erreur : {response.json().get('detail', 'ERREUR INCONUE')}")
             except requests.exceptions.RequestException as e:
                 st.error(f"Erreur de connexion à l'API : {e}")
 
@@ -98,7 +98,7 @@ if st.session_state['pseudo']:
                 if response.status_code == 200:
                     st.success("✅ Film ajouté à la watchlist avec succès !")
                 else:
-                    st.error(f"Erreur : {response.json().get('detail', 'Message d\'erreur non spécifié.')}")
+                    st.error(f"Erreur : {response.json().get('detail', 'ERREUR INCONNUE')}")
             except requests.exceptions.RequestException as e:
                 st.error(f"Erreur de connexion à l'API : {e}")
 
