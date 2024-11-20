@@ -7,43 +7,50 @@ from src.webservice.business_object.watchlist import Watchlist
 
 
 def test_critere_init_succes():
-    Critere(Watchlist("nom_watch", 2345, [], None), {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
+    Critere(2346, {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
 
 @pytest.mark.parametrize(
-    "watchlist, criteres, erreur, message_erreur",
+    "id_watchlist, criteres, erreur, message_erreur",
     [
         (
-            ["watchlist"],
+            ["id_watchlist"],
             {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False},
             Exception,
-            "La watchlist n'est pas une instance Watchlist.",
+            "L'id watchlist n'est pas un entier.",
         ),
         (
-            Watchlist('nom_watch', 2345, [], None),
+            2345,
             1230,
             Exception,
             "criteres n'est pas un dictionnaire.",
         ),
         (
-            Watchlist("nom_watch", 2345, [], None),
+            2345,
+            {"quantité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False},
+            Exception,
+            "Clé quantité inconnue dans les critères.",
+
+        ),
+        (
+            2345,
             {"qualité" : 2, "pub": True, "prix" : True, "rapport_quantite_prix": False},
             Exception,
             "La valeur de la clé qualité n'est pas du type str.",
         ),
         (
-            Watchlist("nom_watch", 2345, [], None),
+            2345,
             {"qualité" : "qualité", "pub": "True", "prix" : True, "rapport_quantite_prix": False},
             Exception,
             "La valeur de la clé pub n'est pas du type bool.",
         ),
         (
-            Watchlist("nom_watch", 2345, [], None),
-            {"qualité" : 2, "pub": True, "prix" : {"True": True}, "rapport_quantite_prix": False},
+            2345,
+            {"qualité" : "qualité", "pub": True, "prix" : 2, "rapport_quantite_prix": False},
             Exception,
             "La valeur de la clé prix n'est pas du type bool.",
         ),
         (
-            Watchlist("nom_watch", 2345, [], None),
+            2345,
             {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": 23},
             Exception,
             "La valeur de la clé rapport_quantite_prix n'est pas du type bool.",
@@ -51,15 +58,15 @@ def test_critere_init_succes():
     ],
 )
 def test_critere_init_echec(
-    watchlist, criteres, erreur, message_erreur
+    id_watchlist, criteres, erreur, message_erreur
 ):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
-        Critere(watchlist, criteres)
+        Critere(id_watchlist, criteres)
 
-def test_get_watchlist():
-    critere = Critere(Watchlist("nom_watch", 2345, [], None), {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
-    assert critere.get_watchlist() == Watchlist("nom_watch", 2345, [], None)
+def test_get_id_watchlist():
+    critere = Critere(2345, {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
+    assert critere.get_id_watchlist() == 2345
 
 def test_get_critere():
-    critere = Critere(Watchlist("nom_watch", 2345, [], None), {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
+    critere = Critere(2345, {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
     assert critere.get_critere() == {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False}
