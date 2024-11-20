@@ -1,89 +1,76 @@
-import streamlit as st
+from InquirerPy import prompt
 import requests
-from src.interface.main_interface import afficher_etat_connexion
+from src.interface.main_interface import main
+from src.interface.pages.interface_utilisateur_connecte import main1
+from src.interface.session_manager import set_session_state, get_session_state  
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
 
-# Interface pour la connexion utilisateur
-def page_connexion():
-    st.title("Connexion Utilisateur")
+def connexion_utilisateur():
+    """Connexion de l'utilisateur avec InquirerPy."""
+    questions = [
+        {
+            "type": "input",
+            "name": "pseudo",
+            "message": "Entrez votre pseudo :",
+        },
+        {
+            "type": "password",
+            "name": "mdp",
+            "message": "Entrez votre mot de passe :",
+        },
+    ]
 
-    # Champs de connexion
-    pseudo = st.text_input("Pseudo")
-    mdp = st.text_input("Mot de Passe", type="password")
+    answers = prompt(questions)
+    pseudo = answers.get("pseudo")
+    mdp = answers.get("mdp")
 
-    if st.button("Se connecter"):
-        if not (pseudo and mdp):
-            st.error("Veuillez entrer votre pseudo et mot de passe.")
-        else:
-            # Préparer les données à envoyer à l'API
-            data = {
-                "pseudo": pseudo,
-                "mdp": mdp,
-            }
+    if not (pseudo and mdp):
+        print("\n❌ Veuillez entrer votre pseudo et mot de passe.\n")
+        return
 
-            # Effectuer l'appel API pour se connecter
-            try:
-                response = requests.post(f"{LIEN_API}/utilisateurs/login", json=data)
+    data = {"pseudo": pseudo, "mdp": mdp}
 
-                # Vérifier le résultat
-                if response.status_code == 200:
-                    # Récupérer l'ID utilisateur depuis la route /utilisateurs/id
-                    try:
-                        id_response = requests.post(f"{LIEN_API}/utilisateurs/id", json={"pseudo": pseudo})
-                        if id_response.status_code == 200:
-                            id_utilisateur = id_response.json().get('id_utilisateur')
+    try:
+        # Appeler l'API pour se connecter
+        response = requests.post(f"{LIEN_API}/utilisateurs/login", json=data)
 
-                            # Vérifier si l'ID utilisateur est valide
-                            if id_utilisateur:
-                                # Stocker les informations utilisateur dans la session
-                                st.session_state['pseudo'] = pseudo
-                                st.session_state['id_utilisateur'] = id_utilisateur
+        if response.status_code == 200:
+            # Récupérer l'ID utilisateur
+            id_response = requests.post(f"{LIEN_API}/utilisateurs/id", json={"pseudo": pseudo})
+            if id_response.status_code == 200:
+                id_utilisateur = id_response.json().get("id_utilisateur")
 
-                                # Faire une requête pour récupérer les détails utilisateur
-                                try:
-                                    utilisateur_response = requests.get(f"{LIEN_API}/utilisateurs/{id_utilisateur}/afficher")
-                                    if utilisateur_response.status_code == 200:
-                                        utilisateur_info = utilisateur_response.json()
+                if id_utilisateur:
+                    # Mettre à jour l'état global via session_manager
+                    set_session_state(pseudo=pseudo, id_utilisateur=id_utilisateur)
 
-                                        # Afficher les informations utilisateur
-                                        st.success(f"Connexion réussie. Bienvenue, {pseudo}.")
-                                        st.write(f"Votre identifiant utilisateur est : {id_utilisateur}.")
-                                        st.write(f"**Nom complet :** {utilisateur_info.get('nom')} {utilisateur_info.get('prenom')}")
-                                        st.write(f"**Pseudo :** {utilisateur_info.get('pseudo')}")
-                                        st.write(f"**Adresse mail :** {utilisateur_info.get('adresse_mail')}")
-                                        st.write(f"**Langue :** {utilisateur_info.get('langue')}")
-
-                                        # Mise à jour de la sidebar
-                                        with st.sidebar:
-                                            st.success(f"🎉 Connecté avec succès !")
-                                            st.write(f"**Pseudo :** {st.session_state['pseudo']}")
-                                            st.write(f"**ID Utilisateur :** {st.session_state['id_utilisateur']}")
-                                            st.write(f"**Nom complet :** {utilisateur_info.get('nom')} {utilisateur_info.get('prenom')}")
-                                            st.write(f"**Pseudo :** {utilisateur_info.get('pseudo')}")
-                                            st.write(f"**Adresse mail :** {utilisateur_info.get('adresse_mail')}")
-                                            st.write(f"**Langue :** {utilisateur_info.get('langue')}")
-                                            st.switch_page("pages/interface_utilisateur_connecte.py")
-                                    else:
-                                        st.error("Impossible de récupérer les détails utilisateur.")
-                                except requests.exceptions.RequestException as e:
-                                    st.error(f"Erreur lors de la récupération des informations utilisateur : {e}")
-                            else:
-                                st.error("Erreur : ID utilisateur non récupéré.")
-                        else:
-                            st.error(f"Erreur : {id_response.json().get('detail', 'Erreur inconnue')}")
-                    except requests.exceptions.RequestException as e:
-                        st.error(f"Erreur lors de la récupération de l'ID utilisateur : {e}")
+                    # Afficher les détails utilisateur
+                    utilisateur_response = requests.get(f"{LIEN_API}/utilisateurs/{id_utilisateur}/afficher")
+                    if utilisateur_response.status_code == 200:
+                        utilisateur_info = utilisateur_response.json()
+                        print("\n✅ Connexion réussie. Bienvenue !\n")
+                        print("=== Informations Utilisateur ===")
+                        print(f"🔹 Pseudo : {pseudo}")
+                        print(f"🔹 ID Utilisateur : {id_utilisateur}")
+                        print(f"🔹 Nom complet : {utilisateur_info.get('nom')} {utilisateur_info.get('prenom')}")
+                        print(f"🔹 Adresse mail : {utilisateur_info.get('adresse_mail')}")
+                        print(f"🔹 Langue préférée : {utilisateur_info.get('langue')}")
+                        print("==============================\n")
+                    else:
+                        print("\n❌ Impossible de récupérer les détails utilisateur.\n")
                 else:
-                    st.error(f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
-            except requests.exceptions.RequestException as e:
-                st.error(f"Erreur de connexion à l'API : {e}")
+                    print("\n❌ Erreur : ID utilisateur non récupéré.\n")
+            else:
+                print(f"\n❌ Erreur : {id_response.json().get('detail', 'Erreur inconnue')}\n")
+        else:
+            print(f"\n❌ Erreur : {response.json().get('detail', 'Erreur inconnue')}\n")
+    except requests.exceptions.RequestException as e:
+        print(f"\n❌ Erreur de connexion à l'API : {e}\n")
+    
+    # Rediriger vers la page utilisateur connecté
+    main1()
 
-# Fonction principale pour la connexion
-def page():
-    page_connexion()
-
-# Lancer la page
 if __name__ == "__main__":
-    page()
+    connexion_utilisateur()

@@ -1,114 +1,13 @@
-import streamlit as st
+from InquirerPy import prompt
 import requests
-from src.interface.main_interface import afficher_etat_connexion
+from src.interface.session_manager import get_session_state
+from src.webservice.services.service_watchlist import WatchlistService
+from src.webservice.services.service_plateforme import ServicePlateforme
+from src.webservice.business_object.watchlist import Watchlist
+from src.webservice.business_object.film import Film
 
-# Configuration de la page
-
-
-# Injecter le CSS global
-def inject_css():
-    st.markdown("""
-    <style>
-    .reportview-container {
-        background-color: #1e1e1e; /* Couleur de fond sombre */
-    }
-    .sidebar .sidebar-content {
-        background-color: #2e2e2e; /* Couleur de fond de la barre latérale */
-    }
-    h1, h2, h3, h4, h5, h6 {
-        color: #ffffff; /* Couleur des titres */
-    }
-    p, li {
-        color: #cccccc; /* Couleur du texte normal */
-    }
-    .film-card {
-        position: relative;
-        overflow: hidden;
-        margin: 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
-        background-color: #2e2e2e;
-        width: 160px;
-        height: 270px;
-        margin-right: 20px;
-        margin-left: 20px;
-    }
-    .film-card img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-        transition: filter 0.3s ease;
-    }
-    .film-card:hover img {
-        filter: brightness(50%);
-    }
-    .film-info {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        transform: translateY(-50%);
-        padding: 5px;
-        font-weight: bold;
-        font-size: 12px;
-        color: #ffffff;
-        background-color: rgba(0, 0, 0, 0.5);
-        text-align: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    .film-card:hover .film-info {
-        opacity: 1;
-    }
-    .details-container {
-        display: flex;
-        align-items: flex-start;
-        margin: 20px;
-        background-color: #2e2e2e;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
-    }
-    .details-title {
-        font-size: 24px;
-        font-weight: bold;
-        color: #FFDD57;
-        border-bottom: 2px solid #FFDD57;
-        padding-bottom: 5px;
-        margin-bottom: 10px;
-    }
-    .streaming-links img {
-        width: 30px;
-        height: auto;
-        border-radius: 5px;
-        margin-right: 5px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Configurer la page
-st.set_page_config(
-    page_title="Recherche de films",
-    page_icon="🎬",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# Initialisation de l'état de session si nécessaire
-if 'pseudo' not in st.session_state:
-    st.session_state['pseudo'] = None
-if 'id_utilisateur' not in st.session_state:
-    st.session_state['id_utilisateur'] = None
-
-# Barre latérale pour afficher les informations de l'utilisateur
-with st.sidebar:
-    if st.session_state['pseudo']:
-        st.write(f"**Utilisateur :** {st.session_state['pseudo']}")
-        st.write(f"**ID Utilisateur :** {st.session_state['id_utilisateur']}")
-        st.write("**État : Connecté**")
-    else:
-        st.write("Utilisateur : Non connecté")
-        st.write("État : Déconnecté")
+# URL de base de l'API FastAPI
+LIEN_API = "http://127.0.0.1:8000"
 
 # Fonction pour tronquer le texte
 def tronquer_texte(texte, max_longueur):
@@ -116,63 +15,203 @@ def tronquer_texte(texte, max_longueur):
         return texte[:max_longueur] + "..."
     return texte
 
-# Fonction pour rechercher les films via l'API locale
+# Fonction pour récupérer et afficher les watchlists de l'utilisateur
+def selectionner_watchlist():
+    """
+    Permet à l'utilisateur de sélectionner une watchlist parmi celles disponibles.
+    Retourne l'ID de la watchlist sélectionnée.
+    """
+    from src.interface.main_interface import main
+    session_state = get_session_state()
+    id_utilisateur = session_state.get("id_utilisateur")
+
+    if not id_utilisateur:
+        print("❌ Vous devez être connecté pour voir vos watchlists.")
+        main()
+
+    try:
+        # Appeler la route pour récupérer les watchlists de l'utilisateur
+        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+        response.raise_for_status()  # Vérifie les erreurs HTTP
+        watchlists = response.json().get("watchlists", [])
+
+        if not watchlists:
+            print("❌ Vous n'avez pas encore de watchlists. Créez-en une avant d'ajouter des films.")
+            main()
+
+        # Afficher les watchlists disponibles
+        print("\n=== Vos Watchlists ===")
+        choix_watchlists = [
+            {"name": f"ID: {wl['id_watchlist']} - Nom: {wl['nom_watchlist']}", "value": wl["id_watchlist"]}
+            for wl in watchlists
+        ]
+
+        # Permettre à l'utilisateur de choisir une watchlist
+        questions = [
+            {
+                "type": "list",
+                "name": "id_watchlist",
+                "message": "Choisissez une watchlist :",
+                "choices": choix_watchlists,
+            }
+        ]
+        answers = prompt(questions)
+        return answers["id_watchlist"]
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Erreur lors de la récupération des watchlists : {e}")
+        main()
+
+# Fonction pour ajouter un film à une watchlist
+def ajouter_a_watchlist(film_id):
+    """
+    Ajoute un film à une watchlist sélectionnée par l'utilisateur, ou en crée une nouvelle.
+    """
+    # Étape 1 : Sélectionner ou créer une watchlist
+    id_watchlist = selectionner_watchlist()
+    if not id_watchlist:
+        print("💡 Astuce : Vous pouvez d'abord créer une watchlist depuis votre interface.")
+        main()  # Retour au menu principal
+
+    try:
+        # Étape 2 : Créer un objet Watchlist
+        watchlist = Watchlist(
+            nom_watchlist="",  # Récupérer le nom si nécessaire
+            id_utilisateur=0,  # Ajoutez l'utilisateur si nécessaire
+            id_watchlist=id_watchlist
+        )
+
+        # Étape 3 : Créer un objet Film
+        film = Film(id_film=film_id)
+        nom_film = film.details["name"]  # Récupérer les détails du film
+        print(f"Ajout du film : {nom_film}")
+
+        # Étape 4 : Ajouter le film à la watchlist
+        succes_ajout = WatchlistService().ajouter_film(film=film, watchlist=watchlist)
+        if not succes_ajout:
+            print(f"❌ Le film (ID: {film_id}) est déjà présent dans la watchlist (ID: {id_watchlist}).")
+            return
+
+        print(f"✅ Film ajouté à la watchlist (ID: {id_watchlist}).")
+
+        # Étape 5 : Associer le film à ses plateformes : Juste la route à appeler.
+        streaming_info = film.recuperer_streaming()
+        for plateforme in streaming_info:
+            id_plateforme = plateforme.get("id")
+            nom_plateforme = plateforme.get("name")
+
+            if not id_plateforme or not nom_plateforme:
+                print("❌ Informations de plateforme incomplètes.")
+                continue
+
+            # Mise à jour ou ajout de la plateforme
+            success_plateforme = ServicePlateforme().mettre_a_jour_plateforme(nom_plateforme, id_plateforme)
+            if success_plateforme:
+                print(f"✅ Plateforme '{nom_plateforme}' ajoutée ou mise à jour.")
+            else:
+                print(f"La Plateforme '{nom_plateforme}' existe déjà.")
+
+            # Associer le film à la plateforme
+            ServicePlateforme().ajouter_plateforme(film)
+
+        print("✅ Association des plateformes au film réussie.")
+
+    except Exception as e:
+        print(f"❌ Erreur interne : {e}")
+
+# Fonction pour afficher les détails d'un film
+def afficher_details_film(film_id):
+    try:
+        # Récupérer les détails du film depuis l'API
+        details_url = f"{LIEN_API}/films/{film_id}"
+        response = requests.get(details_url)
+        response.raise_for_status()
+        film = response.json()
+
+        # Afficher les détails du film
+        print("\n=== Détails du Film ===")
+        print(f"Nom : {film.get('name', 'Titre non disponible')}")
+        print(f"Description : {film.get('description', 'Pas de description disponible.')}")
+        print(f"Date de sortie : {film.get('date_sortie', 'Date non disponible')}")
+        print(f"Durée : {film.get('duree', 'Durée non disponible')}")
+        print(f"Genres : {', '.join(film.get('genres', ['Pas de genres disponibles']))}")
+        print("\n")
+
+        # Demander si l'utilisateur souhaite ajouter à la watchlist
+        questions = [
+            {
+                "type": "confirm",
+                "name": "add_to_watchlist",
+                "message": "Voulez-vous ajouter ce film à votre watchlist ?",
+                "default": False,
+            }
+        ]
+        answers = prompt(questions)
+        if answers["add_to_watchlist"]:
+            ajouter_a_watchlist(film_id)
+        else:
+            print("Retour au menu principal")
+            from src.interface.pages.interface_utilisateur_connecte import main1
+            main1()
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur lors de la récupération des détails du film : {e}")
+
+# Fonction pour rechercher des films
 def rechercher_films(nom_film):
     try:
         # Endpoint pour rechercher des films
-        url = "http://127.0.0.1:8000/films/recherche"
+        url = f"{LIEN_API}/films/recherche"
         response = requests.post(url, json={"nom_film": nom_film})
-        response.raise_for_status()  # Gérer les erreurs HTTP
+        response.raise_for_status()
         films = response.json().get("films", {})
 
         if films:
-            film_items = list(films.items())
-            for i in range(0, len(film_items), 4):
-                cols = st.columns(4)
-                for j, (film_id, film_name) in enumerate(film_items[i:i+4]):
-                    # Récupération des détails du film
-                    details_url = f"http://127.0.0.1:8000/films/{film_id}"
-                    film_response = requests.get(details_url)
-                    if film_response.status_code == 200:
-                        film_details = film_response.json()
-                    else:
-                        continue
-
-                    description = film_details.get("description", "Pas de description disponible.")
-                    description_tronquee = tronquer_texte(description, 300)
-
-                    # Vérifie si l'image est disponible
-                    image_url = film_details.get("image", "https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible")
-
-                    with cols[j]:
-                        st.markdown(f"""
-                            <a href="/interface_details_film?film_id={film_id}" target="_self" style="text-decoration: none;">
-                                <div class="film-card">
-                                    <img src="{image_url}" alt="{film_name}" />
-                                    <div class="film-info">
-                                        {description_tronquee}
-                                    </div>
-                                    <div style="padding: 5px 0; font-weight: bold; font-size: 14px; color: #ffffff; text-align: center;">
-                                        {film_name}
-                                    </div>
-                                </div>
-                            </a>
-                        """, unsafe_allow_html=True)
-                st.markdown("<hr style='border: 0; height: 1px; background-color: #444; margin: 5px 0;'>", unsafe_allow_html=True)
+            print("\n=== Résultats de recherche ===")
+            for film_id, film_name in films.items():
+                print(f"\nID: {film_id} | Nom: {film_name}")
         else:
-            st.write("Aucun film trouvé avec ce nom.")
+            print("Aucun film trouvé avec ce nom.")
     except requests.exceptions.RequestException as e:
-        st.error(f"Erreur lors de l'appel API: {e}")
+        print(f"Erreur lors de l'appel API : {e}")
 
-# Interface principale avec Streamlit
-def page():
-    inject_css()
+# Fonction principale pour gérer la recherche et les détails
+def page_recherche_films():
+    print("=== Recherche de films ===")
 
-    st.title("Recherche de films")
-    nom_film = st.text_input("Entrez le nom du film :")
+    while True:
+        try:
+            # Collecte du nom du film
+            questions = [
+                {
+                    "type": "input",
+                    "name": "nom_film",
+                    "message": "Entrez le nom du film :",
+                    "validate": lambda result: len(result) > 0 or "Le champ 'Nom du film' est obligatoire.",
+                }
+            ]
 
-    if st.button("Rechercher"):
-        rechercher_films(nom_film)
+            answers = prompt(questions)
+            nom_film = answers["nom_film"]
+
+            # Appeler la fonction de recherche
+            rechercher_films(nom_film)
+
+            # Demander l'ID pour afficher les détails
+            questions = [
+                {
+                    "type": "input",
+                    "name": "film_id",
+                    "message": "Entrez l'ID d'un film pour voir ses détails :",
+                    "validate": lambda result: result.isdigit() or "Veuillez entrer un nombre valide.",
+                }
+            ]
+
+            film_id = int(prompt(questions)["film_id"])
+            afficher_details_film(film_id)
+
+        except Exception as e:
+            print(f"❌ Une erreur s'est produite : {e}")
+            continue  # Ne pas arrêter, permet de continuer à interagir avec l'application
 
 if __name__ == "__main__":
-    page()
+    page_recherche_films()
