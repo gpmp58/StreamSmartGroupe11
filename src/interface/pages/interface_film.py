@@ -166,9 +166,45 @@ def rechercher_films(nom_film):
         films = response.json().get("films", {})
 
         if films:
+<<<<<<< HEAD
             print("\n=== Résultats de recherche ===")
             for film_id, film_name in films.items():
                 print(f"\nID: {film_id} | Nom: {film_name}")
+=======
+            film_items = list(films.items())
+            for i in range(0, len(film_items), 4):
+                cols = st.columns(4)
+                for j, (film_id, film_name) in enumerate(film_items[i:i+4]):
+                    # Récupération des détails du film
+                    details_url = f"http://127.0.0.1:8000/films/{film_id}"
+                    film_response = requests.get(details_url)
+                    if film_response.status_code == 200:
+                        film_details = film_response.json()
+                    else:
+                        continue
+
+                    description = film_details.get("description", "Pas de description disponible.")
+                    description_tronquee = tronquer_texte(description, 300)
+
+                    # Vérifie si l'image est disponible
+                    image_url = film_details.get("image", "https://via.placeholder.com/250x360/000000/000000?text=Image+non+disponible")
+
+                    with cols[j]:
+                        st.markdown(f"""
+                            <a href="/interface_details_film?film_id={film_id}&pseudo={st.session_state['pseudo']}&id_utilisateur={st.session_state['id_utilisateur']}" target="_self" style="text-decoration: none;">
+                                <div class="film-card">
+                                    <img src="{image_url}" alt="{film_name}" />
+                                    <div class="film-info">
+                                        {description_tronquee}
+                                    </div>
+                                    <div style="padding: 5px 0; font-weight: bold; font-size: 14px; color: #ffffff; text-align: center;">
+                                        {film_name}
+                                    </div>
+                                </div>
+                            </a>
+                        """, unsafe_allow_html=True)
+                st.markdown("<hr style='border: 0; height: 1px; background-color: #444; margin: 5px 0;'>", unsafe_allow_html=True)
+>>>>>>> aae259375c1bb2645f8c051fef004070d65772a0
         else:
             print("Aucun film trouvé avec ce nom.")
     except requests.exceptions.RequestException as e:

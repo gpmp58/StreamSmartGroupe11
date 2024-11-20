@@ -22,11 +22,21 @@ class Critere():
         if not isinstance(criteres, dict):
             raise Exception(
                 "criteres n'est pas un dictionnaire.")
-          
-        types_attendus = [str, bool, bool, bool]
 
-        for valeur, (key, types_attendus) in enumerate(zip(criteres.values(), types_attendus)):
-            assert isinstance(criteres[key], types_attendus), f"La valeur de la clé {key} n'est pas du type {types_attendus.__name__}."        
+        types_attendus = {
+            "qualité": str,
+            "pub": bool,
+            "prix": bool,
+            "rapport_quantite_prix": bool
+        }
+
+        
+        for key, valeur in criteres.items():
+            if key not in types_attendus:
+                raise Exception(f"Clé {key} inconnue dans les critères.")
+            expected_type = types_attendus[key]
+            if not isinstance(valeur, expected_type):
+                raise Exception(f"La valeur de la clé {key} n'est pas du type {expected_type.__name__}.")       
 
         self.id_watchlist = id_watchlist
         self.criteres = criteres

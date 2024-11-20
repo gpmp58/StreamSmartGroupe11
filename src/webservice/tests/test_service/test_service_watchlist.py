@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from src.webservice.services.service_watchlist import WatchlistService
 from src.webservice.business_object.watchlist import Watchlist
 from src.webservice.dao.watchlist_dao import WatchlistDao
+from src.webservice.business_object.film import Film
 
 
 class ClassWatchlistTest(unittest.TestCase):
@@ -36,7 +37,7 @@ class ClassWatchlistTest(unittest.TestCase):
         id_watchlist = 1
         nom_film = "Film Test"
 
-        film = MagicMock()
+        film = MagicMock(Film)
         film.id_film = id_film
         film.nom_film = nom_film
 
