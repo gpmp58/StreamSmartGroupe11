@@ -1,68 +1,30 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import List
-from src.webservice.services.service_plateforme import ServicePlateforme
 from src.webservice.business_object.film import Film
+from src.webservice.services.service_plateforme import ServicePlateforme
 
 router = APIRouter()
 service_plateforme = ServicePlateforme()
 
-
-# Modèle pour ajouter une plateforme
-class PlateformeModel(BaseModel):
-    id_plateforme: int
-    nom_plateforme: str
-
-
-# Modèle pour ajouter des plateformes associées à un film
-class FilmPlatformRequest(BaseModel):
+class FilmModel(BaseModel):
     id_film: int
-    streaming_info: List[PlateformeModel]
 
-
-# Modèle de réponse
-class PlateformeResponse(BaseModel):
-    message: str
-
-
-# 1. POST /api/plateformes/mettre-a-jour : Mettre à jour ou ajouter une plateforme
-@router.post("/plateformes/mettre-a-jour", response_model=PlateformeResponse)
-async def mettre_a_jour_plateforme(request: PlateformeModel):
+@router.post("/films/ajouter_plateformes", response_model=dict)
+async def ajouter_plateformes(film_data: FilmModel):
     """
-    Met à jour ou ajoute une nouvelle plateforme de streaming dans la base de données.
+    Ajoute des plateformes de streaming pour un film donné.
 
-    - **id_plateforme**: ID unique de la plateforme.
-    - **nom_plateforme**: Nom de la plateforme.
+    Attributs
+    ----------
+    FilmModel : Informations sur le film.
     """
     try:
-        success = service_plateforme.mettre_a_jour_plateforme(
-            nom_plateforme=request.nom_plateforme,
-            id_plateforme=request.id_plateforme
-        )
-        if success:
-            return {"message": f"La plateforme '{request.nom_plateforme}' a été ajoutée avec succès."}
-        else:
-            return {"message": f"La plateforme '{request.nom_plateforme}' existe déjà."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors de l'opération : {str(e)}")
+        # Étape 1 : Construire l'objet Film
+        film = Film(id_film=film_data.id_film)
 
-
-# 2. POST /api/plateformes/ajouter-par-film : Ajouter des plateformes associées à un film
-@router.post("/plateformes/ajouter-par-film", response_model=PlateformeResponse)
-async def ajouter_plateforme_par_film(request: FilmPlatformRequest):
-    """
-    Ajoute ou met à jour des plateformes associées à un film.
-
-    - **id_film**: ID du film.
-    - **streaming_info**: Liste des informations sur les plateformes associées au film.
-    """
-    try:
-        # Conversion des données reçues en un objet `Film`
-        film = Film(
-            id_film=request.id_film,
-            streaming_info=[{"id": p.id_plateforme, "name": p.nom_plateforme} for p in request.streaming_info]
-        )
+        # Étape 2 : Utiliser le service pour ajouter les plateformes
         service_plateforme.ajouter_plateforme(film)
-        return {"message": "Les plateformes ont été ajoutées ou mises à jour avec succès pour le film."}
+
+        return {"message": f"Les plateformes pour le film numéro : '{film_data.id_film}' ont été mises à jour avec succès."}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors de l'opération : {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur interne : {str(e)}")
