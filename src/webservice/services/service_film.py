@@ -47,3 +47,7 @@ class FilmService:
             for film in films_obtenus
         }
         return liste_films
+
+if __name__ == "__main__":
+    film = FilmService("Batman").rechercher_film
+    print (film)
