@@ -115,6 +115,7 @@ def optimiser_abonnement(id_utilisateur):
                 print("❌ Aucun abonnement optimal trouvé pour les critères sélectionnés.")
             else:
                 # Afficher les détails de l'abonnement
+                # Modifier le items
                 for abonnement, details in result.items():
                     print(f"\n🎬 Plateforme : {abonnement}")
                     for key, value in details.items():
