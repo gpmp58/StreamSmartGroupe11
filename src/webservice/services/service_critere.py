@@ -65,12 +65,6 @@ class CritereService():
                     )
                 )
             )
-        elif preferences.get('prix', False) is False:  # Si prix est False
-            # Cas où on maximise les occurrences
-            plateforme_optimisee = max(
-                abonnements_filtres,
-                key=lambda x: occurrences_plateformes.get(x['nom_plateforme'], 0)
-            )
         
         elif preferences.get('rapport_quantite_prix', False):
             plateforme_optimisee = None
@@ -89,8 +83,10 @@ class CritereService():
                         plateforme_optimisee = plateforme
             
         else:
-            logging.warning("Aucune préférence de prix ou rapport spécifiée.")
-            return None
+            plateforme_optimisee = max(
+                abonnements_filtres,
+                key=lambda x: occurrences_plateformes.get(x['nom_plateforme'], 0)
+            )
         abonnement_optimise = Abonnement(
         id_abonnement=plateforme_optimisee['id_abonnement'],
         nom_plateforme=plateforme_optimisee['nom_plateforme'],

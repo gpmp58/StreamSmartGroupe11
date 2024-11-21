@@ -107,4 +107,4 @@ class Abonnement:
 if __name__ == "__main__":
     abonnement_test = Abonnement(1,"Canal+")
     information = abonnement_test.info_abonnement()
-    print(abonnement_test.nom_palteforme)
+    print(abonnement_test.nom_plateforme)
