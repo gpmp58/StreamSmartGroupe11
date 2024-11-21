@@ -24,7 +24,7 @@ class Critere():
                 "criteres n'est pas un dictionnaire.")
 
         types_attendus = {
-            "qualité": str,
+            "qualite": str,
             "pub": bool,
             "prix": bool,
             "rapport_quantite_prix": bool
