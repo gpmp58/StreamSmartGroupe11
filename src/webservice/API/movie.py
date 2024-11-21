@@ -45,6 +45,18 @@ async def rechercher_film(film: RechercheFilmModel):
     - **nom_film**: Nom du film à rechercher.
     """
     try:
+        # Vérification que le nom est bien une chaîne de caractères
+        if not isinstance(film.nom_film, str):
+            raise HTTPException(status_code=400, detail="Le film doit être en format caractères")
+        
+        # Vérification des caractères dans le nom du film
+        for caractere in film.nom_film:
+            if not (caractere.isalnum() or caractere == " " or caractere == "&"):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Il y a des caractères spéciaux dans le film. Veuillez réécrire le nom du film."
+                )
+
         # Initialiser le service FilmService avec le nom du film
         film_service = FilmService(nom_film=film.nom_film)
 
@@ -54,12 +66,14 @@ async def rechercher_film(film: RechercheFilmModel):
         # Vérifier si une erreur est présente
         if isinstance(films_trouves, dict) and 'error' in films_trouves:
             raise ValueError(films_trouves['error'])
-
         return {"films": films_trouves}
+    except HTTPException as e:
+        raise e
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail="Erreur interne du serveur")
+
 
 # 2. GET /api/films/{id_film} : Obtenir les détails d'un film par ID
 @router.get("/films/{id_film}", response_model=FilmDetails)

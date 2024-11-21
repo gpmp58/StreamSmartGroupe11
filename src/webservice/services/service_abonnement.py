@@ -37,9 +37,9 @@ class AbonnementService():
         abonnement = Abonnement(id_abonnement, "ds")
         pub = AbonnementDao().get_pub_abonnement_DAO(abonnement)
         if pub :
-            return f"Cet abonnement contient des pub !"
+            return "Cet abonnement contient des pub !"
         else :
-            return f"Cet abonnement ne contient pas des pub !"
+            return "Cet abonnement ne contient pas des pub !"
 
     def qualite_abonnement(self, id_abonnement):
         """
