@@ -108,18 +108,13 @@ def optimiser_abonnement(id_utilisateur):
         response = requests.post(f"{LIEN_API}/afficher_abonnement_optimise/", json=data)
         
         if response.status_code == 200:
-            print("\n=== Résultat : Abonnement Optimal ===")
+            print("\n=== Résultat : Abonnement Optimal ===\n")
             result = response.json().get("abonnement_optimise", None)
 
             if not result:
                 print("❌ Aucun abonnement optimal trouvé pour les critères sélectionnés.")
             else:
-                # Afficher les détails de l'abonnement
-                # Modifier le items
-                for abonnement, details in result.items():
-                    print(f"\n🎬 Plateforme : {abonnement}")
-                    for key, value in details.items():
-                        print(f"  {key.capitalize()} : {value}")
+                print(result)
         else:
             print(f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
 
