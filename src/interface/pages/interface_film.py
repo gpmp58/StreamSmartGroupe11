@@ -28,7 +28,8 @@ def selectionner_watchlist():
 
         if not watchlists:
             print("❌ Vous n'avez pas encore de watchlists. Créez-en une avant d'ajouter des films.")
-            main()
+            from src.interface.pages.interface_utilisateur_connecte import main1
+            main1()
 
         print("\n=== Vos Watchlists ===")
         choix_watchlists = [
@@ -49,7 +50,8 @@ def selectionner_watchlist():
 
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur lors de la récupération des watchlists : {e}")
-        main()
+        from src.interface.pages.interface_utilisateur_connecte import main1
+        main1()
 
 def ajouter_a_watchlist(film_id):
     """Ajoute un film à une watchlist."""
