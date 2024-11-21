@@ -226,3 +226,21 @@ class UtilisateurService:
             return existe
         except Exception as e:
             raise ValueError(f"Erreur lors de la vérification du pseudo : {e}")
+
+    def get_id_utilisateur(self, pseudo: str) -> dict:
+        """
+        Récupère l'ID d'un utilisateur à partir de son pseudo.
+
+        Args:
+            pseudo (str): Le pseudo de l'utilisateur.
+
+        Returns:
+            dict: Contient l'ID de l'utilisateur.
+
+        Raises:
+            ValueError: Si l'utilisateur n'est pas trouvé.
+        """
+        try:
+            return UtilisateurDAO().get_id_utilisateur_DAO(pseudo)
+        except ValueError as e:
+            raise ValueError(f"Erreur lors de la récupération de l'utilisateur : {e}")

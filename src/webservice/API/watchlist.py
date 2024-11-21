@@ -9,6 +9,7 @@ from src.webservice.business_object.watchlist import Watchlist
 from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.business_object.film import Film
 from src.webservice.dao.film_dao import FilmDao
+from src.webservice.services.service_plateforme import ServicePlateforme
 
 
 router = APIRouter()
@@ -100,9 +101,7 @@ class AjouterFilmModel(BaseModel):
 @router.post("/watchlists/ajouter_film", response_model=dict)
 async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
     """
-    Ajoute un film à une watchlist.
-    #Il faut d'abord sauvegarder PUIS ajouter
-    
+    Ajoute un film à une watchlist, puis associe le film à ses plateformes.
     """
     try:
         # Étape 1 : Créer un objet Watchlist pour identifier la watchlist concernée
@@ -113,22 +112,39 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
         )
         logger.debug(f"Watchlist créée : {watchlist.id_watchlist}")
 
-        # Étape 2 : Créer un objet Film à partir de l'id_film et du nom_film
+        # Étape 2 : Créer un objet Film à partir de l'id_film
         film = Film(
             id_film=ajouter_film_data.id_film
         )
-        nom_film=film.details["name"]
-        logger.debug(f"Film à ajouter : {film.id_film} ")
-        # Étape 4 : Appeler le service pour ajouter le film à la watchlist
+        nom_film = film.details["name"]
+        logger.debug(f"Film à ajouter : {film.id_film}")
+
+        # Étape 3 : Ajouter le film à la watchlist
         succes_ajout = service_watchlist.ajouter_film(film=film, watchlist=watchlist)
 
-        # Étape 5 : Vérifier le succès de l'ajout et retourner une réponse
-        if succes_ajout:
-            logger.info(f"Le film avec l'id '{ajouter_film_data.id_film}' a été ajouté à la watchlist {ajouter_film_data.id_watchlist}.")
-            return {"message": f"Le film avec l'id '{ajouter_film_data.id_film}' a été ajouté à la watchlist."}
-        else:
-            logger.warning(f"Le film avec l'id '{ajouter_film_data.id_film}' est déjà présent dans la watchlist {ajouter_film_data.id_watchlist}.")
+        if not succes_ajout:
+            logger.warning(f"Le film avec l'id '{ajouter_film_data.id_film}' ne peut pas être ajouté dans la watchlist {ajouter_film_data.id_watchlist}.")
             raise HTTPException(status_code=400, detail="Erreur lors de l'ajout du film à la watchlist.")
+
+        # Étape 4 : Mise a jour table plateforme_abonnement
+        streaming_info = film.recuperer_streaming()  # Récupère les informations de plateformes pour le film
+        for plateforme in streaming_info:
+            id_plateforme = plateforme.get("id")
+            nom_plateforme = plateforme.get("name")
+
+            if not id_plateforme or not nom_plateforme:
+                logger.error("Informations de plateforme incomplètes.")
+                
+            success_plateforme = ServicePlateforme().mettre_a_jour_plateforme(nom_plateforme, id_plateforme)
+            if success_plateforme:
+                logger.info(f"Plateforme '{nom_plateforme}' ajoutée avec succès.")
+            else:
+                logger.info(f"Plateforme '{nom_plateforme}' existe déjà.")
+        #Etape 5 : Mise a jour table plateforme_film
+            ServicePlateforme().ajouter_plateforme(film)
+
+        logger.info(f"Le film avec l'id '{ajouter_film_data.id_film}' a été ajouté à la watchlist {ajouter_film_data.id_watchlist} et associé à ses plateformes.")
+        return {"message": f"Le film avec l'id '{ajouter_film_data.id_film}' a été ajouté à la watchlist et associé à ses plateformes."}
 
     except ValueError as e:
         logger.error(f"Erreur de valeur lors de l'ajout du film : {e}")
@@ -136,6 +152,7 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
     except Exception as e:
         logger.exception(f"Erreur interne lors de l'ajout du film à la watchlist : {e}")
         raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
+
 
 # Route pour supprimer un film d'une watchlist
 @router.delete("/watchlists/{id_watchlist}/supprimer_film/{id_film}")

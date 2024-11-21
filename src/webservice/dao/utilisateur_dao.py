@@ -174,3 +174,38 @@ class UtilisateurDAO:
                 res = cursor.fetchone()
 
         return res is not None
+
+    def get_id_utilisateur_DAO(self, pseudo: str) -> dict:
+        """
+        Récupère l'ID d'un utilisateur à partir de son pseudo.
+
+        Parameters:
+        -----------
+        pseudo : str
+            Le pseudo de l'utilisateur.
+
+        Returns:
+        --------
+        dict : Contient l'ID de l'utilisateur.
+
+        Raises:
+        -------
+        ValueError : Si aucun utilisateur n'est trouvé avec ce pseudo.
+        """
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT id_utilisateur
+                    FROM projet11.utilisateur
+                    WHERE pseudo = %(pseudo)s;
+                    """,
+                    {"pseudo": pseudo}
+                )
+                res = cursor.fetchone()
+
+        if res:
+            return {"id_utilisateur": res["id_utilisateur"]}
+        else:
+            raise ValueError(f"Utilisateur avec le pseudo '{pseudo}' introuvable.")
+

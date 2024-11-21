@@ -129,6 +129,16 @@ class WatchlistService:
         return watchlist.list_film
         
     def afficher_watchlist(self, id_utilisateur):
+        """
+        Récupère et affiche la liste des watchlists d'un utilisateur donné, ainsi que les films associés à chaque watchlist.
+
+        Attributs
+        ----------
+        id_utilisateur : L'identifiant de l'utilisateur pour lequel les watchlists et les films doivent être récupérés.
+
+        Returns :
+           list : Une liste de dictionnaires représentant les watchlists de l'utilisateur.
+        """    
         watchlists = []
         try:
             watchlist_data = WatchlistDao().afficher_watchlist_DAO(id_utilisateur)

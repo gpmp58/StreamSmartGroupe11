@@ -150,12 +150,33 @@ def inject_css2():
     </style>
     """, unsafe_allow_html=True)
 
+# Initialisation de l'état de session si nécessaire
+if 'pseudo' not in st.session_state:
+    st.session_state['pseudo'] = None
+if 'id_utilisateur' not in st.session_state:
+    st.session_state['id_utilisateur'] = None
 
 query_params = st.query_params  # Utiliser la bonne méthode
 if "film_id" in query_params:
     film_id = query_params["film_id"]
 else:
     raise Exception("Pas d'id pour le film")
+if "pseudo" in query_params:
+    st.session_state['pseudo'] = query_params["pseudo"]
+if "id_utilisateur" in query_params:
+    st.session_state['id_utilisateur'] = query_params["id_utilisateur"]
+
+# Barre latérale pour afficher les informations de l'utilisateur
+with st.sidebar:
+    if st.session_state['pseudo']:
+        st.write(f"**Utilisateur :** {st.session_state['pseudo']}")
+        st.write(f"**ID Utilisateur :** {st.session_state['id_utilisateur']}")
+        st.write("**État : Connecté**")
+    else:
+        st.write("Utilisateur : Non connecté")
+        st.write("État : Déconnecté")
+
+
 
 print(f"afficher détail film pour le film {film_id}")
 film = Film(film_id)  # Récupérer les détails du film
@@ -210,3 +231,4 @@ with details_container:
                             </a>
                         </div>
                     """, unsafe_allow_html=True)
+

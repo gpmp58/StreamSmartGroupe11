@@ -1,40 +1,58 @@
-import streamlit as st
-from src.interface.main_interface import afficher_etat_connexion
+from InquirerPy import inquirer
+from src.interface.session_manager import get_session_state, set_session_state, clear_session_state
+import os
 
-# Configuration de la page principale
-st.set_page_config(page_title="Utilisateur connecté ", layout="wide")
+# Fonction pour afficher les options du menu utilisateur
+def main1():
+    session_state = get_session_state()
+    
 
-# Initialisation de l'état de session si nécessaire
-if 'pseudo' not in st.session_state:
-    st.session_state['pseudo'] = None
+    # Options disponibles selon l'état de connexion
+    if not session_state["pseudo"]:
+        print("Vous n'êtes pas connecté.")
+        choix = inquirer.select(
+            message="Choisissez une option :",
+            choices=["Connexion", "Quitter"],
+        ).execute()
 
-# Barre latérale pour afficher les informations de l'utilisateur
-with st.sidebar:
-    if st.session_state['pseudo']:
-        st.write(f"**Utilisateur :** {st.session_state['pseudo']}")
-        st.write("**État : Connecté**")
+        if choix == "Connexion":
+            from src.interface.pages.interface_connexion import connexion_utilisateur
+            connexion_utilisateur()
+        elif choix == "Quitter":
+            print("Au revoir !")
+            return
     else:
-        st.write("Utilisateur : Non connecté")
-        st.write("État : Déconnecté")
+        choix = inquirer.select(
+            message="Que souhaitez-vous faire ?",
+            choices=["Films", "Watchlist","Recommandation de Watchlist", "Se déconnecter", "Quitter"],
+        ).execute()
 
-st.title("Bienvenue dans l'Application Multi-Page")
-st.write("Sélectionnez une option ci-dessous pour naviguer vers la page correspondante.")
+        if choix == "Films":
+            from src.interface.pages.interface_film import page_recherche_films
+            page_recherche_films()  # Appeler directement la fonction de recherche de films
+        elif choix == "Watchlist":
+            from src.interface.pages.interface_watchlist import main_watchlist
+            main_watchlist()  # Rediriger vers l'interface de gestion de watchlist
+        elif choix == "Recommandation de Watchlist":
+            from src.interface.pages.interface_recommandation import main_recommandation
+            main_recommandation() #Interface de recommandation
+        elif choix == "Se déconnecter":
+            se_deconnecter()
+        elif choix == "Quitter":
+            print("Au revoir !")
+            os.system('cls' if os.name == 'nt' else 'clear')
+            exit()
 
-st.markdown("---")  # Ligne de séparation
 
-# Affichage des fonctionnalités supplémentaires
-col1, col2, col3 = st.columns(3)
+# Fonction pour gérer la déconnexion
+def se_deconnecter():
+    """
+    Gérer la déconnexion de l'utilisateur.
+    """
+    clear_session_state()
+    main1()
 
-with col1:
-    if st.button("Films"):
-        st.switch_page("pages/interface_film.py")
 
-with col2:
-    if st.button("Watchlist"):
-        st.switch_page("pages/interface_watchlist.py")
-
-with col3:
-    if st.button("Se déconnecter"):
-        st.session_state['pseudo'] = None
-        st.write("Déconnexion ...")
-        st.rerun()
+# Lancement de l'application
+if __name__ == "__main__":
+    main1()
