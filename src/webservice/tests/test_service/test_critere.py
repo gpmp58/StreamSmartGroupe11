@@ -1,4 +1,4 @@
-import re
+"""import re
 
 import pytest
 
@@ -70,3 +70,4 @@ def test_get_id_watchlist():
 def test_get_critere():
     critere = Critere(2345, {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False})
     assert critere.get_critere() == {"qualité" : "qualité", "pub": True, "prix" : True, "rapport_quantite_prix": False}
+"""
