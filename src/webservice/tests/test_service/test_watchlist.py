@@ -20,12 +20,12 @@ def test_watchlist_init_succes():
     "nom_watchlist , id_utilisateur, list_film , id_watchlist , erreur, message_erreur",
     [
         (
-            {"watchlist_alice":""},
+            {"watchlist_alice": ""},
             123,
             ["film1", "film2"],
             1290,
             TypeError,
-            "nom_watchlist doit être une chaîne de caractères, mais reçu dict"        
+            "nom_watchlist doit être une chaîne de caractères, mais reçu dict",
         ),
         (
             "watchlist_alice",
@@ -54,10 +54,15 @@ def test_watchlist_init_succes():
     ],
 )
 def test_watchlist_init_echec(
-    nom_watchlist , id_utilisateur, list_film , id_watchlist , erreur, message_erreur
-):
+        nom_watchlist,
+        id_utilisateur,
+        list_film,
+        id_watchlist,
+        erreur,
+        message_erreur):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
-        Watchlist(nom_watchlist , id_utilisateur, list_film , id_watchlist)
+        Watchlist(nom_watchlist, id_utilisateur, list_film, id_watchlist)
+
 
 def test_get_nom_watchlist():
     watchlist = Watchlist(
@@ -66,7 +71,7 @@ def test_get_nom_watchlist():
         ["film1", "film2"],
         1290,
     )
-    assert watchlist.get_nom_watchlist() == "watchlist_alice"  
+    assert watchlist.get_nom_watchlist() == "watchlist_alice"
 
 
 def test_get_list_film():
@@ -76,7 +81,8 @@ def test_get_list_film():
         ["film1", "film2"],
         1290,
     )
-    assert watchlist.get_list_film() == ["film1", "film2"]  
+    assert watchlist.get_list_film() == ["film1", "film2"]
+
 
 def test_verifier_utilisateur_succes():
     utilisateur = Utilisateur(
@@ -88,7 +94,8 @@ def test_verifier_utilisateur_succes():
         1234,
     )
     watchlist = Watchlist("watchlist_alice", 1234, ["film1", "film2"], 1290)
-    assert watchlist.verifier_utilisateur(utilisateur) == True
+    assert watchlist.verifier_utilisateur(utilisateur)
+
 
 @pytest.mark.parametrize(
     "utilisateur , erreur, message_erreur",
@@ -96,12 +103,12 @@ def test_verifier_utilisateur_succes():
         (
             ["utilisateur"],
             TypeError,
-            "utilisateur doit être une instance de Utilisateur"        
+            "utilisateur doit être une instance de Utilisateur",
         ),
     ],
 )
-def test_verifier_utilisateur_echec(utilisateur , erreur, message_erreur):
-    #GIVEN
+def test_verifier_utilisateur_echec(utilisateur, erreur, message_erreur):
+    # GIVEN
     watchlist = Watchlist("watchlist_alice", 123, ["film1", "film2"], 1290)
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         watchlist.verifier_utilisateur(utilisateur)

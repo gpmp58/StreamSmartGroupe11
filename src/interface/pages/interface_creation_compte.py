@@ -1,10 +1,13 @@
 from InquirerPy import prompt
 import requests
 from src.interface.main_interface import main  # Retour au menu principal
-from src.interface.session_manager import set_session_state  # Gestion de session globale
+from src.interface.session_manager import (
+    set_session_state,
+)  # Gestion de session globale
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
+
 
 # Fonction principale pour la création de compte
 def page_creation_compte():
@@ -16,31 +19,36 @@ def page_creation_compte():
             "type": "input",
             "name": "nom",
             "message": "Nom :",
-            "validate": lambda result: len(result) > 0 or "Le champ 'Nom' est obligatoire.",
+            "validate": lambda result: len(result) > 0
+            or "Le champ 'Nom' est obligatoire.",
         },
         {
             "type": "input",
             "name": "prenom",
             "message": "Prénom :",
-            "validate": lambda result: len(result) > 0 or "Le champ 'Prénom' est obligatoire.",
+            "validate": lambda result: len(result) > 0
+            or "Le champ 'Prénom' est obligatoire.",
         },
         {
             "type": "input",
             "name": "pseudo",
             "message": "Pseudo :",
-            "validate": lambda result: len(result) > 0 or "Le champ 'Pseudo' est obligatoire.",
+            "validate": lambda result: len(result) > 0
+            or "Le champ 'Pseudo' est obligatoire.",
         },
         {
             "type": "input",
             "name": "adresse_mail",
             "message": "Adresse Mail :",
-            "validate": lambda result: len(result) > 0 or "Le champ 'Adresse Mail' est obligatoire.",
+            "validate": lambda result: len(result) > 0
+            or "Le champ 'Adresse Mail' est obligatoire.",
         },
         {
             "type": "password",
             "name": "mdp",
             "message": "Mot de Passe :",
-            "validate": lambda result: len(result) > 0 or "Le champ 'Mot de Passe' est obligatoire.",
+            "validate": lambda result: len(result) > 0
+            or "Le champ 'Mot de Passe' est obligatoire.",
         },
         {
             "type": "list",
@@ -72,7 +80,8 @@ def page_creation_compte():
             set_session_state(pseudo=answers["pseudo"], id_utilisateur=None)
         else:
             response_json = response.json()
-            print(f"❌ Erreur : {response_json.get('detail', 'Erreur inconnue')}")
+            print(
+                f"❌ Erreur : {response_json.get('detail', 'Erreur inconnue')}")
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur de connexion à l'API : {e}")
 

@@ -6,13 +6,16 @@ from src.webservice.business_object.film import Film
 
 router = APIRouter()
 
+
 # Modèle de données pour rechercher un film
 class RechercheFilmModel(BaseModel):
     nom_film: str
 
+
 # Modèle de réponse pour les films trouvés
 class FilmTrouve(BaseModel):
-    nom_film : int
+    nom_film: int
+
 
 class RechercheFilmResponse(BaseModel):
     films: Dict[int, str]
@@ -23,6 +26,7 @@ class StreamingProvider(BaseModel):
     id: int
     name: str
     logo: str
+
 
 # Modèle de réponse pour les détails du film
 class FilmDetails(BaseModel):
@@ -36,6 +40,7 @@ class FilmDetails(BaseModel):
     image: str
     streaming: List[StreamingProvider]
 
+
 # 1. POST /api/films/recherche : Rechercher un film par nom
 @router.post("/films/recherche", response_model=RechercheFilmResponse)
 async def rechercher_film(film: RechercheFilmModel):
@@ -47,14 +52,17 @@ async def rechercher_film(film: RechercheFilmModel):
     try:
         # Vérification que le nom est bien une chaîne de caractères
         if not isinstance(film.nom_film, str):
-            raise HTTPException(status_code=400, detail="Le film doit être en format caractères")
-        
+            raise HTTPException(
+                status_code=400,
+                detail="Le film doit être en format caractères")
+
         # Vérification des caractères dans le nom du film
         for caractere in film.nom_film:
-            if not (caractere.isalnum() or caractere == " " or caractere == "&"):
+            if not (caractere.isalnum() or caractere ==
+                    " " or caractere == "&"):
                 raise HTTPException(
                     status_code=400,
-                    detail="Il y a des caractères spéciaux dans le film. Veuillez réécrire le nom du film."
+                    detail="Il y a des caractères spéciaux dans le film. Veuillez réécrire le nom du film.",
                 )
 
         # Initialiser le service FilmService avec le nom du film
@@ -64,15 +72,16 @@ async def rechercher_film(film: RechercheFilmModel):
         films_trouves = film_service.rechercher_film()
 
         # Vérifier si une erreur est présente
-        if isinstance(films_trouves, dict) and 'error' in films_trouves:
-            raise ValueError(films_trouves['error'])
+        if isinstance(films_trouves, dict) and "error" in films_trouves:
+            raise ValueError(films_trouves["error"])
         return {"films": films_trouves}
     except HTTPException as e:
         raise e
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Erreur interne du serveur")
+        raise HTTPException(
+            status_code=500, detail="Erreur interne du serveur")
 
 
 # 2. GET /api/films/{id_film} : Obtenir les détails d'un film par ID
@@ -95,12 +104,16 @@ async def obtenir_details_film(id_film: int):
             "duree": film.details["duree"],
             "genres": film.details["genres"],
             "image": film.image,
-            "streaming": film.streaming
+            "streaming": film.streaming,
         }
         return response
     except KeyError as e:
-        raise HTTPException(status_code=500, detail=f"Clé manquante dans les détails du film : {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Clé manquante dans les détails du film : {e}")
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=f"Erreur de validation des données : {e}")
+        raise HTTPException(
+            status_code=400, detail=f"Erreur de validation des données : {e}"
+        )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

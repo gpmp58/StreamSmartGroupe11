@@ -8,15 +8,17 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 router = APIRouter()
 service_plateforme = ServicePlateforme()
 
+
 class FilmModel(BaseModel):
     id_film: int
+
 
 @router.post("/films/ajouter_plateformes", response_model=dict)
 async def ajouter_plateformes(film_data: FilmModel):
@@ -27,7 +29,9 @@ async def ajouter_plateformes(film_data: FilmModel):
     ----------
     FilmModel : Informations sur le film. (juste l'id ici)
     """
-    logger.info(f"Requête reçue pour ajouter des plateformes au film ID: {film_data.id_film}")
+    logger.info(
+        f"Requête reçue pour ajouter des plateformes au film ID: {film_data.id_film}"
+    )
 
     try:
         # Étape 1 : Construire l'objet Film
@@ -36,12 +40,20 @@ async def ajouter_plateformes(film_data: FilmModel):
         logger.debug(f"Film construit avec les détails : {film.details}")
 
         # Étape 2 : Utiliser le service pour ajouter les plateformes
-        logger.info(f"Ajout des plateformes pour le film ID: {film_data.id_film}")
+        logger.info(
+            f"Ajout des plateformes pour le film ID: {film_data.id_film}")
         service_plateforme.ajouter_plateforme(film)
 
-        logger.info(f"Les plateformes pour le film ID: {film_data.id_film} ont été mises à jour avec succès.")
-        return {"message": f"Les plateformes pour le film numéro : '{film_data.id_film}' ont été mises à jour avec succès."}
+        logger.info(
+            f"Les plateformes pour le film ID: {film_data.id_film} ont été mises à jour avec succès."
+        )
+        return {
+            "message": f"Les plateformes pour le film numéro : '{film_data.id_film}' ont été mises à jour avec succès."
+        }
 
     except Exception as e:
-        logger.error(f"Erreur lors de l'ajout des plateformes pour le film ID: {film_data.id_film} : {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur interne : {str(e)}")
+        logger.error(
+            f"Erreur lors de l'ajout des plateformes pour le film ID: {film_data.id_film} : {str(e)}"
+        )
+        raise HTTPException(
+            status_code=500, detail=f"Erreur interne : {str(e)}")

@@ -1,11 +1,15 @@
 from InquirerPy import inquirer
-from src.interface.session_manager import get_session_state, set_session_state, clear_session_state
+from src.interface.session_manager import (
+    get_session_state,
+    set_session_state,
+    clear_session_state,
+)
 import os
+
 
 # Fonction pour afficher les options du menu utilisateur
 def main1():
     session_state = get_session_state()
-    
 
     # Options disponibles selon l'état de connexion
     if not session_state["pseudo"]:
@@ -17,6 +21,7 @@ def main1():
 
         if choix == "Connexion":
             from src.interface.pages.interface_connexion import connexion_utilisateur
+
             connexion_utilisateur()
         elif choix == "Quitter":
             print("Au revoir !")
@@ -24,23 +29,32 @@ def main1():
     else:
         choix = inquirer.select(
             message="Que souhaitez-vous faire ?",
-            choices=["Films", "Watchlist","Recommandation de Watchlist", "Se déconnecter", "Quitter"],
+            choices=[
+                "Films",
+                "Watchlist",
+                "Recommandation de Watchlist",
+                "Se déconnecter",
+                "Quitter",
+            ],
         ).execute()
 
         if choix == "Films":
             from src.interface.pages.interface_film import page_recherche_films
+
             page_recherche_films()  # Appeler directement la fonction de recherche de films
         elif choix == "Watchlist":
             from src.interface.pages.interface_watchlist import main_watchlist
+
             main_watchlist()  # Rediriger vers l'interface de gestion de watchlist
         elif choix == "Recommandation de Watchlist":
             from src.interface.pages.interface_recommandation import main_recommandation
-            main_recommandation() #Interface de recommandation
+
+            main_recommandation()  # Interface de recommandation
         elif choix == "Se déconnecter":
             se_deconnecter()
         elif choix == "Quitter":
             print("Au revoir !")
-            os.system('cls' if os.name == 'nt' else 'clear')
+            os.system("cls" if os.name == "nt" else "clear")
             exit()
 
 

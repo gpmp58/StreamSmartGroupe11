@@ -2,6 +2,7 @@ from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.utils.securite import hash_mdp, verify_mdp
 from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
+
 class UtilisateurService:
     """
     La classe UtilisateurService fournit des méthodes de haut niveau pour la
@@ -20,11 +21,18 @@ class UtilisateurService:
         utilisateur : Utilisateur
             Une instance de la classe Utilisateur utilisée pour interagir
             avec la base de données.
-        
-        self.utilisateur = utilisateur"""
-        
 
-    def creer_compte(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français") -> Utilisateur:
+        self.utilisateur = utilisateur"""
+
+    def creer_compte(
+        self,
+        nom: str,
+        prenom: str,
+        pseudo: str,
+        adresse_mail: str,
+        mdp: str,
+        langue: str = "français",
+    ) -> Utilisateur:
         """
         Crée un nouvel utilisateur dans la base de données.
 
@@ -56,7 +64,9 @@ class UtilisateurService:
         try:
             # Vérifier si le pseudo existe déjà
             if self.verifier_pseudo(pseudo):
-                raise ValueError("Le pseudo est déjà utilisé. Veuillez en choisir un autre.")
+                raise ValueError(
+                    "Le pseudo est déjà utilisé. Veuillez en choisir un autre."
+                )
 
             # Hacher le mot de passe avec un sel aléatoire
             hashed_mdp, sel = hash_mdp(mdp)
@@ -69,7 +79,7 @@ class UtilisateurService:
                 adresse_mail=adresse_mail,
                 mdp=hashed_mdp,
                 langue=langue,
-                sel=sel
+                sel=sel,
             )
 
             # Vérifier le succès de la création
@@ -85,15 +95,17 @@ class UtilisateurService:
                 adresse_mail=adresse_mail,
                 mdp=hashed_mdp,
                 langue=langue,
-                sel=sel
+                sel=sel,
             )
 
             # Retourner l'utilisateur créé en cas de succès
             return nouvel_utilisateur
 
         except Exception as e:
-            # Lever l'exception au lieu de renvoyer un dictionnaire pour permettre une gestion des erreurs cohérente
-            raise ValueError(f"Erreur lors de la création de l'utilisateur : {e}")
+            # Lever l'exception au lieu de renvoyer un dictionnaire pour
+            # permettre une gestion des erreurs cohérente
+            raise ValueError(
+                f"Erreur lors de la création de l'utilisateur : {e}")
 
     def supprimer_compte(self, id_utilisateur: int):
         """
@@ -113,10 +125,12 @@ class UtilisateurService:
             # Utiliser le DAO pour supprimer l'utilisateur
             succes = UtilisateurDAO().supprimer_compte_DAO(id_utilisateur)
             if not succes:
-                raise ValueError("Utilisateur introuvable ou suppression échouée.")
+                raise ValueError(
+                    "Utilisateur introuvable ou suppression échouée.")
             print(f"Compte avec l'id '{id_utilisateur}' supprimé avec succès.")
         except Exception as e:
-            raise ValueError(f"Erreur lors de la suppression de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la suppression de l'utilisateur : {e}")
 
     def se_connecter(self, pseudo: str, mdp: str):
         """
@@ -143,10 +157,15 @@ class UtilisateurService:
         try:
             # Récupérer l'utilisateur par pseudo
             utilisateur_connecte = UtilisateurDAO().se_connecter_DAO(pseudo)
-            mdp_stocke = utilisateur_connecte["mdp"]  # Mot de passe haché stocké dans la db
-            sel = utilisateur_connecte["sel"]  # Le sel utilisé pour hacher le mot de passe
+            mdp_stocke = utilisateur_connecte[
+                "mdp"
+            ]  # Mot de passe haché stocké dans la db
+            sel = utilisateur_connecte[
+                "sel"
+            ]  # Le sel utilisé pour hacher le mot de passe
 
-            # Hacher le mot de passe fourni par l'utilisateur avec le sel récupéré
+            # Hacher le mot de passe fourni par l'utilisateur avec le sel
+            # récupéré
             hashed_mdp, _ = hash_mdp(mdp, sel)
 
             # Vérifier si le mot de passe haché correspond à celui stocké
@@ -155,7 +174,8 @@ class UtilisateurService:
 
             return f"Bienvenue {pseudo} sur notre application"
         except Exception as e:
-            raise ValueError(f"Erreur lors de la connexion de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la connexion de l'utilisateur : {e}")
 
     def se_deconnecter(self):
         """
@@ -179,7 +199,7 @@ class UtilisateurService:
         --------
         dict
             Les informations de l'utilisateur.
-        
+
         Exceptions :
         ------------
         ValueError
@@ -194,13 +214,15 @@ class UtilisateurService:
                     "Prénom": utilisateur.prenom,
                     "Pseudo": utilisateur.pseudo,
                     "Adresse mail": utilisateur.adresse_mail,
-                    "Langue": utilisateur.langue
+                    "Langue": utilisateur.langue,
                 }
                 return utilisateur_info
             else:
                 raise ValueError("Utilisateur introuvable.")
         except Exception as e:
-            raise ValueError(f"Erreur lors de l'affichage des informations de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de l'affichage des informations de l'utilisateur : {e}"
+            )
 
     def verifier_pseudo(self, pseudo: str) -> bool:
         """
@@ -243,4 +265,5 @@ class UtilisateurService:
         try:
             return UtilisateurDAO().get_id_utilisateur_DAO(pseudo)
         except ValueError as e:
-            raise ValueError(f"Erreur lors de la récupération de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la récupération de l'utilisateur : {e}")

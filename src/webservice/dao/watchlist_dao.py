@@ -36,7 +36,8 @@ class WatchlistDao:
                         return True
                     return False
                 except Exception as e:
-                    logging.error(f"Erreur lors de la création de la watchlist : {e}")
+                    logging.error(
+                        f"Erreur lors de la création de la watchlist : {e}")
                     return False
 
     def supprimer_watchlist_DAO(self, watchlist: Watchlist) -> bool:
@@ -69,14 +70,19 @@ class WatchlistDao:
                     res = cursor.rowcount
 
             if res > 0:
-                logging.info(f"Watchlist avec id {watchlist.id_watchlist} supprimée avec succès.")
+                logging.info(
+                    f"Watchlist avec id {watchlist.id_watchlist} supprimée avec succès."
+                )
                 return True
             else:
-                logging.warning(f"Watchlist avec id {watchlist.id_watchlist} introuvable.")
+                logging.warning(
+                    f"Watchlist avec id {watchlist.id_watchlist} introuvable."
+                )
                 return False
 
         except Exception as e:
-            logging.error(f"Erreur lors de la suppression de la watchlist : {e}")
+            logging.error(
+                f"Erreur lors de la suppression de la watchlist : {e}")
             return False
 
     def ajouter_film_DAO(self, id_watchlist: int, id_film: int) -> bool:
@@ -109,14 +115,20 @@ class WatchlistDao:
                     res = cursor.rowcount
 
             if res > 0:
-                logging.info(f"Film {id_film} ajouté à la watchlist {id_watchlist} avec succès.")
+                logging.info(
+                    f"Film {id_film} ajouté à la watchlist {id_watchlist} avec succès."
+                )
                 return True
             else:
-                logging.warning(f"Échec de l'ajout du film {id_film} à la watchlist {id_watchlist}.")
+                logging.warning(
+                    f"Échec de l'ajout du film {id_film} à la watchlist {id_watchlist}."
+                )
                 return False
 
         except Exception as e:
-            logging.error(f"Erreur lors de l'ajout du film {id_film} à la watchlist {id_watchlist} : {e}")
+            logging.error(
+                f"Erreur lors de l'ajout du film {id_film} à la watchlist {id_watchlist} : {e}"
+            )
             return False
 
     def supprimer_film_DAO(self, id_watchlist: int, id_film: int) -> bool:
@@ -142,24 +154,27 @@ class WatchlistDao:
                     cursor.execute(
                         "DELETE FROM projet11.film_watchlist                    "
                         " WHERE id_watchlist = %(id_watchlist)s        "
-                        "        AND id_film = %(id_film)s             ",
-                        {"id_watchlist": id_watchlist, "id_film": id_film},
-                    )
+                        "        AND id_film = %(id_film)s             ", {
+                            "id_watchlist": id_watchlist, "id_film": id_film}, )
                     res = cursor.rowcount
 
             if res > 0:
-                logging.info(f"Film {id_film} supprimé de la watchlist {id_watchlist}.")
+                logging.info(
+                    f"Film {id_film} supprimé de la watchlist {id_watchlist}.")
                 return True
             else:
-                logging.warning(f"Aucun film trouvé avec id_film {id_film} dans la watchlist {id_watchlist}.")
+                logging.warning(
+                    f"Aucun film trouvé avec id_film {id_film} dans la watchlist {id_watchlist}."
+                )
                 return False
 
         except Exception as e:
-            logging.error(f"Erreur lors de la suppression du film {id_film} de la watchlist {id_watchlist}: {e}")
+            logging.error(
+                f"Erreur lors de la suppression du film {id_film} de la watchlist {id_watchlist}: {e}"
+            )
             return False
 
     def film_deja_present(self, id_watchlist: int, id_film: int) -> bool:
-
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -167,19 +182,21 @@ class WatchlistDao:
                         "SELECT COUNT(*)                              "
                         " FROM projet11.film_watchlist                         "
                         "WHERE id_watchlist = %(id_watchlist)s        "
-                        "      AND id_film = %(id_film)s;             ",
-                        {"id_watchlist": id_watchlist, "id_film": id_film},
-                    )
+                        "      AND id_film = %(id_film)s;             ", {
+                            "id_watchlist": id_watchlist, "id_film": id_film}, )
                     res = cursor.fetchone()
                     logging.debug(f"Résultat de la requête : {res}")
-                    if res and res['count'] > 0:
+                    if res and res["count"] > 0:
                         return True
 
-                # Si COUNT(*) > 0, cela signifie que le film est présent dans la watchlist
+                    # Si COUNT(*) > 0, cela signifie que le film est présent
+                    # dans la watchlist
                     return False
 
         except Exception as e:
-            logging.error(f"Erreur lors de la vérification de la présence du film {id_film} dans la watchlist {id_watchlist}: {e}")
+            logging.error(
+                f"Erreur lors de la vérification de la présence du film {id_film} dans la watchlist {id_watchlist}: {e}"
+            )
             return False
 
     def recuperer_films_watchlist_DAO(self, id_watchlist: int) -> list:
@@ -198,10 +215,16 @@ class WatchlistDao:
                         {"id_watchlist": id_watchlist},
                     )
                     films_data = cursor.fetchall()
-                    films = [{"id_film": film['id_film'], "nom_film": film['nom_film']} for film in films_data]
+                    films = [
+                        {"id_film": film["id_film"],
+                            "nom_film": film["nom_film"]}
+                        for film in films_data
+                    ]
 
         except Exception as e:
-            logging.error(f"Erreur lors de la récupération des films pour la watchlist {id_watchlist}: {e}")
+            logging.error(
+                f"Erreur lors de la récupération des films pour la watchlist {id_watchlist}: {e}"
+            )
         return films
 
     def afficher_watchlist_DAO(self, id_utilisateur: int) -> list:
@@ -223,22 +246,29 @@ class WatchlistDao:
                     cursor.execute(
                         """
                         SELECT id_watchlist,nom_watchlist
-                        FROM projet11.watchlist 
+                        FROM projet11.watchlist
                         WHERE id_utilisateur = %(id_utilisateur)s;
                         """,
                         {"id_utilisateur": id_utilisateur},
                     )
                     watchlists_data = cursor.fetchall()
                     watchlists = [
-                        {"id_watchlist": watchlist['id_watchlist'], "nom_watchlist": watchlist['nom_watchlist']}
+                        {
+                            "id_watchlist": watchlist["id_watchlist"],
+                            "nom_watchlist": watchlist["nom_watchlist"],
+                        }
                         for watchlist in watchlists_data
                     ]
 
-                    logging.info(f"{len(watchlists)} watchlists récupérées pour l'utilisateur ID: {id_utilisateur}")
+                    logging.info(
+                        f"{len(watchlists)} watchlists récupérées pour l'utilisateur ID: {id_utilisateur}"
+                    )
                     return watchlists
 
         except Exception as e:
-            logging.error(f"Erreur lors de la récupération des watchlists pour l'utilisateur ID: {id_utilisateur}: {str(e)}")
+            logging.error(
+                f"Erreur lors de la récupération des watchlists pour l'utilisateur ID: {id_utilisateur}: {str(e)}"
+            )
 
     def verifier_film_existe(self, id_film):
         """
@@ -254,14 +284,15 @@ class WatchlistDao:
             # Connexion à la base de données
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # Exécution de la requête pour vérifier si l'id ou le nom existe déjà dans la base
+                    # Exécution de la requête pour vérifier si l'id ou le nom
+                    # existe déjà dans la base
                     cursor.execute(
-                        "SELECT 1 FROM projet11.film WHERE id_film = %s ;",
-                        (id_film,)  
+                        "SELECT 1 FROM projet11.film WHERE id_film = %s ;", (
+                            id_film,)
                     )
-                    result = cursor.fetchone() 
+                    result = cursor.fetchone()
 
-                    return result is not None 
+                    return result is not None
 
         except Exception as e:
             print(f"Erreur lors de la vérification du film {id_film}: {e}")
@@ -284,7 +315,7 @@ class WatchlistDao:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT * FROM projet11.watchlist WHERE id_watchlist = %(id_watchlist)s;",
-                    {"id_watchlist": id_watchlist}
+                    {"id_watchlist": id_watchlist},
                 )
                 res = cursor.fetchone()
 
@@ -292,7 +323,7 @@ class WatchlistDao:
             return Watchlist(
                 id_utilisateur=res["id_utilisateur"],
                 nom_watchlist=res["nom_watchlist"],
-                id_watchlist = res["id_watchlist"]
+                id_watchlist=res["id_watchlist"],
             )
         else:
             raise ValueError("Watchlist introuvable.")
