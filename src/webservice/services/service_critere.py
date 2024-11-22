@@ -32,17 +32,8 @@ class CritereService:
         abonnements_filtres = self.filtrer_abonnement(criteres)
         films_et_plateformes = self.recuperer_plateformes_film(criteres)
         occurrences_plateformes = {}
-<<<<<<< HEAD
         plateformes_filtrees = {abonnement['nom_plateforme'] for abonnement in abonnements_filtres}
         for plateformes in films_et_plateformes.values():  # Récupère les listes de plateformes
-=======
-        plateformes_filtrees = {
-            abonnement["nom_plateforme"] for abonnement in abonnements_filtres
-        }
-        print(plateformes_filtrees)
-        for (plateformes) in films_et_plateformes.values(
-        ):  # Récupère les listes de plateformes
->>>>>>> 76947687eaea691b0a852064fa7226be4f3b090f
             for plateforme in plateformes:  # Parcourt chaque plateforme
                 if plateforme in plateformes_filtrees:
                     if plateforme not in occurrences_plateformes:
