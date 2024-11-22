@@ -30,3 +30,9 @@ def test_utilisateur_init_echec(
 ):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         FilmService(nom_film)
+
+def test_rechercher_film():
+    nom_film = "Cargo"
+    service = FilmService(nom_film)
+    resultat = service.rechercher_film()
+    assert "Cargo" in resultat.values()

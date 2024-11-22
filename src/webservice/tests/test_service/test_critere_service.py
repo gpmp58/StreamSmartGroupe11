@@ -12,6 +12,8 @@ from src.webservice.business_object.plateforme import PlateformeStreaming
 from src.webservice.services.service_watchlist import WatchlistService
 from src.webservice.business_object.critere import Critere
 
+
+
 if __name__ == "__main__":
     creationu = UtilisateurService().creer_compte(nom="Alice", prenom="Dupont",
             pseudo="alice123",

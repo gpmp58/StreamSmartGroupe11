@@ -103,8 +103,3 @@ class Abonnement:
             bool : Pub de l'abonnement.
         """            
         return self.pub
-
-if __name__ == "__main__":
-    abonnement_test = Abonnement(1,"Canal+")
-    information = abonnement_test.info_abonnement()
-    print(abonnement_test.nom_plateforme)

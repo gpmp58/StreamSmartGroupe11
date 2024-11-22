@@ -324,120 +324,27 @@ def test_sauvegarder_watchlist_aucun_film(mock_recuperer_films):
     assert resultat == []
     assert watchlist.list_film == []
     mock_recuperer_films.assert_called_once_with(1)
-"""
+
 @patch('src.webservice.dao.watchlist_dao.WatchlistDao.afficher_watchlist_DAO')
 @patch('src.webservice.services.service_watchlist.WatchlistService.sauvegarder_watchlist')
 def test_afficher_watchlist_succes(mock_sauvegarder_watchlist, mock_afficher_watchlist):
-    # Initialisation
     service = WatchlistService()
     id_utilisateur = 1
-
-    # Simuler les données de la base
-    mock_afficher_watchlist.return_value = [
-        {"id_watchlist": 1, "nom_watchlist": "favories", "films": [{"id_film": 268, "nom_film": "Batman"}, {"id_film": 152, "nom_film": "Star Trek: The Motion Picture"}]}
-    ]
-
-    # Simuler la sauvegarde de films associés
-    mock_sauvegarder_watchlist.return_value = [
-        {"id_film": 268, "nom_film": "Batman"},
-        {"id_film": 152, "nom_film": "Star Trek: The Motion Picture"}
-    ]
-
-    # Appel de la méthode
+    mock_afficher_watchlist.return_value =[{'id_watchlist': 1, 'nom_watchlist': 'favories'}]
+    mock_sauvegarder_watchlist.return_value = [{'id_film': 268, 'nom_film': 'Batman'}, {'id_film': 152, 'nom_film': 'Star Trek: The Motion Picture'}]
     result = service.afficher_watchlist(id_utilisateur)
+    expected_watchlist = [{'id_watchlist': 1, 'nom_watchlist': 'favories', 'films': [{'id_film': 268, 'nom_film': 'Batman'}, {'id_film': 152, 'nom_film': 'Star Trek: The Motion Picture'}]}]
+    assert result == expected_watchlist
 
-    # Vérifications
-    assert len(result) == 1
-    assert result[0]["nom_watchlist"] == "favories"
-
-    # Comparaison des IDs des films dans chaque watchlist
-    assert [film["id_film"] for film in result[0]["films"]] == [268, 152]
-
-    # Vérification des appels en comparant les valeurs des attributs de l'objet
-    expected_watchlist = Watchlist(nom_watchlist="favories", id_watchlist=1, id_utilisateur=id_utilisateur)
-    # Extraire les attributs de l'objet attendu
-    expected_values = {
-        "nom_watchlist": expected_watchlist.nom_watchlist,
-        "id_watchlist": expected_watchlist.id_watchlist,
-        "id_utilisateur": expected_watchlist.id_utilisateur
-    }
-
-    # Vérifier que le mock a été appelé avec un objet contenant les mêmes valeurs d'attributs
-    mock_sauvegarder_watchlist.assert_any_call(expected_values)
-
-
-@patch('src.webservice.dao.watchlist_dao.WatchlistDao.afficher_watchlist_DAO')
-def test_afficher_watchlist_echec(mock_afficher_watchlist):
-    # Initialisation
+@patch('src.webservice.dao.watchlist_dao.WatchlistDao.trouver_par_id_w')
+@patch('src.webservice.services.service_watchlist.WatchlistService.sauvegarder_watchlist')
+def trouver_par_id(mock_sauvegarder_watchlist, mock_trouver_par_id_w):
+    id_watchlist = 2
+    mock_trouver_par_id_w.return_value = Watchlist("test",1,[],id_watchlist)
+    mock_sauvegarder_watchlist.return_value = [{'id_film': 1, 'nom_film': 'Film Test'}]
     service = WatchlistService()
-    id_utilisateur = 1
-
-    # Simuler une exception dans la récupération des watchlists
-    mock_afficher_watchlist.side_effect = Exception("Erreur de récupération des watchlists")
-
-    with patch('logging.error') as mock_logging_error:
-        # Appel de la méthode
-        result = service.afficher_watchlist(id_utilisateur)
-        
-        # Vérification du résultat (aucune watchlist retournée)
-        assert result == []
-        mock_logging_error.assert_called_once_with("Erreur lors de la récupération des watchlists et films pour l'utilisateur ID: 1 - Erreur de récupération des watchlists")
-
-
-def test_creer_nouvelle_watchlist_fail(self):
-    nom_watchlist = "Ma Nouvelle Watchlist"
-    id_utilisateur = 1 
-    utilisateur = MagicMock()
-    utilisateur.id_utilisateur = id_utilisateur
-    WatchlistDao.creer_nouvelle_watchlist_DAO = MagicMock(return_value=False)
-    watchlist = WatchlistService().creer_nouvelle_watchlist(nom_watchlist, utilisateur)
-    assert watchlist is None
-
-
-def test_ajouter_film_ok(self):
-    Ajout d'un film à la watchlist réussie
-    # GIVEN
-    id_film = 1
-    id_watchlist = 1
-    nom_film = "Film Test"
-
-    film = MagicMock()
-    film.id_film = id_film
-    film.nom_film = nom_film
-
-    watchlist = MagicMock()
-    watchlist.id_watchlist = id_watchlist
-
-    WatchlistDao().film_deja_present = MagicMock(return_value=False)
-    WatchlistDao().ajouter_film_DAO = MagicMock(return_value=True)
-
-    # WHEN
-    result = WatchlistService().ajouter_film(film, watchlist)
-
-    # THEN
-    assert result is True
-    WatchlistDao().film_deja_present.assert_called_once_with(id_watchlist, id_film)
-    WatchlistDao().ajouter_film_DAO.assert_called_once_with(id_watchlist, id_film)
-
-def test_ajouter_film_deja_present(self):
-    Le film est déjà présent dans la watchlist
-
-    # GIVEN
-    id_film = 1
-    id_watchlist = 1
-
-    film = MagicMock()
-    film.id_film = id_film
-
-    watchlist = MagicMock()
-    watchlist.id_watchlist = id_watchlist
-
-    WatchlistDao().film_deja_present = MagicMock(return_value=True)
-
-    # WHEN
-    result = WatchlistService().ajouter_film(film, watchlist)
-
-    # THEN
-    assert result is False
-    WatchlistDao().film_deja_present.assert_called_once_with(id_watchlist, id_film)
-    WatchlistDao().ajouter_film_DAO.assert_not_called()"""
+    result = service.trouver_par_id(id_watchlist)
+    assert result.nom_watchlist == "test"
+    assert result.id_watchlist == 2
+    assert result.id_utilisateur == 1
+    assert result.list_film == [{'id_film': 1, 'nom_film': 'Film Test'}]
