@@ -3,10 +3,13 @@ from src.webservice.business_object.utilisateur import Utilisateur
 
 class Watchlist:
     def __init__(
-        self, nom_watchlist: str, id_utilisateur, list_film=[], id_watchlist: int = None
-    ):
+            self,
+            nom_watchlist: str,
+            id_utilisateur,
+            list_film=[],
+            id_watchlist: int = None):
         """
-        Classe représentant une watchlist. 
+        Classe représentant une watchlist.
 
         Attributs
         ----------
@@ -45,7 +48,7 @@ class Watchlist:
         self.id_watchlist = id_watchlist
         self.nom_watchlist = nom_watchlist
         self.id_utilisateur = id_utilisateur
-        self.list_film = list_film 
+        self.list_film = list_film
 
     def get_nom_watchlist(self):
         """
@@ -53,7 +56,7 @@ class Watchlist:
 
         Returns:
             str : Nom de la watchlist.
-        """         
+        """
         return self.nom_watchlist
 
     def get_list_film(self):
@@ -62,7 +65,7 @@ class Watchlist:
 
         Returns:
             list : Films de la watchlist.
-        """          
+        """
         return self.list_film
 
     def verifier_utilisateur(self, utilisateur: Utilisateur) -> bool:
@@ -85,7 +88,7 @@ class Watchlist:
             Si l'utilisateur n'est pas une instance de Utilisateur.
         """
         if not isinstance(utilisateur, Utilisateur):
-            raise TypeError(f"utilisateur doit être une instance de Utilisateur")
-        
+            raise TypeError(
+                f"utilisateur doit être une instance de Utilisateur")
+
         return self.id_utilisateur == utilisateur.id_utilisateur
-    

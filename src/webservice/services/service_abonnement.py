@@ -3,7 +3,7 @@ from src.webservice.business_object.abonnement import Abonnement
 from src.webservice.dao.abonnement_dao import AbonnementDao
 
 
-class AbonnementService():
+class AbonnementService:
     """
     Service de gestion des abonnements. Cette classe fournit des méthodes pour récupérer des informations sur les abonnements, y compris le prix, la présence de publicités, la qualité de l'abonnement, et pour effectuer une recherche d'abonnement en fonction de la plateforme de streaming.
     """
@@ -17,7 +17,7 @@ class AbonnementService():
 
         Returns:
             float : Le prix de l'abonnement.
-        """        
+        """
         abonnement = Abonnement(id_abonnement, "ds")
         prix = AbonnementDao().get_prix_abonnement_DAO(abonnement)
         return prix
@@ -30,15 +30,15 @@ class AbonnementService():
         ----------
         id_abonnement : L'identifiant de l'abonnement pour lequel on souhaite vérifier la présence de publicités.
 
-        Returns : 
+        Returns :
         str : Une chaîne de caractères indiquant si l'abonnement contient ou non des publicités.
         """
-        
+
         abonnement = Abonnement(id_abonnement, "ds")
         pub = AbonnementDao().get_pub_abonnement_DAO(abonnement)
-        if pub :
+        if pub:
             return "Cet abonnement contient des pub !"
-        else :
+        else:
             return "Cet abonnement ne contient pas des pub !"
 
     def qualite_abonnement(self, id_abonnement):
@@ -50,11 +50,11 @@ class AbonnementService():
 
         Returns:
             str : La qualité de l'abonnement.
-        """        
-        abonnement = Abonnement(id_abonnement, 'ds')
+        """
+        abonnement = Abonnement(id_abonnement, "ds")
         qualite = AbonnementDao().get_qualite_abonnement_DAO(abonnement)
         return qualite
-    
+
     def recherche_abonnement(self, nom_plateforme, id_plateforme):
         """
         Recherche des abonnements disponibles pour une plateforme de streaming donnée.
@@ -65,9 +65,7 @@ class AbonnementService():
 
         Returns:
             list : Une liste des abonnements disponibles pour la plateforme spécifiée.
-        """        
+        """
         plateforme = PlateformeStreaming(nom_plateforme, id_plateforme)
         abonnement_list = AbonnementDao().get_nom_abonnement_DAO(plateforme)
         return abonnement_list
-
-    

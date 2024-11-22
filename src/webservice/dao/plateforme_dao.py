@@ -6,7 +6,8 @@ from src.webservice.dao.db_connection import DBConnection
 class PlateformeDAO:
     """
     Classe permettant d'interagir avec la base de données pour gérer les plateformes de streaming.
-    """    
+    """
+
     def ajouter_plateforme(self, plateforme: PlateformeStreaming):
         """
         Ajoute une nouvelle plateforme dans plateforme_abonnement avec un identifiant spécifique si elle n'existe pas déjà.
@@ -27,7 +28,7 @@ class PlateformeDAO:
                     )
                     count = cursor.fetchone()
 
-                    if count and count['count'] > 0:
+                    if count and count["count"] > 0:
                         print(
                             f"La plateforme avec l'ID '{plateforme.id_plateforme}' ou le nom '{plateforme.nom_plateforme}' existe déjà."
                         )
@@ -46,7 +47,7 @@ class PlateformeDAO:
         except Exception as e:
             print(f"Erreur lors de l'ajout de la plateforme : {e}")
             return False
-    
+
     def verifier_plateforme_existe(self, id_plateforme, nom_plateforme):
         """
         Vérifie si une plateforme existe déjà dans la base de données en fonction de son ID ou de son nom.
@@ -62,20 +63,31 @@ class PlateformeDAO:
             # Connexion à la base de données
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # Exécution de la requête pour vérifier si l'id ou le nom existe déjà dans la base
+                    # Exécution de la requête pour vérifier si l'id ou le nom
+                    # existe déjà dans la base
                     cursor.execute(
                         "SELECT 1 FROM projet11.plateforme_abonnement WHERE id_plateforme = %s OR nom_plateforme = %s;",
-                        (id_plateforme, nom_plateforme)  # Paramètres pour la requête SQL
+                        (
+                            id_plateforme,
+                            nom_plateforme,
+                        ),  # Paramètres pour la requête SQL
                     )
-                    result = cursor.fetchone()  # Récupère le premier résultat de la requête
+                    result = (
+                        cursor.fetchone()
+                    )  # Récupère le premier résultat de la requête
 
-                    # Si un résultat existe, la plateforme existe déjà, donc on retourne True
-                    return result is not None  # Si la requête renvoie une ligne, c'est que la plateforme existe
+                    # Si un résultat existe, la plateforme existe déjà, donc on
+                    # retourne True
+                    # Si la requête renvoie une ligne, c'est que la plateforme
+                    # existe
+                    return (result is not None)
 
         except Exception as e:
-            print(f"Erreur lors de la vérification de la plateforme {nom_plateforme}: {e}")
+            print(
+                f"Erreur lors de la vérification de la plateforme {nom_plateforme}: {e}"
+            )
             return False  # En cas d'erreur, on retourne False
-    
+
     def ajouter_relation_film_plateforme(self, id_film, id_plateforme):
         """
         Ajoute la relation entre un film et une plateforme dans la table `film_plateforme`.
@@ -91,6 +103,10 @@ class PlateformeDAO:
                         "INSERT INTO projet11.film_plateforme (id_plateforme,id_film) VALUES (%s, %s);",
                         (id_plateforme, id_film),
                     )
-                    print(f"La relation film ({id_film}) - plateforme ({id_plateforme}) a été ajoutée.")
+                    print(
+                        f"La relation film ({id_film}) - plateforme ({id_plateforme}) a été ajoutée."
+                    )
         except Exception as e:
-            print(f"Erreur lors de l'ajout de la relation film ({id_film}) - plateforme ({id_plateforme}): {e}")
+            print(
+                f"Erreur lors de l'ajout de la relation film ({id_film}) - plateforme ({id_plateforme}): {e}"
+            )

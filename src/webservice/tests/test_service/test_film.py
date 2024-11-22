@@ -3,31 +3,39 @@ import re
 import pytest
 from src.webservice.business_object.film import Film
 
+
 @pytest.mark.parametrize(
     " id_film ,erreur, message_erreur",
     [
-        (
-            {"268"},
-            TypeError,
-            "id_film doit être un entier"        
-        ),
+        ({"268"}, TypeError, "id_film doit être un entier"),
     ],
 )
-def test_film_init_echec(
-    id_film, erreur, message_erreur
-):
+def test_film_init_echec(id_film, erreur, message_erreur):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         Film(id_film)
+
 
 def succes_init_film():
     id_film = 268
     film_test = Film(id_film)
     assert film_test.id_film == 268
-    assert film_test.image == "https://image.tmdb.org/t/p/w600_and_h900_bestv2/cij4dd21v2Rk2YtUQbV5kW69WB2.jpg"
-    assert film_test.streaming == [{'id': 381, 'name': 'Canal+', 'logo': 'https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg'}, {'id': 1899, 'name': 'Max', 'logo': 'https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg'}]
+    assert (
+        film_test.image
+        == "https://image.tmdb.org/t/p/w600_and_h900_bestv2/cij4dd21v2Rk2YtUQbV5kW69WB2.jpg"
+    )
+    assert film_test.streaming == [{"id": 381,
+                                    "name": "Canal+",
+                                    "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
+                                    },
+                                   {"id": 1899,
+                                    "name": "Max",
+                                    "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
+                                    },
+                                   ]
+
 
 def test_afficher():
-    id_film = 268 
+    id_film = 268
     film_test = Film(id_film)
     details = film_test.afficher_film()
     assert details == {
@@ -37,5 +45,5 @@ def test_afficher():
         "vote_average": 7.23,
         "date_sortie": "21/06/1989",  # Format transformé par transformer_date
         "duree": "2 h 6 min",  # Format transformé par transformer_duree
-        "genres": ["Fantastique", "Action", "Crime"]
+        "genres": ["Fantastique", "Action", "Crime"],
     }

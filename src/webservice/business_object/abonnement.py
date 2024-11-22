@@ -1,4 +1,6 @@
 from src.webservice.dao.abonnement_dao import AbonnementDao
+
+
 class Abonnement:
     """
     Classe représentant un abonnement.
@@ -12,9 +14,9 @@ class Abonnement:
     prix : float
         prix de l'abonnement
     pub : bool
-        pub de l'abonnement 
-    qualité : str 
-        qualité de l'abonnement 
+        pub de l'abonnement
+    qualité : str
+        qualité de l'abonnement
     """
 
     def __init__(self, id_abonnement: int, nom_plateforme):
@@ -35,7 +37,8 @@ class Abonnement:
                 "L'identifiant de l'abonnement n'est pas un entier.")
         if not isinstance(nom_plateforme, str):
             raise Exception(
-                "Le nom de la plateforme n'est pas une chaîne de caractère.")
+                "Le nom de la plateforme n'est pas une chaîne de caractère."
+            )
 
         self.id_abonnement = id_abonnement
         self.nom_plateforme = nom_plateforme
@@ -47,7 +50,7 @@ class Abonnement:
     def info_abonnement(self) -> dict:
         """
         Retourne les attributs de l'abonnement sous forme de dictionnaire
-        
+
         Returns:
             dict : Attributs de l'abonnement.
         """
@@ -74,7 +77,7 @@ class Abonnement:
 
         Returns:
             float : Le prix de l'abonnement.
-        """        
+        """
         return self.prix
 
     def get_id_abonnement(self):
@@ -83,7 +86,7 @@ class Abonnement:
 
         Returns:
             int : L'identifiant de l'abonnement.
-        """        
+        """
         return self.id_abonnement
 
     def get_qualite(self):
@@ -92,7 +95,7 @@ class Abonnement:
 
         Returns:
             str : Qualité de l'abonnement.
-        """        
+        """
         return self.qualite
 
     def get_pub(self):
@@ -101,5 +104,5 @@ class Abonnement:
 
         Returns:
             bool : Pub de l'abonnement.
-        """            
+        """
         return self.pub

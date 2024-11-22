@@ -132,8 +132,14 @@ def test_utilisateur_init_succes():
     ],
 )
 def test_utilisateur_init_echec(
-    nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur, erreur, message_erreur
-):
+        nom,
+        prenom,
+        pseudo,
+        adresse_mail,
+        mdp,
+        id_utilisateur,
+        erreur,
+        message_erreur):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         Utilisateur(nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur)
 
@@ -195,6 +201,7 @@ def test_get_prenom():
     )
     assert utilisateur.get_prenom() == "Alice"
 
+
 def test_get_pseudo():
     utilisateur = Utilisateur(
         "Dupont",
@@ -206,6 +213,7 @@ def test_get_pseudo():
     )
     assert utilisateur.get_pseudo() == "alice123"
 
+
 def test_get_adresse_mail():
     utilisateur = Utilisateur(
         "Dupont",
@@ -216,6 +224,7 @@ def test_get_adresse_mail():
         1234,
     )
     assert utilisateur.get_adresse_mail() == "alice@example.com"
+
 
 def test_get_langue():
     utilisateur = Utilisateur(
@@ -240,6 +249,7 @@ def test_get_id_utilisateur():
     )
     assert utilisateur.get_id_utilisateur() == 1234
 
+
 def test_get_sel():
     utilisateur = Utilisateur(
         "Dupont",
@@ -249,12 +259,14 @@ def test_get_sel():
         "password123",
         1234,
     )
-    assert utilisateur.get_sel() == None
+    assert utilisateur.get_sel() is None
+
 
 def test_valid_emails():
     assert Utilisateur.is_valid_email("test@example.com") is True
     assert Utilisateur.is_valid_email("user.name@domain.co.uk") is True
     assert Utilisateur.is_valid_email("name@sub.domain.com") is True
+
 
 def test_invalid_emails():
     assert Utilisateur.is_valid_email("plainaddress") is False
@@ -263,4 +275,3 @@ def test_invalid_emails():
     assert Utilisateur.is_valid_email("@missingusername.com") is False
     assert Utilisateur.is_valid_email("username@domain,com") is False
     assert Utilisateur.is_valid_email("username@domain@domain.com") is False
-    

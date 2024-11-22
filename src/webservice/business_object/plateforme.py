@@ -12,7 +12,11 @@ class PlateformeStreaming:
         logo de la plateforme
     """
 
-    def __init__(self, nom_plateforme: str, id_plateforme: int, logo_plateforme = None):                                
+    def __init__(
+            self,
+            nom_plateforme: str,
+            id_plateforme: int,
+            logo_plateforme=None):
         """
         Initialise un objet PlateformeStreaming avec les attributs spécifiés.
 
@@ -31,12 +35,15 @@ class PlateformeStreaming:
             raise Exception(
                 "Le nom de la plateforme n'est pas une chaîne de caractères."
             )
-        if not isinstance(logo_plateforme, str) and logo_plateforme is not None :
+        if not isinstance(
+                logo_plateforme,
+                str) and logo_plateforme is not None:
             raise Exception(
                 "Le logo de la plateforme n'est pas une chaîne de caractères ou n'est pas égal à None."
             )
         if not isinstance(id_plateforme, int):
-            raise Exception("L'identifiant de la plateforme n'est pas un entier.")
+            raise Exception(
+                "L'identifiant de la plateforme n'est pas un entier.")
 
         self.id_plateforme = id_plateforme
         self.nom_plateforme = nom_plateforme
@@ -45,7 +52,7 @@ class PlateformeStreaming:
     def info_plateforme(self) -> dict:
         """
         Retourne les attributs de la plateforme sous forme de dictionnaire
-        
+
         Returns:
             dict : Attributs de la plateforme.
         """
@@ -61,7 +68,7 @@ class PlateformeStreaming:
 
         Returns:
             str : Nom de la plateforme.
-        """         
+        """
         return self.nom_plateforme
 
     def get_logo_plateforme(self):
@@ -70,14 +77,14 @@ class PlateformeStreaming:
 
         Returns:
             str : Logo de la plateforme.
-        """         
+        """
         return self.logo_plateforme
 
     def get_id_plateforme(self):
         """
-        Retourne l'identifiant de la plateforme de streaming. 
+        Retourne l'identifiant de la plateforme de streaming.
 
         Returns:
             int : Identifiant de la plateforme.
-        """         
+        """
         return self.id_plateforme

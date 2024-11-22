@@ -11,6 +11,7 @@ router = APIRouter()
 utilisateur_dao = UtilisateurDAO()
 utilisateur_service = UtilisateurService()
 
+
 # Modèle de données pour un utilisateur (utilisé pour l'API)
 class UtilisateurModel(BaseModel):
     nom: str
@@ -20,7 +21,9 @@ class UtilisateurModel(BaseModel):
     mdp: str
     langue: str = "français"
 
-# Modèle de données pour afficher les informations d'un utilisateur sans le mot de passe
+
+# Modèle de données pour afficher les informations d'un utilisateur sans
+# le mot de passe
 class UtilisateurDisplayModel(BaseModel):
     nom: str
     prenom: str
@@ -28,11 +31,12 @@ class UtilisateurDisplayModel(BaseModel):
     adresse_mail: str
     langue: str
 
+
 class UtilisateurPseudoModel(BaseModel):
     pseudo: str
 
 
-#1.  POST : Créer un nouvel utilisateur 
+# 1.  POST : Créer un nouvel utilisateur
 @router.post("/utilisateurs", response_model=UtilisateurDisplayModel)
 async def create_utilisateur(utilisateur: UtilisateurModel):
     """
@@ -47,14 +51,9 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
             mdp=utilisateur.mdp,
             langue=utilisateur.langue,
         )
-        # Retourner l'objet UtilisateurDisplayModel avec les informations nécessaires
-        return UtilisateurDisplayModel(
-            nom=nouvel_utilisateur.nom,
-            prenom=nouvel_utilisateur.prenom,
-            pseudo=nouvel_utilisateur.pseudo,
-            adresse_mail=nouvel_utilisateur.adresse_mail,
-            langue=nouvel_utilisateur.langue,
-        )
+        # Retourner l'objet UtilisateurDisplayModel avec les informations
+        # nécessaires
+        return nouvel_utilisateur
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -67,14 +66,17 @@ async def delete_utilisateur(id_utilisateur: str):
     """
     try:
         utilisateur_service.supprimer_compte(id_utilisateur=id_utilisateur)
-        return {"message": f"Utilisateur avec id '{id_utilisateur}' supprimé avec succès"}
+        return {
+            "message": f"Utilisateur avec id '{id_utilisateur}' supprimé avec succès"}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
 
 # 3. POST /utilisateurs/login : Connexion d'un utilisateur
 class LoginModel(BaseModel):
     pseudo: str
     mdp: str
+
 
 @router.post("/utilisateurs/login")
 async def login_utilisateur(credentials: LoginModel):
@@ -82,19 +84,25 @@ async def login_utilisateur(credentials: LoginModel):
     Permet à un utilisateur de se connecter.
     """
     try:
-        message = utilisateur_service.se_connecter(pseudo=credentials.pseudo, mdp=credentials.mdp)
+        message = utilisateur_service.se_connecter(
+            pseudo=credentials.pseudo, mdp=credentials.mdp
+        )
         return {"message": message}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# 4. GET /utilisateurs/{id_utilisateur}/afficher : Afficher les infos d'un utilisateur
-@router.get("/utilisateurs/{id_utilisateur}/afficher", response_model=UtilisateurDisplayModel)
+
+# 4. GET /utilisateurs/{id_utilisateur}/afficher : Afficher les infos d'un
+# utilisateur
+@router.get("/utilisateurs/{id_utilisateur}/afficher",
+            response_model=UtilisateurDisplayModel)
 async def afficher_utilisateur(id_utilisateur: str):
     """
     Affiche les informations d'un utilisateur basé sur son id.
     """
     try:
-        utilisateur_info = utilisateur_service.afficher(id_utilisateur=id_utilisateur)
+        utilisateur_info = utilisateur_service.afficher(
+            id_utilisateur=id_utilisateur)
 
         # Construire le modèle de réponse à partir de l'utilisateur récupéré
         return UtilisateurDisplayModel(
@@ -107,19 +115,22 @@ async def afficher_utilisateur(id_utilisateur: str):
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
+
 # Route API pour récupérer l'ID utilisateur via le pseudo
 @router.post("/utilisateurs/id")
 async def obtenir_id_utilisateur(data: UtilisateurPseudoModel):
     """
     Récupère l'ID utilisateur à partir du pseudo fourni.
     """
-    utilisateur_service = UtilisateurService()  
+    utilisateur_service = UtilisateurService()
     try:
-        utilisateur = utilisateur_service.get_id_utilisateur(pseudo=data.pseudo)
+        utilisateur = utilisateur_service.get_id_utilisateur(
+            pseudo=data.pseudo)
         if utilisateur:
             return {"id_utilisateur": utilisateur.get("id_utilisateur")}
         else:
-            raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+            raise HTTPException(
+                status_code=404, detail="Utilisateur introuvable.")
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:

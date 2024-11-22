@@ -65,18 +65,23 @@ class Utilisateur:
         if not isinstance(pseudo, str):
             raise Exception("Le pseudo n'est pas une chaîne de caractères.")
         for caractere in pseudo:
-            if not (caractere.isalnum() or caractere == "_" or caractere == "."):
-                raise Exception("Il y a des caratères non autorisés dans le pseudo")
+            if not (caractere.isalnum() or caractere ==
+                    "_" or caractere == "."):
+                raise Exception(
+                    "Il y a des caratères non autorisés dans le pseudo")
         if not isinstance(adresse_mail, str):
-            raise Exception("L'adresse mail n'est pas une chaîne de caractères.")
+            raise Exception(
+                "L'adresse mail n'est pas une chaîne de caractères.")
         if not self.is_valid_email(adresse_mail):
             raise Exception("L'adresse mail n'est pas valide.")
         if not isinstance(langue, str):
             raise Exception("La langue n'est pas une chaîne de caractères.")
         if not isinstance(mdp, str):
-            raise Exception("Le mot de passe n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le mot de passe n'est pas une chaîne de caractères.")
         if not isinstance(id_utilisateur, int):
-            raise Exception("L'identifiant de l'utilisateur n'est pas un entier.")
+            raise Exception(
+                "L'identifiant de l'utilisateur n'est pas un entier.")
         if sel is not None and not isinstance(sel, str):
             raise Exception("Le sel n'est pas une chaîne de caractères.")
 
@@ -89,11 +94,10 @@ class Utilisateur:
         self.langue = langue
         self.sel = sel
 
-
     @staticmethod
     def is_valid_email(adresse_mail: str):
         """
-        Vérifie si l'adresse email fournie est valide selon une expression régulière : une partie avant le "@" suivie d'une partie après le "@", et une extension après un "." 
+        Vérifie si l'adresse email fournie est valide selon une expression régulière : une partie avant le "@" suivie d'une partie après le "@", et une extension après un "."
 
         Args :
             adresse_mail (str) : L'adresse email de l'utilisateur à valider.
@@ -103,22 +107,20 @@ class Utilisateur:
         """
         return re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
 
-
     def message(self):
         """
         Permet d'afficher un message de bienvenue
 
         Returns:
             str : Message de bienvenue.
-        """ 
+        """
         return f"Bienvenue {self.prenom} sur notre application !"
-
 
     def info_utilisateur(self) -> dict:
         """
         Retourne les attributs de l'utilisateur sous forme de dictionnaire
-        
-        Returns : 
+
+        Returns :
             dict : Attributs de l'utilisateur
         """
         return {
@@ -137,7 +139,7 @@ class Utilisateur:
 
         Returns:
             str : Nom de l'utilisateur.
-        """ 
+        """
         return self.nom
 
     def get_prenom(self):
@@ -146,7 +148,7 @@ class Utilisateur:
 
         Returns:
             str : Prenom de l'utilisateur.
-        """        
+        """
         return self.prenom
 
     def get_pseudo(self):
@@ -155,7 +157,7 @@ class Utilisateur:
 
         Returns:
             str : Pseudo de l'utilisateur.
-        """        
+        """
         return self.pseudo
 
     def get_adresse_mail(self):
@@ -164,7 +166,7 @@ class Utilisateur:
 
         Returns:
             str : Adresse mail de l'utilisateur.
-        """        
+        """
         return self.adresse_mail
 
     def get_langue(self):
@@ -173,7 +175,7 @@ class Utilisateur:
 
         Returns:
             str : Langue de l'utilisateur.
-        """        
+        """
         return self.langue
 
     def get_id_utilisateur(self):
@@ -182,7 +184,7 @@ class Utilisateur:
 
         Returns:
             int : Identifiant de l'utilisateur.
-        """        
+        """
         return self.id_utilisateur
 
     def get_sel(self):
@@ -191,5 +193,5 @@ class Utilisateur:
 
         Returns:
             str : Sel pour l'utilisateur.
-        """        
+        """
         return self.sel  # Ajout d'un getter pour récupérer le sel

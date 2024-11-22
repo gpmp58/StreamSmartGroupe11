@@ -7,12 +7,14 @@ from tqdm import tqdm
 # Initialisation de colorama (nécessaire pour Windows)
 init(autoreset=True)
 
+
 def update_pip():
     """
     Met à jour `pip` à la dernière version disponible.
     """
     print(f"{Fore.RED}=========== Mise à jour de pip ============\n")
-    subprocess.run(["python", "-m", "pip", "install", "--upgrade", "pip"], check=True)
+    subprocess.run(["python", "-m", "pip", "install",
+                   "--upgrade", "pip"], check=True)
 
 
 def install_dependencies():
@@ -21,7 +23,8 @@ def install_dependencies():
     à partir du fichier requirements.txt en utilisant l'option --user.
     """
     print(f"{Fore.RED}=========== Installation des dépendances ============\n")
-    subprocess.run(["pip", "install", "--user", "-r", "requirements.txt"], check=True)
+    subprocess.run(["pip", "install", "--user", "-r",
+                   "requirements.txt"], check=True)
     loading_bar("Installation des dépendances en cours...")
 
 
@@ -32,8 +35,8 @@ def start_webservice():
     """
     print(f"{Fore.RED}=========== Démarrage du webservice ============\n")
     webservice_process = subprocess.Popen(
-        ["python", "main_api.py"],  
-        cwd="src/webservice",       
+        ["python", "main_api.py"],
+        cwd="src/webservice",
     )
     return webservice_process
 
@@ -47,7 +50,7 @@ def start_interface():
     print(f"{Fore.RED}=========== Démarrage de l'interface utilisateur ============\n")
     subprocess.run(
         ["python", "main_interface.py"],
-        cwd="src/interface",        
+        cwd="src/interface",
     )
 
 
@@ -56,7 +59,7 @@ def clean_terminal():
     Nettoie le terminal une fois l'application fermée.
     """
     print(f"{Fore.RED}=========== Nettoyage du terminal ============\n")
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
 
 
 def loading_bar(message):
@@ -64,7 +67,10 @@ def loading_bar(message):
     Affiche une barre de progression pour une étape donnée.
     """
     print(f"{Fore.RED}{message}")
-    for _ in tqdm(range(10), desc="Chargement", bar_format="{l_bar}{bar} | {n_fmt}/{total}"):
+    for _ in tqdm(
+            range(10),
+            desc="Chargement",
+            bar_format="{l_bar}{bar} | {n_fmt}/{total}"):
         time.sleep(0.2)
 
 
@@ -85,11 +91,9 @@ if __name__ == "__main__":
         # Étape 3 : Lancement du webservice
         webservice_process = start_webservice()
 
-
         # Pause
         # Nécessaire pour éviter le chevauchement sur l'interface.
         time.sleep(3)
-
 
         # Étape 4 : Lancement de l'interface
         start_interface()

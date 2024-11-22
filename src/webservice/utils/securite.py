@@ -5,6 +5,7 @@ import secrets
 import hashlib
 import secrets
 
+
 def hash_mdp(password: str, sel: str = None) -> tuple:
     """
     Hachage du mot de passe avec un sel aléatoire.
@@ -36,10 +37,8 @@ def hash_mdp(password: str, sel: str = None) -> tuple:
     # Hacher le mot de passe avec sha256
     hash_object = hashlib.sha256(combined)
     password_hash = hash_object.hexdigest()
-    
+
     return password_hash, sel
-
-
 
 
 def verify_mdp(stored_mdp_hash: str, provided_mdp: str, sel: str) -> bool:
@@ -62,7 +61,6 @@ def verify_mdp(stored_mdp_hash: str, provided_mdp: str, sel: str) -> bool:
     """
     # Hacher le mot de passe fourni avec le même sel
     provided_mdp_hash, _ = hash_mdp(provided_mdp, sel)
-    
+
     # Comparer le hash fourni avec le hash stocké
     return provided_mdp_hash == stored_mdp_hash
-

@@ -1,8 +1,10 @@
 from InquirerPy import prompt
- # Importer la fonction depuis le fichier correspondant
+
+# Importer la fonction depuis le fichier correspondant
 
 # Simulation d'un état de session
 session_state = {"pseudo": None}
+
 
 def main():
     """
@@ -31,10 +33,14 @@ def main():
 
         if choix == "connexion":
             from src.interface.pages.interface_connexion import connexion_utilisateur
+
             connexion_utilisateur()
         elif choix == "creation":
-            from src.interface.pages.interface_creation_compte import page_creation_compte 
-            page_creation_compte() 
+            from src.interface.pages.interface_creation_compte import (
+                page_creation_compte,
+            )
+
+            page_creation_compte()
         elif choix == "quitter":
             print("Merci d'avoir utilisé l'application. À bientôt !")
             return
@@ -71,7 +77,8 @@ def interface_connexion():
                 "type": "input",
                 "name": "pseudo",
                 "message": "Entrez votre pseudo :",
-                "validate": lambda text: len(text.strip()) > 0 or "Le pseudo ne peut pas être vide.",
+                "validate": lambda text: len(text.strip()) > 0
+                or "Le pseudo ne peut pas être vide.",
             }
         ]
     )["pseudo"]

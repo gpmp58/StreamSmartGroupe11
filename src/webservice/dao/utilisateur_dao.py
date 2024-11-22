@@ -8,10 +8,19 @@ class UtilisateurDAO:
     Classe contenant les méthodes pour accéder aux utilisateurs de la base de données.
     """
 
-    def creer_compte_DAO(self, nom: str, prenom: str, pseudo: str, adresse_mail: str, mdp: str, langue: str = "français", sel: str = None) -> int:
+    def creer_compte_DAO(
+        self,
+        nom: str,
+        prenom: str,
+        pseudo: str,
+        adresse_mail: str,
+        mdp: str,
+        langue: str = "français",
+        sel: str = None,
+    ) -> int:
         """
         Création d'un utilisateur dans la base de données.
-        
+
         Args:
             nom (str) : Le nom de l'utilisateur.
             prenom (str) : Le prénom de l'utilisateur.
@@ -44,14 +53,15 @@ class UtilisateurDAO:
                         "mdp": mdp,
                         "pseudo": pseudo,
                         "langue": langue,
-                        "sel": sel
-                    }
+                        "sel": sel,
+                    },
                 )
                 res = cursor.fetchone()
                 if res:
                     return res["id_utilisateur"]
                 else:
-                    raise ValueError("Erreur lors de la création de l'utilisateur.")
+                    raise ValueError(
+                        "Erreur lors de la création de l'utilisateur.")
 
     def trouver_par_id(self, id_utilisateur: int) -> Utilisateur:
         """
@@ -70,7 +80,7 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT * FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s;",
-                    {"id_utilisateur": id_utilisateur}
+                    {"id_utilisateur": id_utilisateur},
                 )
                 res = cursor.fetchone()
 
@@ -83,7 +93,7 @@ class UtilisateurDAO:
                 adresse_mail=res["adresse_mail"],
                 mdp=res["mdp"],
                 langue=res["langue"],
-                sel=res["sel"]
+                sel=res["sel"],
             )
         else:
             raise ValueError("Utilisateur introuvable.")
@@ -105,7 +115,7 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT * FROM projet11.utilisateur WHERE pseudo = %(pseudo)s;",
-                    {"pseudo": pseudo}
+                    {"pseudo": pseudo},
                 )
                 res = cursor.fetchone()
 
@@ -118,11 +128,10 @@ class UtilisateurDAO:
                 "adresse_mail": res["adresse_mail"],
                 "mdp": res["mdp"],
                 "langue": res["langue"],
-                "sel": res["sel"]
+                "sel": res["sel"],
             }
         else:
             raise ValueError("Pseudo ou mot de passe incorrect.")
-
 
     def supprimer_compte_DAO(self, id_utilisateur: int) -> bool:
         """
@@ -140,9 +149,8 @@ class UtilisateurDAO:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
-                    {"id_utilisateur": id_utilisateur},
-                )
+                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s", {
+                        "id_utilisateur": id_utilisateur}, )
                 res = cursor.rowcount
 
         return res > 0
@@ -169,7 +177,7 @@ class UtilisateurDAO:
                     WHERE pseudo = %(pseudo)s
                     LIMIT 1;
                     """,
-                    {"pseudo": pseudo}
+                    {"pseudo": pseudo},
                 )
                 res = cursor.fetchone()
 
@@ -200,12 +208,12 @@ class UtilisateurDAO:
                     FROM projet11.utilisateur
                     WHERE pseudo = %(pseudo)s;
                     """,
-                    {"pseudo": pseudo}
+                    {"pseudo": pseudo},
                 )
                 res = cursor.fetchone()
 
         if res:
             return {"id_utilisateur": res["id_utilisateur"]}
         else:
-            raise ValueError(f"Utilisateur avec le pseudo '{pseudo}' introuvable.")
-
+            raise ValueError(
+                f"Utilisateur avec le pseudo '{pseudo}' introuvable.")

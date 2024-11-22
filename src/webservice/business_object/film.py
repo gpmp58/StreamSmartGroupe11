@@ -25,7 +25,7 @@ def transformer_duree(d=int):
 
 
 def transformer_date(date_str):
-    if not date_str :
+    if not date_str:
         return "Date pas disponible"
     else:
         date_obj = datetime.strptime(date_str, "%Y-%m-%d")
@@ -43,11 +43,10 @@ class Film:
     id_film : int
         Identifiant du film.
     """
+
     def __init__(self, id_film: int):
         if not isinstance(id_film, int):
-            raise TypeError(
-                f"id_film doit être un entier"
-            )
+            raise TypeError(f"id_film doit être un entier")
         self.id_film = id_film
         self.image = self.recuperer_image()
         self.streaming = self.recuperer_streaming()
@@ -55,26 +54,26 @@ class Film:
 
     def afficher_film(self):
         """
-        Récupère les informations d'un film à partir de l'API de The Movie Database (TMDb) en utilisant l'identifiant du film.
+            Récupère les informations d'un film à partir de l'API de The Movie Database (TMDb) en utilisant l'identifiant du film.
 
-        Returns:
-            dict : Un dictionnaire contenant les informations du film avec les clés suivantes :
-            - "name" : Le titre original du film.
-            - "description" : Un résumé du film.
-            - "vote_average" : La note moyenne du film sur TMDb.
-            - "date_sortie" : La date de sortie du film.
-            - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
-            - "genres" : Liste des genres du film.
+            Returns:
+                dict : Un dictionnaire contenant les informations du film avec les clés suivantes :
+                - "name" : Le titre original du film.
+                - "description" : Un résumé du film.
+                - "vote_average" : La note moyenne du film sur TMDb.
+                - "date_sortie" : La date de sortie du film.
+                - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
+                - "genres" : Liste des genres du film.
 
-    Raises:
-        Exception : Si la requête échoue (code de statut HTTP différent de 200), l'identifiant n'est pas le bon.
-    """
+        Raises:
+            Exception : Si la requête échoue (code de statut HTTP différent de 200), l'identifiant n'est pas le bon.
+        """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
-        headers = {
-            "accept": "application/json",
-            "Authorization": f"Bearer {cle_api}"
-        }
+        url_search_movie = (
+            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
+        )
+        headers = {"accept": "application/json",
+                   "Authorization": f"Bearer {cle_api}"}
         response = requests.get(url_search_movie, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content)
@@ -98,20 +97,22 @@ class Film:
             str: L'URL du poster du film si disponible, sinon le message "Image non disponible".
         """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
-        headers = {
-            "accept": "application/json",
-            "Authorization": f"Bearer {cle_api}"
-        }
+        url_search_movie_2 = (
+            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
+        )
+        headers = {"accept": "application/json",
+                   "Authorization": f"Bearer {cle_api}"}
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
 
         # Vérifie si la clé "posters" existe et qu'il y a au moins un poster
         if "posters" in content and content["posters"]:
-            return "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + content["posters"][0]["file_path"]
+            return (
+                "https://image.tmdb.org/t/p/w600_and_h900_bestv2"
+                + content["posters"][0]["file_path"]
+            )
         else:
             return "Image non disponible"
-
 
     def recuperer_streaming(self):
         """
@@ -125,10 +126,8 @@ class Film:
         url_movie_providers = (
             f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
         )
-        headers = {
-            "accept": "application/json",
-            "Authorization": f"Bearer {cle_api}"
-        }
+        headers = {"accept": "application/json",
+                   "Authorization": f"Bearer {cle_api}"}
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
@@ -139,18 +138,25 @@ class Film:
                 streaming = []
                 result_flatrate = result_fr["flatrate"]
                 for provider in result_flatrate:
-                    streaming.append({
-                        "id": provider["provider_id"],  # Ajoute l'ID du provider
-                        "name": provider["provider_name"],
-                        "logo" : "https://image.tmdb.org/t/p/w780" + provider["logo_path"]
-                    })
-                return streaming  # Renvoie une liste de services de streaming disponibles
+                    streaming.append(
+                        {
+                            # Ajoute l'ID du provider
+                            "id": provider["provider_id"],
+                            "name": provider["provider_name"],
+                            "logo": "https://image.tmdb.org/t/p/w780"
+                            + provider["logo_path"],
+                        }
+                    )
+                return (
+                    streaming  # Renvoie une liste de services de streaming disponibles
+                )
             else:
                 streaming = []
                 return streaming
-        else :
-            streaming =[]
+        else:
+            streaming = []
             return streaming
+
 
 if __name__ == "__main__":
     film = Film(268)
