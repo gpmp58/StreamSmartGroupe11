@@ -22,10 +22,6 @@ def install_dependencies():
     """
     print(f"{Fore.RED}=========== Installation des dépendances ============\n")
     subprocess.run(["pip", "install", "--user", "-r", "requirements.txt"], check=True)
-<<<<<<< HEAD:start_application.py
-=======
-    loading_bar("Installation des dépendances en cours...")
->>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb:src/start_application.py
 
 
 def start_webservice():
@@ -67,20 +63,6 @@ def clean_terminal():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-<<<<<<< HEAD:start_application.py
-=======
-def loading_bar(message):
-    """
-    Affiche une barre de progression pour une étape donnée.
-    """
-    print(f"{Fore.RED}{message}")
-    for _ in tqdm(
-        range(10), desc="Chargement", bar_format="{l_bar}{bar} | {n_fmt}/{total}"
-    ):
-        time.sleep(0.2)
-
-
->>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb:src/start_application.py
 if __name__ == "__main__":
     try:
         # Étape 1 : Mise à jour de pip
