@@ -59,31 +59,48 @@ class Utilisateur:
         """
 
         if not isinstance(nom, str):
-            raise Exception("Le nom n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le nom n'est pas une chaîne de caractères."
+            )
         if not isinstance(prenom, str):
-            raise Exception("Le prenom n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le prenom n'est pas une chaîne de caractères."
+            )
         if not isinstance(pseudo, str):
-            raise Exception("Le pseudo n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le pseudo n'est pas une chaîne de caractères."
+            )
         for caractere in pseudo:
-            if not (caractere.isalnum() or caractere ==
-                    "_" or caractere == "."):
+            if not (
+                caractere.isalnum()
+                or caractere == "_"
+                or caractere == "."
+            ):
                 raise Exception(
-                    "Il y a des caratères non autorisés dans le pseudo")
+                    "Il y a des caratères non autorisés dans le pseudo"
+                )
         if not isinstance(adresse_mail, str):
             raise Exception(
-                "L'adresse mail n'est pas une chaîne de caractères.")
+                "L'adresse mail n'est pas une chaîne de caractères."
+            )
         if not self.is_valid_email(adresse_mail):
             raise Exception("L'adresse mail n'est pas valide.")
         if not isinstance(langue, str):
-            raise Exception("La langue n'est pas une chaîne de caractères.")
+            raise Exception(
+                "La langue n'est pas une chaîne de caractères."
+            )
         if not isinstance(mdp, str):
             raise Exception(
-                "Le mot de passe n'est pas une chaîne de caractères.")
+                "Le mot de passe n'est pas une chaîne de caractères."
+            )
         if not isinstance(id_utilisateur, int):
             raise Exception(
-                "L'identifiant de l'utilisateur n'est pas un entier.")
+                "L'identifiant de l'utilisateur n'est pas un entier."
+            )
         if sel is not None and not isinstance(sel, str):
-            raise Exception("Le sel n'est pas une chaîne de caractères.")
+            raise Exception(
+                "Le sel n'est pas une chaîne de caractères."
+            )
 
         self.id_utilisateur = id_utilisateur
         self.nom = nom
@@ -105,7 +122,9 @@ class Utilisateur:
         Returns :
             bool : Retourne True si l'adresse email respecte le format de base, sinon False.
         """
-        return re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
+        return (
+            re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
+        )
 
     def message(self):
         """

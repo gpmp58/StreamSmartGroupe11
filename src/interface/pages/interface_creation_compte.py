@@ -80,8 +80,7 @@ def page_creation_compte():
             set_session_state(pseudo=answers["pseudo"], id_utilisateur=None)
         else:
             response_json = response.json()
-            print(
-                f"❌ Erreur : {response_json.get('detail', 'Erreur inconnue')}")
+            print(f"❌ Erreur : {response_json.get('detail', 'Erreur inconnue')}")
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur de connexion à l'API : {e}")
 

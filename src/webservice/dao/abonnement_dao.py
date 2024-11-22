@@ -144,7 +144,7 @@ class AbonnementDao:
         Récupère les abonnements filtrés sous forme de dictionnaire selon les préférences spécifiées par l'utilisateur.
         """
         try:
-            qualite_map = {"HD": 1, "4K": 2, "8K": 3}
+            qualite_map = {"HD": 1, "4K": 2}
             qualite_valeur = qualite_map.get(preferences["qualite"], 0)
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -155,7 +155,6 @@ class AbonnementDao:
                         "AND (CASE "
                         "   WHEN qualite = 'HD' THEN 1 "
                         "   WHEN qualite = '4K' THEN 2 "
-                        "   WHEN qualite = '8K' THEN 3 "
                         "   ELSE 0 "
                         "END) >= %s "
                         "ORDER BY prix ASC;",
@@ -180,4 +179,11 @@ class AbonnementDao:
 
 if __name__ == "__main__":
     abonnements = AbonnementDao().get_abonnement_by_plateforme_DAO("Canal+")
+    dicti = {
+        "qualite": "HD",
+        "pub": True,
+        "prix": False,
+        "rapport_quantite_prix": False,
+    }
+    abonnements = AbonnementDao().abonnement_filtrés(dicti)
     print(abonnements)

@@ -27,8 +27,7 @@ def verifier_connexion():
 
 def creer_watchlist(id):
     """Crée une nouvelle watchlist pour l'utilisateur."""
-    nom_watchlist = input(
-        "\nEntrez le nom de la nouvelle watchlist : ").strip()
+    nom_watchlist = input("\nEntrez le nom de la nouvelle watchlist : ").strip()
     if not nom_watchlist:
         print("\nErreur : Le nom de la watchlist est obligatoire.")
         return
@@ -47,8 +46,7 @@ def supprimer_film(id_utilisateur):
     """Supprime un film d'une watchlist via un menu déroulant pour sélectionner le film."""
     try:
         # Étape 1 : Récupérer les watchlists de l'utilisateur
-        response = requests.get(
-            f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
         response.raise_for_status()
         watchlists = response.json().get("watchlists", [])
         if not watchlists:
@@ -75,13 +73,11 @@ def supprimer_film(id_utilisateur):
         id_watchlist = watchlist_answers["id_watchlist"]
 
         # Étape 3 : Récupérer les films de la watchlist
-        response_films = requests.get(
-            f"{LIEN_API}/watchlists/{id_watchlist}/films")
+        response_films = requests.get(f"{LIEN_API}/watchlists/{id_watchlist}/films")
         response_films.raise_for_status()
         films = response_films.json().get("films", [])
         if not films:
-            print(
-                f"❌ Aucun film trouvé dans la watchlist (ID : {id_watchlist}).")
+            print(f"❌ Aucun film trouvé dans la watchlist (ID : {id_watchlist}).")
             return
 
         # Étape 4 : Choisir un film
@@ -155,8 +151,7 @@ def afficher_watchlists(id):
                     )
                     if films:
                         for film in films:
-                            print(
-                                f"  - {film['nom_film']} (ID : {film['id_film']})")
+                            print(f"  - {film['nom_film']} (ID : {film['id_film']})")
                     else:
                         print("  Aucun film trouvé dans cette watchlist.")
                 else:
@@ -214,13 +209,10 @@ def ajouter_film(id):
         ]
 
         answers = prompt(questions)
-        data = {
-            "id_watchlist": answers["id_watchlist"],
-            "id_film": answers["id_film"]}
+        data = {"id_watchlist": answers["id_watchlist"], "id_film": answers["id_film"]}
 
         # Envoyer la requête pour ajouter un film à la watchlist
-        response = requests.post(
-            f"{LIEN_API}/watchlists/ajouter_film", json=data)
+        response = requests.post(f"{LIEN_API}/watchlists/ajouter_film", json=data)
         if response.status_code == 200:
             print("\n✅ Film ajouté à la watchlist avec succès !")
         else:
@@ -263,8 +255,7 @@ def supprimer_watchlist(id):
         if response.status_code == 200:
             print("\n Watchlist supprimée avec succès.")
         else:
-            print(
-                f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
+            print(f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
     except requests.exceptions.RequestException as e:
         print(f"Erreur de connexion à l'API : {e}")
 
@@ -317,8 +308,7 @@ def ajouter_film(id):
 
             # Ajouter le film à la watchlist
             data = {"id_watchlist": id_watchlist, "id_film": id_film}
-            response = requests.post(
-                f"{LIEN_API}/watchlists/ajouter_film", json=data)
+            response = requests.post(f"{LIEN_API}/watchlists/ajouter_film", json=data)
 
             if response.status_code == 200:
                 print("\n✅ Film ajouté à la watchlist avec succès !")

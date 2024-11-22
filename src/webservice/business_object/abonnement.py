@@ -33,8 +33,7 @@ class Abonnement:
         """
 
         if not isinstance(id_abonnement, int):
-            raise Exception(
-                "L'identifiant de l'abonnement n'est pas un entier.")
+            raise Exception("L'identifiant de l'abonnement n'est pas un entier.")
         if not isinstance(nom_plateforme, str):
             raise Exception(
                 "Le nom de la plateforme n'est pas une chaîne de caractère."

@@ -80,7 +80,7 @@ class PlateformeDAO:
                     # retourne True
                     # Si la requête renvoie une ligne, c'est que la plateforme
                     # existe
-                    return (result is not None)
+                    return result is not None
 
         except Exception as e:
             print(

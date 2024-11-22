@@ -54,12 +54,16 @@ async def rechercher_film(film: RechercheFilmModel):
         if not isinstance(film.nom_film, str):
             raise HTTPException(
                 status_code=400,
-                detail="Le film doit être en format caractères")
+                detail="Le film doit être en format caractères",
+            )
 
         # Vérification des caractères dans le nom du film
         for caractere in film.nom_film:
-            if not (caractere.isalnum() or caractere ==
-                    " " or caractere == "&"):
+            if not (
+                caractere.isalnum()
+                or caractere == " "
+                or caractere == "&"
+            ):
                 raise HTTPException(
                     status_code=400,
                     detail="Il y a des caractères spéciaux dans le film. Veuillez réécrire le nom du film.",
@@ -72,7 +76,10 @@ async def rechercher_film(film: RechercheFilmModel):
         films_trouves = film_service.rechercher_film()
 
         # Vérifier si une erreur est présente
-        if isinstance(films_trouves, dict) and "error" in films_trouves:
+        if (
+            isinstance(films_trouves, dict)
+            and "error" in films_trouves
+        ):
             raise ValueError(films_trouves["error"])
         return {"films": films_trouves}
     except HTTPException as e:
@@ -81,7 +88,8 @@ async def rechercher_film(film: RechercheFilmModel):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur")
+            status_code=500, detail="Erreur interne du serveur"
+        )
 
 
 # 2. GET /api/films/{id_film} : Obtenir les détails d'un film par ID
@@ -110,10 +118,12 @@ async def obtenir_details_film(id_film: int):
     except KeyError as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Clé manquante dans les détails du film : {e}")
+            detail=f"Clé manquante dans les détails du film : {e}",
+        )
     except ValueError as e:
         raise HTTPException(
-            status_code=400, detail=f"Erreur de validation des données : {e}"
+            status_code=400,
+            detail=f"Erreur de validation des données : {e}",
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

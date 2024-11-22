@@ -1,14 +1,18 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from src.webservice.business_object.film import Film
-from src.webservice.services.service_plateforme import ServicePlateforme
+from src.webservice.services.service_plateforme import (
+    ServicePlateforme,
+)
 import logging
 
 # Configuration du logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(message)s"
+)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
@@ -37,11 +41,14 @@ async def ajouter_plateformes(film_data: FilmModel):
         # Étape 1 : Construire l'objet Film
         film = Film(id_film=film_data.id_film)
         print(film.recuperer_streaming())
-        logger.debug(f"Film construit avec les détails : {film.details}")
+        logger.debug(
+            f"Film construit avec les détails : {film.details}"
+        )
 
         # Étape 2 : Utiliser le service pour ajouter les plateformes
         logger.info(
-            f"Ajout des plateformes pour le film ID: {film_data.id_film}")
+            f"Ajout des plateformes pour le film ID: {film_data.id_film}"
+        )
         service_plateforme.ajouter_plateforme(film)
 
         logger.info(
@@ -56,4 +63,5 @@ async def ajouter_plateformes(film_data: FilmModel):
             f"Erreur lors de l'ajout des plateformes pour le film ID: {film_data.id_film} : {str(e)}"
         )
         raise HTTPException(
-            status_code=500, detail=f"Erreur interne : {str(e)}")
+            status_code=500, detail=f"Erreur interne : {str(e)}"
+        )

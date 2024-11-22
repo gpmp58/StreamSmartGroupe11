@@ -39,8 +39,7 @@ class FilmDao:
                         "INSERT INTO projet11.film (id_film, nom_film) VALUES (%s, %s);",
                         (film.id_film, film.details["name"]),
                     )
-                    print(
-                        f"Le film '{film.details['name']}' a été ajouté avec succès.")
+                    print(f"Le film '{film.details['name']}' a été ajouté avec succès.")
                     return True
 
         except Exception as e:
