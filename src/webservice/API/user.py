@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from src.webservice.business_object.utilisateur import Utilisateur
-from src.webservice.services.service_utilisateur import UtilisateurService
+from src.webservice.services.service_utilisateur import (
+    UtilisateurService,
+)
 from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
 # Création du router FastAPI
@@ -65,9 +67,12 @@ async def delete_utilisateur(id_utilisateur: str):
     Supprime un utilisateur basé sur son identifiant.
     """
     try:
-        utilisateur_service.supprimer_compte(id_utilisateur=id_utilisateur)
+        utilisateur_service.supprimer_compte(
+            id_utilisateur=id_utilisateur
+        )
         return {
-            "message": f"Utilisateur avec id '{id_utilisateur}' supprimé avec succès"}
+            "message": f"Utilisateur avec id '{id_utilisateur}' supprimé avec succès"
+        }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -94,15 +99,18 @@ async def login_utilisateur(credentials: LoginModel):
 
 # 4. GET /utilisateurs/{id_utilisateur}/afficher : Afficher les infos d'un
 # utilisateur
-@router.get("/utilisateurs/{id_utilisateur}/afficher",
-            response_model=UtilisateurDisplayModel)
+@router.get(
+    "/utilisateurs/{id_utilisateur}/afficher",
+    response_model=UtilisateurDisplayModel,
+)
 async def afficher_utilisateur(id_utilisateur: str):
     """
     Affiche les informations d'un utilisateur basé sur son id.
     """
     try:
         utilisateur_info = utilisateur_service.afficher(
-            id_utilisateur=id_utilisateur)
+            id_utilisateur=id_utilisateur
+        )
 
         # Construire le modèle de réponse à partir de l'utilisateur récupéré
         return UtilisateurDisplayModel(
@@ -125,12 +133,16 @@ async def obtenir_id_utilisateur(data: UtilisateurPseudoModel):
     utilisateur_service = UtilisateurService()
     try:
         utilisateur = utilisateur_service.get_id_utilisateur(
-            pseudo=data.pseudo)
+            pseudo=data.pseudo
+        )
         if utilisateur:
-            return {"id_utilisateur": utilisateur.get("id_utilisateur")}
+            return {
+                "id_utilisateur": utilisateur.get("id_utilisateur")
+            }
         else:
             raise HTTPException(
-                status_code=404, detail="Utilisateur introuvable.")
+                status_code=404, detail="Utilisateur introuvable."
+            )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:

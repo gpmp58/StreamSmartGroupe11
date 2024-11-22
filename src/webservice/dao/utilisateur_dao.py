@@ -60,8 +60,7 @@ class UtilisateurDAO:
                 if res:
                     return res["id_utilisateur"]
                 else:
-                    raise ValueError(
-                        "Erreur lors de la création de l'utilisateur.")
+                    raise ValueError("Erreur lors de la création de l'utilisateur.")
 
     def trouver_par_id(self, id_utilisateur: int) -> Utilisateur:
         """
@@ -149,8 +148,9 @@ class UtilisateurDAO:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s", {
-                        "id_utilisateur": id_utilisateur}, )
+                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
+                    {"id_utilisateur": id_utilisateur},
+                )
                 res = cursor.rowcount
 
         return res > 0
@@ -215,5 +215,4 @@ class UtilisateurDAO:
         if res:
             return {"id_utilisateur": res["id_utilisateur"]}
         else:
-            raise ValueError(
-                f"Utilisateur avec le pseudo '{pseudo}' introuvable.")
+            raise ValueError(f"Utilisateur avec le pseudo '{pseudo}' introuvable.")

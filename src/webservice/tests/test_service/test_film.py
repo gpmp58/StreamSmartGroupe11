@@ -23,15 +23,18 @@ def succes_init_film():
         film_test.image
         == "https://image.tmdb.org/t/p/w600_and_h900_bestv2/cij4dd21v2Rk2YtUQbV5kW69WB2.jpg"
     )
-    assert film_test.streaming == [{"id": 381,
-                                    "name": "Canal+",
-                                    "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
-                                    },
-                                   {"id": 1899,
-                                    "name": "Max",
-                                    "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
-                                    },
-                                   ]
+    assert film_test.streaming == [
+        {
+            "id": 381,
+            "name": "Canal+",
+            "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
+        },
+        {
+            "id": 1899,
+            "name": "Max",
+            "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
+        },
+    ]
 
 
 def test_afficher():

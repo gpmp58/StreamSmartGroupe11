@@ -35,8 +35,9 @@ def demander_criteres():
     Demande des critères à l'utilisateur.
     Si prix est coché Yes, rapport quantité/prix sera No automatiquement, et inversement.
     """
-    prix = inquirer.confirm(message="Souhaitez-vous le prix le plus bas ?",
-                            default=False).execute()
+    prix = inquirer.confirm(
+        message="Souhaitez-vous le prix le plus bas ?", default=False
+    ).execute()
     rapport_quantite_prix = not prix  # Inverse automatiquement le choix de prix
 
     qualite = inquirer.text(
@@ -57,8 +58,7 @@ def demander_criteres():
 def selectionner_watchlist(id_utilisateur):
     """Permet à l'utilisateur de sélectionner une watchlist parmi celles disponibles."""
     try:
-        response = requests.get(
-            f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
         if response.status_code != 200:
             print("Erreur lors de la récupération des watchlists.")
             return None
@@ -100,16 +100,14 @@ def recuperer_plateformes_film_watchlist(id_utilisateur):
             # Gestion des listes vides
             for film_id, plateformes in result.items():
                 if not plateformes:
-                    result[film_id] = [
-                        "Pas de Plateforme de Streaming disponible"]
+                    result[film_id] = ["Pas de Plateforme de Streaming disponible"]
 
             print("\n=== Résultat des plateformes disponibles ===")
             for film_id, plateformes in result.items():
                 print(f"Film ID {film_id} : {', '.join(plateformes)}")
 
         else:
-            print(
-                f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
+            print(f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
 
     except Exception as e:
         print(f"Erreur de connexion à l'API : {e}")

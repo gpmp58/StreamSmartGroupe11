@@ -17,8 +17,7 @@ class CritereService:
         for id_film in id_films:
             film_critere = Film(id_film)
             plateformes = film_critere.recuperer_streaming()
-            nom_plateformes = [plateforme["name"]
-                               for plateforme in plateformes]
+            nom_plateformes = [plateforme["name"] for plateforme in plateformes]
             films_et_plateformes[id_film] = nom_plateformes
 
         return films_et_plateformes
@@ -32,8 +31,12 @@ class CritereService:
         abonnements_filtres = self.filtrer_abonnement(criteres)
         films_et_plateformes = self.recuperer_plateformes_film(criteres)
         occurrences_plateformes = {}
-        plateformes_filtrees = {abonnement['nom_plateforme'] for abonnement in abonnements_filtres}
-        for plateformes in films_et_plateformes.values():  # Récupère les listes de plateformes
+        plateformes_filtrees = {
+            abonnement["nom_plateforme"] for abonnement in abonnements_filtres
+        }
+        for (
+            plateformes
+        ) in films_et_plateformes.values():  # Récupère les listes de plateformes
             for plateforme in plateformes:  # Parcourt chaque plateforme
                 if plateforme in plateformes_filtrees:
                     if plateforme not in occurrences_plateformes:
@@ -49,8 +52,7 @@ class CritereService:
         """
         abonnements_filtres = self.filtrer_abonnement(critere)
         films_et_plateformes = self.recuperer_plateformes_film(critere)
-        occurrences_plateformes = self.calculer_occurrences_plateformes(
-            critere)
+        occurrences_plateformes = self.calculer_occurrences_plateformes(critere)
         preferences = critere.criteres
         if preferences.get("prix", False):
             # Cas où on utilise le critère de prix et d'occurrences > 0
@@ -95,8 +97,7 @@ class CritereService:
         else:
             plateforme_optimisee = max(
                 abonnements_filtres,
-                key=lambda x: occurrences_plateformes.get(
-                    x["nom_plateforme"], 0),
+                key=lambda x: occurrences_plateformes.get(x["nom_plateforme"], 0),
             )
         abonnement_optimise = Abonnement(
             id_abonnement=plateforme_optimisee["id_abonnement"],

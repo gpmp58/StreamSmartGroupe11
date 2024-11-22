@@ -132,14 +132,8 @@ def test_utilisateur_init_succes():
     ],
 )
 def test_utilisateur_init_echec(
-        nom,
-        prenom,
-        pseudo,
-        adresse_mail,
-        mdp,
-        id_utilisateur,
-        erreur,
-        message_erreur):
+    nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur, erreur, message_erreur
+):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         Utilisateur(nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur)
 

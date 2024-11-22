@@ -47,8 +47,7 @@ def connexion_utilisateur():
 
                 if id_utilisateur:
                     # Mettre à jour l'état global via session_manager
-                    set_session_state(
-                        pseudo=pseudo, id_utilisateur=id_utilisateur)
+                    set_session_state(pseudo=pseudo, id_utilisateur=id_utilisateur)
 
                     # Afficher les détails utilisateur
                     utilisateur_response = requests.get(
@@ -66,12 +65,10 @@ def connexion_utilisateur():
                         print(
                             f"🔹 Adresse mail : {utilisateur_info.get('adresse_mail')}"
                         )
-                        print(
-                            f"🔹 Langue préférée : {utilisateur_info.get('langue')}")
+                        print(f"🔹 Langue préférée : {utilisateur_info.get('langue')}")
                         print("==============================\n")
                     else:
-                        print(
-                            "\n❌ Impossible de récupérer les détails utilisateur.\n")
+                        print("\n❌ Impossible de récupérer les détails utilisateur.\n")
                 else:
                     print("\n❌ Erreur : ID utilisateur non récupéré.\n")
             else:
@@ -79,8 +76,7 @@ def connexion_utilisateur():
                     f"\n❌ Erreur : {id_response.json().get('detail', 'Erreur inconnue')}\n"
                 )
         else:
-            print(
-                f"\n❌ Erreur : {response.json().get('detail', 'Erreur inconnue')}\n")
+            print(f"\n❌ Erreur : {response.json().get('detail', 'Erreur inconnue')}\n")
     except requests.exceptions.RequestException as e:
         print(f"\n❌ Erreur de connexion à l'API : {e}\n")
 

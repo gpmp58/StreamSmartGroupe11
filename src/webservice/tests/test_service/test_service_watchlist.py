@@ -157,11 +157,9 @@ def test_ajouter_film_succes(
 
     # Vérifications
     assert resultat is True  # L'ajout doit réussir
-    mock_film_deja_present.assert_called_once_with(
-        watchlist.id_watchlist, film.id_film)
+    mock_film_deja_present.assert_called_once_with(watchlist.id_watchlist, film.id_film)
     mock_verifier_film_existe.assert_called_once_with(film.id_film)
-    mock_ajouter_film_DAO.assert_called_once_with(
-        watchlist.id_watchlist, film.id_film)
+    mock_ajouter_film_DAO.assert_called_once_with(watchlist.id_watchlist, film.id_film)
 
 
 @patch("src.webservice.dao.watchlist_dao.WatchlistDao.film_deja_present")
@@ -185,8 +183,7 @@ def test_ajouter_film_deja_present(mock_film_deja_present):
 
     # Vérifications
     assert resultat is False  # L'ajout doit échouer
-    mock_film_deja_present.assert_called_once_with(
-        watchlist.id_watchlist, film.id_film)
+    mock_film_deja_present.assert_called_once_with(watchlist.id_watchlist, film.id_film)
 
 
 @patch("src.webservice.dao.film_dao.FilmDao.ajouter_film")
@@ -254,9 +251,7 @@ def test_ajouter_film_echec(
 
 @patch("src.webservice.dao.watchlist_dao.WatchlistDao.film_deja_present")
 @patch("src.webservice.dao.watchlist_dao.WatchlistDao.supprimer_film_DAO")
-def test_supprimer_film_succes(
-        mock_supprimer_film_DAO,
-        mock_film_deja_present):
+def test_supprimer_film_succes(mock_supprimer_film_DAO, mock_film_deja_present):
     # Initialisation
     service = WatchlistService()
     film = Film(id_film=1)
@@ -382,9 +377,7 @@ def test_sauvegarder_watchlist_aucun_film(mock_recuperer_films):
 @patch(
     "src.webservice.services.service_watchlist.WatchlistService.sauvegarder_watchlist"
 )
-def test_afficher_watchlist_succes(
-        mock_sauvegarder_watchlist,
-        mock_afficher_watchlist):
+def test_afficher_watchlist_succes(mock_sauvegarder_watchlist, mock_afficher_watchlist):
     service = WatchlistService()
     id_utilisateur = 1
     mock_afficher_watchlist.return_value = [
@@ -415,8 +408,7 @@ def test_afficher_watchlist_succes(
 def trouver_par_id(mock_sauvegarder_watchlist, mock_trouver_par_id_w):
     id_watchlist = 2
     mock_trouver_par_id_w.return_value = Watchlist("test", 1, [], id_watchlist)
-    mock_sauvegarder_watchlist.return_value = [
-        {"id_film": 1, "nom_film": "Film Test"}]
+    mock_sauvegarder_watchlist.return_value = [{"id_film": 1, "nom_film": "Film Test"}]
     service = WatchlistService()
     result = service.trouver_par_id(id_watchlist)
     assert result.nom_watchlist == "test"

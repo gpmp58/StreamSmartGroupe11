@@ -104,8 +104,7 @@ class UtilisateurService:
         except Exception as e:
             # Lever l'exception au lieu de renvoyer un dictionnaire pour
             # permettre une gestion des erreurs cohérente
-            raise ValueError(
-                f"Erreur lors de la création de l'utilisateur : {e}")
+            raise ValueError(f"Erreur lors de la création de l'utilisateur : {e}")
 
     def supprimer_compte(self, id_utilisateur: int):
         """
@@ -125,12 +124,10 @@ class UtilisateurService:
             # Utiliser le DAO pour supprimer l'utilisateur
             succes = UtilisateurDAO().supprimer_compte_DAO(id_utilisateur)
             if not succes:
-                raise ValueError(
-                    "Utilisateur introuvable ou suppression échouée.")
+                raise ValueError("Utilisateur introuvable ou suppression échouée.")
             print(f"Compte avec l'id '{id_utilisateur}' supprimé avec succès.")
         except Exception as e:
-            raise ValueError(
-                f"Erreur lors de la suppression de l'utilisateur : {e}")
+            raise ValueError(f"Erreur lors de la suppression de l'utilisateur : {e}")
 
     def se_connecter(self, pseudo: str, mdp: str):
         """
@@ -174,8 +171,7 @@ class UtilisateurService:
 
             return f"Bienvenue {pseudo} sur notre application"
         except Exception as e:
-            raise ValueError(
-                f"Erreur lors de la connexion de l'utilisateur : {e}")
+            raise ValueError(f"Erreur lors de la connexion de l'utilisateur : {e}")
 
     def se_deconnecter(self):
         """
@@ -265,5 +261,4 @@ class UtilisateurService:
         try:
             return UtilisateurDAO().get_id_utilisateur_DAO(pseudo)
         except ValueError as e:
-            raise ValueError(
-                f"Erreur lors de la récupération de l'utilisateur : {e}")
+            raise ValueError(f"Erreur lors de la récupération de l'utilisateur : {e}")

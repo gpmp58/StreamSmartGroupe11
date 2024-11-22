@@ -27,15 +27,18 @@ def test_recuperer_plateformes_film(
 
     watchlist_mock = Watchlist("test", 1, [], 1)
     films_mock = [{"id_film": 268, "nom_film": "Batman"}]
-    plateformes_mock_101 = [{"id": 381,
-                             "name": "Canal+",
-                             "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
-                             },
-                            {"id": 1899,
-                             "name": "Max",
-                             "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
-                             },
-                            ]
+    plateformes_mock_101 = [
+        {
+            "id": 381,
+            "name": "Canal+",
+            "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
+        },
+        {
+            "id": 1899,
+            "name": "Max",
+            "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
+        },
+    ]
     {268: ["Canal+", "Max"]}
 
     mock_trouver_par_id.return_value = watchlist_mock
@@ -56,24 +59,33 @@ def test_recuperer_plateformes_film(
 @patch("src.webservice.dao.abonnement_dao.AbonnementDao.abonnement_filtrés")
 def test_filtrer_abonnement(mock_abonnement_filtrees):
     criteres = Critere(
-        1, {"qualite": "4K", "pub": True, "prix": False,
-            "rapport_quantite_prix": False}
+        1, {"qualite": "4K", "pub": True, "prix": False, "rapport_quantite_prix": False}
     )
-    abonnement_mock = [{"id_abonnement": 1,
-                        "nom_plateforme": "Amazon", "prix": "6.99"}]
+    abonnement_mock = [{"id_abonnement": 1, "nom_plateforme": "Amazon", "prix": "6.99"}]
     mock_abonnement_filtrees.return_value = abonnement_mock
     service = CritereService()
     resultat = service.filtrer_abonnement(criteres)
     assert resultat == abonnement_mock
 
-@patch('src.webservice.services.service_critere.CritereService.filtrer_abonnement')
-@patch('src.webservice.services.service_critere.CritereService.recuperer_plateformes_film')
-def test_calculer_occurrences_plateformes(mock_recuperer_plateformes_film, mock_filtrer_abonnement):
-    
-    criteres = Critere(1, {"qualite":"HD", "pub":True, "prix":False,'rapport_quantite_prix':False})
 
-    mock_filtrer_abonnement.return_value = [{'id_abonnement': 14, 'nom_plateforme': 'Disney+', 'prix': '5.99'}, {'id_abonnement': 17, 'nom_plateforme': 'Netflix', 'prix': '5.99'}, {'id_abonnement': 20, 'nom_plateforme': 'Max', 'prix': '5.99'}, {'id_abonnement': 1, 'nom_plateforme': 'Amazon', 'prix': '6.99'}]
-    mock_recuperer_plateformes_film.return_value = {268: ['Canal+', 'Max']}
+@patch("src.webservice.services.service_critere.CritereService.filtrer_abonnement")
+@patch(
+    "src.webservice.services.service_critere.CritereService.recuperer_plateformes_film"
+)
+def test_calculer_occurrences_plateformes(
+    mock_recuperer_plateformes_film, mock_filtrer_abonnement
+):
+    criteres = Critere(
+        1, {"qualite": "HD", "pub": True, "prix": False, "rapport_quantite_prix": False}
+    )
+
+    mock_filtrer_abonnement.return_value = [
+        {"id_abonnement": 14, "nom_plateforme": "Disney+", "prix": "5.99"},
+        {"id_abonnement": 17, "nom_plateforme": "Netflix", "prix": "5.99"},
+        {"id_abonnement": 20, "nom_plateforme": "Max", "prix": "5.99"},
+        {"id_abonnement": 1, "nom_plateforme": "Amazon", "prix": "6.99"},
+    ]
+    mock_recuperer_plateformes_film.return_value = {268: ["Canal+", "Max"]}
 
     critere_service = CritereService()
 
@@ -81,25 +93,48 @@ def test_calculer_occurrences_plateformes(mock_recuperer_plateformes_film, mock_
     occurrences = critere_service.calculer_occurrences_plateformes(criteres)
 
     # Assertions
-    assert occurrences == {'Max': 1}
+    assert occurrences == {"Max": 1}
     mock_filtrer_abonnement.assert_called_once_with(criteres)
     mock_recuperer_plateformes_film.assert_called_once_with(criteres)
 
-@patch('src.webservice.services.service_critere.CritereService.filtrer_abonnement')
-@patch('src.webservice.services.service_critere.CritereService.recuperer_plateformes_film')
-@patch('src.webservice.services.service_critere.CritereService.calculer_occurrences_plateformes')
-def test_optimiser_abonnement_nb_films(mock_calculer_occurrences, mock_recuperer_plateformes, mock_filtrer_abonnement):
+
+@patch("src.webservice.services.service_critere.CritereService.filtrer_abonnement")
+@patch(
+    "src.webservice.services.service_critere.CritereService.recuperer_plateformes_film"
+)
+@patch(
+    "src.webservice.services.service_critere.CritereService.calculer_occurrences_plateformes"
+)
+def test_optimiser_abonnement_nb_films(
+    mock_calculer_occurrences, mock_recuperer_plateformes, mock_filtrer_abonnement
+):
     # Préparer les données fictives
-    criteres = Critere(1, {"qualite":"HD", "pub":True, "prix":False,'rapport_quantite_prix':False})
-    
-    mock_filtrer_abonnement.return_value = [{'id_abonnement': 14, 'nom_plateforme': 'Disney+', 'prix': 5.99}, {'id_abonnement': 17, 'nom_plateforme': 'Netflix', 'prix': 5.99}, {'id_abonnement': 20, 'nom_plateforme': 'Max', 'prix': 5.99}, {'id_abonnement': 1, 'nom_plateforme': 'Amazon', 'prix': 6.99}]
-    mock_recuperer_plateformes.return_value = {268: ['Canal+', 'Max','Disney+','Netflix'], 152: ['Canal+', 'Disney+', 'Amazon', 'Paramount Plus Apple TV Channel ','Netflix']}
-    
+    criteres = Critere(
+        1, {"qualite": "HD", "pub": True, "prix": False, "rapport_quantite_prix": False}
+    )
+
+    mock_filtrer_abonnement.return_value = [
+        {"id_abonnement": 14, "nom_plateforme": "Disney+", "prix": 5.99},
+        {"id_abonnement": 17, "nom_plateforme": "Netflix", "prix": 5.99},
+        {"id_abonnement": 20, "nom_plateforme": "Max", "prix": 5.99},
+        {"id_abonnement": 1, "nom_plateforme": "Amazon", "prix": 6.99},
+    ]
+    mock_recuperer_plateformes.return_value = {
+        268: ["Canal+", "Max", "Disney+", "Netflix"],
+        152: [
+            "Canal+",
+            "Disney+",
+            "Amazon",
+            "Paramount Plus Apple TV Channel ",
+            "Netflix",
+        ],
+    }
+
     mock_calculer_occurrences.return_value = {
         "Max": 1,
         "Disney+": 2,
         "Netflix": 2,
-        "Amazon":1
+        "Amazon": 1,
     }
     critere_service = CritereService()
     abonnement = critere_service.optimiser_abonnement(criteres)
@@ -111,21 +146,44 @@ def test_optimiser_abonnement_nb_films(mock_calculer_occurrences, mock_recuperer
     mock_recuperer_plateformes.assert_called_once_with(criteres)
     mock_calculer_occurrences.assert_called_once_with(criteres)
 
-@patch('src.webservice.services.service_critere.CritereService.filtrer_abonnement')
-@patch('src.webservice.services.service_critere.CritereService.recuperer_plateformes_film')
-@patch('src.webservice.services.service_critere.CritereService.calculer_occurrences_plateformes')
-def test_optimiser_abonnement_prix(mock_calculer_occurrences, mock_recuperer_plateformes, mock_filtrer_abonnement):
+
+@patch("src.webservice.services.service_critere.CritereService.filtrer_abonnement")
+@patch(
+    "src.webservice.services.service_critere.CritereService.recuperer_plateformes_film"
+)
+@patch(
+    "src.webservice.services.service_critere.CritereService.calculer_occurrences_plateformes"
+)
+def test_optimiser_abonnement_prix(
+    mock_calculer_occurrences, mock_recuperer_plateformes, mock_filtrer_abonnement
+):
     # Préparer les données fictives
-    criteres = Critere(1, {"qualite":"HD", "pub":True, "prix":True,'rapport_quantite_prix':False})
-    
-    mock_filtrer_abonnement.return_value = [{'id_abonnement': 14, 'nom_plateforme': 'Disney+', 'prix': 10.99}, {'id_abonnement': 17, 'nom_plateforme': 'Netflix', 'prix': 7.99}, {'id_abonnement': 20, 'nom_plateforme': 'Max', 'prix': 5.99}, {'id_abonnement': 1, 'nom_plateforme': 'Amazon', 'prix': 6.99}]
-    mock_recuperer_plateformes.return_value = {268: ['Canal+', 'Max','Disney+','Netflix'], 152: ['Canal+', 'Disney+', 'Amazon', 'Paramount Plus Apple TV Channel ','Netflix']}
-    
+    criteres = Critere(
+        1, {"qualite": "HD", "pub": True, "prix": True, "rapport_quantite_prix": False}
+    )
+
+    mock_filtrer_abonnement.return_value = [
+        {"id_abonnement": 14, "nom_plateforme": "Disney+", "prix": 10.99},
+        {"id_abonnement": 17, "nom_plateforme": "Netflix", "prix": 7.99},
+        {"id_abonnement": 20, "nom_plateforme": "Max", "prix": 5.99},
+        {"id_abonnement": 1, "nom_plateforme": "Amazon", "prix": 6.99},
+    ]
+    mock_recuperer_plateformes.return_value = {
+        268: ["Canal+", "Max", "Disney+", "Netflix"],
+        152: [
+            "Canal+",
+            "Disney+",
+            "Amazon",
+            "Paramount Plus Apple TV Channel ",
+            "Netflix",
+        ],
+    }
+
     mock_calculer_occurrences.return_value = {
         "Max": 1,
         "Disney+": 2,
         "Netflix": 2,
-        "Amazon":1
+        "Amazon": 1,
     }
     critere_service = CritereService()
     abonnement = critere_service.optimiser_abonnement(criteres)
@@ -137,21 +195,44 @@ def test_optimiser_abonnement_prix(mock_calculer_occurrences, mock_recuperer_pla
     mock_recuperer_plateformes.assert_called_once_with(criteres)
     mock_calculer_occurrences.assert_called_once_with(criteres)
 
-@patch('src.webservice.services.service_critere.CritereService.filtrer_abonnement')
-@patch('src.webservice.services.service_critere.CritereService.recuperer_plateformes_film')
-@patch('src.webservice.services.service_critere.CritereService.calculer_occurrences_plateformes')
-def test_optimiser_abonnement_rappoprt_prix(mock_calculer_occurrences, mock_recuperer_plateformes, mock_filtrer_abonnement):
+
+@patch("src.webservice.services.service_critere.CritereService.filtrer_abonnement")
+@patch(
+    "src.webservice.services.service_critere.CritereService.recuperer_plateformes_film"
+)
+@patch(
+    "src.webservice.services.service_critere.CritereService.calculer_occurrences_plateformes"
+)
+def test_optimiser_abonnement_rappoprt_prix(
+    mock_calculer_occurrences, mock_recuperer_plateformes, mock_filtrer_abonnement
+):
     # Préparer les données fictives
-    criteres = Critere(1, {"qualite":"HD", "pub":True, "prix":False,'rapport_quantite_prix':True})
-    
-    mock_filtrer_abonnement.return_value = [{'id_abonnement': 14, 'nom_plateforme': 'Disney+', 'prix': 10.99}, {'id_abonnement': 17, 'nom_plateforme': 'Netflix', 'prix': 7.99}, {'id_abonnement': 20, 'nom_plateforme': 'Max', 'prix': 5.99}, {'id_abonnement': 1, 'nom_plateforme': 'Amazon', 'prix': 6.99}]
-    mock_recuperer_plateformes.return_value = {268: ['Canal+', 'Max','Disney+','Netflix'], 152: ['Canal+', 'Disney+', 'Amazon', 'Paramount Plus Apple TV Channel ','Netflix']}
-    
+    criteres = Critere(
+        1, {"qualite": "HD", "pub": True, "prix": False, "rapport_quantite_prix": True}
+    )
+
+    mock_filtrer_abonnement.return_value = [
+        {"id_abonnement": 14, "nom_plateforme": "Disney+", "prix": 10.99},
+        {"id_abonnement": 17, "nom_plateforme": "Netflix", "prix": 7.99},
+        {"id_abonnement": 20, "nom_plateforme": "Max", "prix": 5.99},
+        {"id_abonnement": 1, "nom_plateforme": "Amazon", "prix": 6.99},
+    ]
+    mock_recuperer_plateformes.return_value = {
+        268: ["Canal+", "Max", "Disney+", "Netflix"],
+        152: [
+            "Canal+",
+            "Disney+",
+            "Amazon",
+            "Paramount Plus Apple TV Channel ",
+            "Netflix",
+        ],
+    }
+
     mock_calculer_occurrences.return_value = {
         "Max": 1,
         "Disney+": 2,
         "Netflix": 2,
-        "Amazon":1
+        "Amazon": 1,
     }
     critere_service = CritereService()
     abonnement = critere_service.optimiser_abonnement(criteres)
@@ -162,6 +243,8 @@ def test_optimiser_abonnement_rappoprt_prix(mock_calculer_occurrences, mock_recu
     mock_filtrer_abonnement.assert_called_once_with(criteres)
     mock_recuperer_plateformes.assert_called_once_with(criteres)
     mock_calculer_occurrences.assert_called_once_with(criteres)
+
+
 """
 if __name__ == "__main__":
     creationu = UtilisateurService().creer_compte(
@@ -192,4 +275,3 @@ if __name__ == "__main__":
     #optimisation = CritereService().optimiser_abonnement(criteres)
     #print(optimisation)
     #print( CritereService().afficher_abonnement_optimise(criteres))"""
-

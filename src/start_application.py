@@ -13,8 +13,7 @@ def update_pip():
     Met à jour `pip` à la dernière version disponible.
     """
     print(f"{Fore.RED}=========== Mise à jour de pip ============\n")
-    subprocess.run(["python", "-m", "pip", "install",
-                   "--upgrade", "pip"], check=True)
+    subprocess.run(["python", "-m", "pip", "install", "--upgrade", "pip"], check=True)
 
 
 def install_dependencies():
@@ -23,8 +22,7 @@ def install_dependencies():
     à partir du fichier requirements.txt en utilisant l'option --user.
     """
     print(f"{Fore.RED}=========== Installation des dépendances ============\n")
-    subprocess.run(["pip", "install", "--user", "-r",
-                   "requirements.txt"], check=True)
+    subprocess.run(["pip", "install", "--user", "-r", "requirements.txt"], check=True)
     loading_bar("Installation des dépendances en cours...")
 
 
@@ -68,9 +66,8 @@ def loading_bar(message):
     """
     print(f"{Fore.RED}{message}")
     for _ in tqdm(
-            range(10),
-            desc="Chargement",
-            bar_format="{l_bar}{bar} | {n_fmt}/{total}"):
+        range(10), desc="Chargement", bar_format="{l_bar}{bar} | {n_fmt}/{total}"
+    ):
         time.sleep(0.2)
 
 

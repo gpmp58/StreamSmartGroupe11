@@ -72,8 +72,7 @@ class Film:
         url_search_movie = (
             f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
         )
-        headers = {"accept": "application/json",
-                   "Authorization": f"Bearer {cle_api}"}
+        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
         response = requests.get(url_search_movie, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content)
@@ -100,8 +99,7 @@ class Film:
         url_search_movie_2 = (
             f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
         )
-        headers = {"accept": "application/json",
-                   "Authorization": f"Bearer {cle_api}"}
+        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
 
@@ -126,8 +124,7 @@ class Film:
         url_movie_providers = (
             f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
         )
-        headers = {"accept": "application/json",
-                   "Authorization": f"Bearer {cle_api}"}
+        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)

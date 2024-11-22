@@ -23,11 +23,7 @@ from src.webservice.dao.abonnement_dao import AbonnementDao
         ),
     ],
 )
-def test_abonnement_init_echec(
-        id_abonnement,
-        nom_plateforme,
-        erreur,
-        message_erreur):
+def test_abonnement_init_echec(id_abonnement, nom_plateforme, erreur, message_erreur):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         Abonnement(id_abonnement, nom_plateforme)
 

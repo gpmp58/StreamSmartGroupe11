@@ -22,7 +22,9 @@ class CritereRequestModel(BaseModel):
 async def recuperer_plateformes_film(critere: CritereRequestModel):
     critere_service = CritereService()
     try:
-        plateformes = critere_service.recuperer_plateformes_film(critere)
+        plateformes = critere_service.recuperer_plateformes_film(
+            critere
+        )
         return plateformes
     except Exception as e:
         raise HTTPException(
@@ -39,7 +41,9 @@ async def filtrer_abonnement(critere: CritereRequestModel):
     critere_service = CritereService()
     critere.criteres = critere.criteres.dict()
     try:
-        abonnements_filtrees = critere_service.filtrer_abonnement(critere)
+        abonnements_filtrees = critere_service.filtrer_abonnement(
+            critere
+        )
         return abonnements_filtrees
     except Exception as e:
         raise HTTPException(
@@ -52,12 +56,14 @@ async def filtrer_abonnement(critere: CritereRequestModel):
 
 
 @router.post("/calculer_occurrences_plateformes/")
-async def calculer_occurrences_plateformes(critere: CritereRequestModel):
+async def calculer_occurrences_plateformes(
+    critere: CritereRequestModel,
+):
     critere_service = CritereService()
     critere.criteres = critere.criteres.dict()
     try:
-        occurrences = critere_service.calculer_occurrences_plateformes(
-            critere
+        occurrences = (
+            critere_service.calculer_occurrences_plateformes(critere)
         )
         return occurrences
     except Exception as e:
@@ -75,7 +81,9 @@ async def optimiser_abonnement(critere: CritereRequestModel):
     critere_service = CritereService()
     critere.criteres = critere.criteres.dict()
     try:
-        abonnement_optimise = critere_service.optimiser_abonnement(critere)
+        abonnement_optimise = critere_service.optimiser_abonnement(
+            critere
+        )
         if abonnement_optimise:
             return {
                 "id_abonnement": abonnement_optimise.id_abonnement,
@@ -102,8 +110,8 @@ async def afficher_abonnement_optimise(critere: CritereRequestModel):
     critere_service = CritereService()
     critere.criteres = critere.criteres.dict()
     try:
-        abonnement_resume = critere_service.afficher_abonnement_optimise(
-            critere
+        abonnement_resume = (
+            critere_service.afficher_abonnement_optimise(critere)
         )
         return {"abonnement_optimise": abonnement_resume}
     except Exception as e:

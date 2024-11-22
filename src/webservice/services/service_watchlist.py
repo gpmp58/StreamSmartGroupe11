@@ -44,12 +44,10 @@ class WatchlistService:
             Watchlist : L'objet `Watchlist` créé si la création est réussie, sinon `None`.
         """
         if not nom_watchlist or not utilisateur or not utilisateur.id_utilisateur:
-            logging.error(
-                "Paramètres invalides pour la création de la watchlist.")
+            logging.error("Paramètres invalides pour la création de la watchlist.")
             return None
         id_utilisateur = utilisateur.id_utilisateur
-        nouvelle_watchlist = Watchlist(
-            nom_watchlist, utilisateur.id_utilisateur)
+        nouvelle_watchlist = Watchlist(nom_watchlist, utilisateur.id_utilisateur)
         if WatchlistDao().creer_nouvelle_watchlist_DAO(nouvelle_watchlist):
             return nouvelle_watchlist
         else:

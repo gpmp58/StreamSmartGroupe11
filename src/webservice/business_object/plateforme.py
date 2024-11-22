@@ -12,11 +12,7 @@ class PlateformeStreaming:
         logo de la plateforme
     """
 
-    def __init__(
-            self,
-            nom_plateforme: str,
-            id_plateforme: int,
-            logo_plateforme=None):
+    def __init__(self, nom_plateforme: str, id_plateforme: int, logo_plateforme=None):
         """
         Initialise un objet PlateformeStreaming avec les attributs spécifiés.
 
@@ -35,15 +31,12 @@ class PlateformeStreaming:
             raise Exception(
                 "Le nom de la plateforme n'est pas une chaîne de caractères."
             )
-        if not isinstance(
-                logo_plateforme,
-                str) and logo_plateforme is not None:
+        if not isinstance(logo_plateforme, str) and logo_plateforme is not None:
             raise Exception(
                 "Le logo de la plateforme n'est pas une chaîne de caractères ou n'est pas égal à None."
             )
         if not isinstance(id_plateforme, int):
-            raise Exception(
-                "L'identifiant de la plateforme n'est pas un entier.")
+            raise Exception("L'identifiant de la plateforme n'est pas un entier.")
 
         self.id_plateforme = id_plateforme
         self.nom_plateforme = nom_plateforme

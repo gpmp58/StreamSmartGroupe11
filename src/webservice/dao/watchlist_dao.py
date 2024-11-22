@@ -36,8 +36,7 @@ class WatchlistDao:
                         return True
                     return False
                 except Exception as e:
-                    logging.error(
-                        f"Erreur lors de la création de la watchlist : {e}")
+                    logging.error(f"Erreur lors de la création de la watchlist : {e}")
                     return False
 
     def supprimer_watchlist_DAO(self, watchlist: Watchlist) -> bool:
@@ -81,8 +80,7 @@ class WatchlistDao:
                 return False
 
         except Exception as e:
-            logging.error(
-                f"Erreur lors de la suppression de la watchlist : {e}")
+            logging.error(f"Erreur lors de la suppression de la watchlist : {e}")
             return False
 
     def ajouter_film_DAO(self, id_watchlist: int, id_film: int) -> bool:
@@ -154,13 +152,13 @@ class WatchlistDao:
                     cursor.execute(
                         "DELETE FROM projet11.film_watchlist                    "
                         " WHERE id_watchlist = %(id_watchlist)s        "
-                        "        AND id_film = %(id_film)s             ", {
-                            "id_watchlist": id_watchlist, "id_film": id_film}, )
+                        "        AND id_film = %(id_film)s             ",
+                        {"id_watchlist": id_watchlist, "id_film": id_film},
+                    )
                     res = cursor.rowcount
 
             if res > 0:
-                logging.info(
-                    f"Film {id_film} supprimé de la watchlist {id_watchlist}.")
+                logging.info(f"Film {id_film} supprimé de la watchlist {id_watchlist}.")
                 return True
             else:
                 logging.warning(
@@ -182,8 +180,9 @@ class WatchlistDao:
                         "SELECT COUNT(*)                              "
                         " FROM projet11.film_watchlist                         "
                         "WHERE id_watchlist = %(id_watchlist)s        "
-                        "      AND id_film = %(id_film)s;             ", {
-                            "id_watchlist": id_watchlist, "id_film": id_film}, )
+                        "      AND id_film = %(id_film)s;             ",
+                        {"id_watchlist": id_watchlist, "id_film": id_film},
+                    )
                     res = cursor.fetchone()
                     logging.debug(f"Résultat de la requête : {res}")
                     if res and res["count"] > 0:
@@ -216,8 +215,7 @@ class WatchlistDao:
                     )
                     films_data = cursor.fetchall()
                     films = [
-                        {"id_film": film["id_film"],
-                            "nom_film": film["nom_film"]}
+                        {"id_film": film["id_film"], "nom_film": film["nom_film"]}
                         for film in films_data
                     ]
 
@@ -287,8 +285,7 @@ class WatchlistDao:
                     # Exécution de la requête pour vérifier si l'id ou le nom
                     # existe déjà dans la base
                     cursor.execute(
-                        "SELECT 1 FROM projet11.film WHERE id_film = %s ;", (
-                            id_film,)
+                        "SELECT 1 FROM projet11.film WHERE id_film = %s ;", (id_film,)
                     )
                     result = cursor.fetchone()
 

@@ -36,14 +36,12 @@ async def creer_watchlist(watchlist_data: WatchlistCreateModel):
     """
     try:
         # Étape 1 : Récupérer l'utilisateur par son ID
-        utilisateur = utilisateur_dao.trouver_par_id(
-            watchlist_data.id_utilisateur)
+        utilisateur = utilisateur_dao.trouver_par_id(watchlist_data.id_utilisateur)
         if not utilisateur:
             logger.warning(
                 f"Utilisateur avec id {watchlist_data.id_utilisateur} introuvable."
             )
-            raise HTTPException(
-                status_code=404, detail="Utilisateur introuvable.")
+            raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
 
         # Étape 2 : Créer la nouvelle watchlist
         nouvelle_watchlist = service_watchlist.creer_nouvelle_watchlist(
@@ -52,8 +50,7 @@ async def creer_watchlist(watchlist_data: WatchlistCreateModel):
 
         # Étape 3 : Vérifier le succès de la création et retourner la réponse
         if nouvelle_watchlist:
-            logger.info(
-                f"Watchlist créée avec id {nouvelle_watchlist.id_watchlist}.")
+            logger.info(f"Watchlist créée avec id {nouvelle_watchlist.id_watchlist}.")
             return {
                 "id_watchlist": nouvelle_watchlist.id_watchlist,
                 "nom_watchlist": nouvelle_watchlist.nom_watchlist,
@@ -63,17 +60,15 @@ async def creer_watchlist(watchlist_data: WatchlistCreateModel):
         else:
             logger.error("Erreur lors de la création de la watchlist.")
             raise HTTPException(
-                status_code=400,
-                detail="Erreur lors de la création de la watchlist.")
+                status_code=400, detail="Erreur lors de la création de la watchlist."
+            )
 
     except ValueError as e:
         logger.error(f"Erreur de valeur : {e}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.exception(
-            f"Erreur interne lors de la création de la watchlist : {e}")
-        raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur.")
+        logger.exception(f"Erreur interne lors de la création de la watchlist : {e}")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
 
 
 # Route pour supprimer une watchlist
@@ -93,26 +88,24 @@ async def supprimer_watchlist(id_watchlist: int):
 
         # Étape 3 : Vérifier la suppression et retourner une réponse
         if succes:
-            logger.info(
-                f"Watchlist avec id {id_watchlist} supprimée avec succès.")
+            logger.info(f"Watchlist avec id {id_watchlist} supprimée avec succès.")
             return {
-                "message": f"La watchlist avec l'id '{id_watchlist}' a été supprimée avec succès."}
+                "message": f"La watchlist avec l'id '{id_watchlist}' a été supprimée avec succès."
+            }
         else:
             logger.error(
                 f"Erreur lors de la suppression de la watchlist avec id {id_watchlist}."
             )
             raise HTTPException(
-                status_code=400,
-                detail="Erreur lors de la suppression de la watchlist.")
+                status_code=400, detail="Erreur lors de la suppression de la watchlist."
+            )
 
     except ValueError as e:
         logger.error(f"Erreur connue lors de la suppression : {e}")
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        logger.exception(
-            f"Erreur interne lors de la suppression de la watchlist : {e}")
-        raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur.")
+        logger.exception(f"Erreur interne lors de la suppression de la watchlist : {e}")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
 
 
 class AjouterFilmModel(BaseModel):
@@ -144,16 +137,15 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
         logger.debug(f"Film à ajouter : {film.id_film}")
 
         # Étape 3 : Ajouter le film à la watchlist
-        succes_ajout = service_watchlist.ajouter_film(
-            film=film, watchlist=watchlist)
+        succes_ajout = service_watchlist.ajouter_film(film=film, watchlist=watchlist)
 
         if not succes_ajout:
             logger.warning(
                 f"Le film avec l'id '{ajouter_film_data.id_film}' ne peut pas être ajouté dans la watchlist {ajouter_film_data.id_watchlist}."
             )
             raise HTTPException(
-                status_code=400,
-                detail="Erreur lors de l'ajout du film à la watchlist.")
+                status_code=400, detail="Erreur lors de l'ajout du film à la watchlist."
+            )
 
         # Étape 4 : Mise a jour table plateforme_abonnement
         streaming_info = (
@@ -170,8 +162,7 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
                 nom_plateforme, id_plateforme
             )
             if success_plateforme:
-                logger.info(
-                    f"Plateforme '{nom_plateforme}' ajoutée avec succès.")
+                logger.info(f"Plateforme '{nom_plateforme}' ajoutée avec succès.")
             else:
                 logger.info(f"Plateforme '{nom_plateforme}' existe déjà.")
             # Etape 5 : Mise a jour table plateforme_film
@@ -188,10 +179,8 @@ async def ajouter_film_watchlist(ajouter_film_data: AjouterFilmModel):
         logger.error(f"Erreur de valeur lors de l'ajout du film : {e}")
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        logger.exception(
-            f"Erreur interne lors de l'ajout du film à la watchlist : {e}")
-        raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur.")
+        logger.exception(f"Erreur interne lors de l'ajout du film à la watchlist : {e}")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
 
 
 # Route pour supprimer un film d'une watchlist
@@ -221,7 +210,8 @@ async def supprimer_film_watchlist(id_watchlist: int, id_film: int):
                 f"Le film avec l'id '{id_film}' a été supprimé de la watchlist {id_watchlist}."
             )
             return {
-                "message": f"Le film avec l'id '{id_film}' a été supprimé de la watchlist."}
+                "message": f"Le film avec l'id '{id_film}' a été supprimé de la watchlist."
+            }
         else:
             logger.error(
                 f"Erreur lors de la suppression du film avec id {id_film} de la watchlist {id_watchlist}."
@@ -238,8 +228,7 @@ async def supprimer_film_watchlist(id_watchlist: int, id_film: int):
         logger.exception(
             f"Erreur interne lors de la suppression du film de la watchlist : {e}"
         )
-        raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur.")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
 
 
 # Route pour récupérer tous les films d'une watchlist
@@ -258,20 +247,17 @@ async def recuperer_films_watchlist(id_watchlist: int):
         # Étape 2 : Sauvegarder la watchlist et récupérer les films
         films = service_watchlist.sauvegarder_watchlist(watchlist)
 
-        logger.info(
-            f"Récupération des films pour la watchlist {id_watchlist} réussie.")
+        logger.info(f"Récupération des films pour la watchlist {id_watchlist} réussie.")
         return {"films": films}
 
     except ValueError as e:
-        logger.error(
-            f"Erreur de valeur lors de la récupération des films : {e}")
+        logger.error(f"Erreur de valeur lors de la récupération des films : {e}")
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         logger.exception(
             f"Erreur interne lors de la récupération des films de la watchlist : {e}"
         )
-        raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur.")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")
 
 
 @router.get("/watchlists/utilisateur/{id_utilisateur}", response_model=dict)
@@ -283,26 +269,20 @@ async def afficher_watchlist(id_utilisateur: int):
         # Étape 1 : Récupérer l'utilisateur par son ID
         utilisateur = utilisateur_dao.trouver_par_id(id_utilisateur)
         if not utilisateur:
-            logger.warning(
-                f"Utilisateur avec id {id_utilisateur} introuvable.")
-            raise HTTPException(
-                status_code=404, detail="Utilisateur introuvable.")
+            logger.warning(f"Utilisateur avec id {id_utilisateur} introuvable.")
+            raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
 
         # Étape 2 : Utiliser le service pour récupérer les watchlists de
         # l'utilisateur
         watchlists = service_watchlist.afficher_watchlist(id_utilisateur)
 
         # Étape 3 : Retourner les watchlists et leurs films associés
-        logger.info(
-            f"Watchlists récupérées pour l'utilisateur {id_utilisateur}.")
+        logger.info(f"Watchlists récupérées pour l'utilisateur {id_utilisateur}.")
         return {"watchlists": watchlists}
 
     except ValueError as e:
-        logger.error(
-            f"Erreur de valeur lors de la récupération des watchlists : {e}")
+        logger.error(f"Erreur de valeur lors de la récupération des watchlists : {e}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.exception(
-            f"Erreur interne lors de la récupération des watchlists : {e}")
-        raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur.")
+        logger.exception(f"Erreur interne lors de la récupération des watchlists : {e}")
+        raise HTTPException(status_code=500, detail="Erreur interne du serveur.")

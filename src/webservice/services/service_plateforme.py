@@ -32,9 +32,7 @@ class ServicePlateforme:
                 print(f"La plateforme {nom_plateforme} existe déjà.")
                 return False
 
-            nouvelle_plateforme = PlateformeStreaming(
-                nom_plateforme, id_plateforme
-            )
+            nouvelle_plateforme = PlateformeStreaming(nom_plateforme, id_plateforme)
             return PlateformeDAO().ajouter_plateforme(nouvelle_plateforme)
 
         except Exception as e:

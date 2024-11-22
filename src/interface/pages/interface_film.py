@@ -25,8 +25,7 @@ def selectionner_watchlist():
         main()
 
     try:
-        response = requests.get(
-            f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
         response.raise_for_status()
         watchlists = response.json().get("watchlists", [])
 
@@ -82,8 +81,7 @@ def ajouter_a_watchlist(film_id):
             json={"id_watchlist": id_watchlist, "id_film": film_id},
         )
         if ajout_response.status_code == 200:
-            print(
-                f"✅ Film (ID: {film_id}) ajouté à la watchlist (ID: {id_watchlist}).")
+            print(f"✅ Film (ID: {film_id}) ajouté à la watchlist (ID: {id_watchlist}).")
         else:
             print(
                 f"❌ Erreur lors de l'ajout du film : {ajout_response.json().get('detail', 'Erreur inconnue')}"
@@ -130,8 +128,7 @@ def afficher_details_film(film_id):
         print(
             f"Description : {film.get('description', 'Pas de description disponible.')}"
         )
-        print(
-            f"Date de sortie : {film.get('date_sortie', 'Date non disponible')}")
+        print(f"Date de sortie : {film.get('date_sortie', 'Date non disponible')}")
         print(f"Durée : {film.get('duree', 'Durée non disponible')}")
         print(
             f"Genres : {', '.join(film.get('genres', ['Pas de genres disponibles']))}"
@@ -153,8 +150,7 @@ def afficher_details_film(film_id):
             print("Retour au menu de recherche de films.")
             page_recherche_films()
     except requests.exceptions.RequestException as e:
-        print(
-            f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
+        print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
 
 
 def afficher_films_pagination(films):
@@ -170,8 +166,7 @@ def afficher_films_pagination(films):
         end_index = min(start_index + films_par_page, total_films)
         films_page = films_items[start_index:end_index]
 
-        print(
-            f"\n=== Résultats de recherche : Page {page + 1}/{total_pages} ===\n")
+        print(f"\n=== Résultats de recherche : Page {page + 1}/{total_pages} ===\n")
         for film_id, film_name in films_page:
             print(f"ID: {film_id} | Nom: {film_name}")
 
@@ -241,8 +236,7 @@ def rechercher_films(nom_film):
         else:
             print("Aucun film trouvé avec ce nom.")
     except Exception as e:
-        print(
-            f"❌ Une erreur s'est produite lors de la recherche des films : {e}")
+        print(f"❌ Une erreur s'est produite lors de la recherche des films : {e}")
 
 
 def page_recherche_films():

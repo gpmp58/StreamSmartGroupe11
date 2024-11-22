@@ -54,12 +54,8 @@ def test_watchlist_init_succes():
     ],
 )
 def test_watchlist_init_echec(
-        nom_watchlist,
-        id_utilisateur,
-        list_film,
-        id_watchlist,
-        erreur,
-        message_erreur):
+    nom_watchlist, id_utilisateur, list_film, id_watchlist, erreur, message_erreur
+):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
         Watchlist(nom_watchlist, id_utilisateur, list_film, id_watchlist)
 
