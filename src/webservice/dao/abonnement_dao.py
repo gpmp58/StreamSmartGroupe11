@@ -144,13 +144,8 @@ class AbonnementDao:
         Récupère les abonnements filtrés sous forme de dictionnaire selon les préférences spécifiées par l'utilisateur.
         """
         try:
-<<<<<<< HEAD
             qualite_map = {'HD': 1, '4K': 2}
             qualite_valeur = qualite_map.get(preferences['qualite'], 0)
-=======
-            qualite_map = {"HD": 1, "4K": 2, "8K": 3}
-            qualite_valeur = qualite_map.get(preferences["qualite"], 0)
->>>>>>> 76947687eaea691b0a852064fa7226be4f3b090f
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
