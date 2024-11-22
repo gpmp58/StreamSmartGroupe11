@@ -5,8 +5,7 @@ class Critere():
 
     Attributs
     ---------
-    watchlist : Watchlist
-        L'instance de la classe Watchlist qui est associée à ces critères de filtrage.
+    id_watchlist : int
     
     criteres : dict
         Un dictionnaire contenant les critères de filtrage. Chaque clé correspond à un critère et la valeur associée est du type attendu selon ce critère.
@@ -42,12 +41,20 @@ class Critere():
         self.criteres = criteres
 
     def get_id_watchlist(self):
+        """
+        Retourne l'id_watchlist.
+
+        Return
+        ------
+        int
+        """    
         return self.id_watchlist
+
     def get_critere(self):
         """
         Retourne le dictionnaire des critères associés à la watchlist.
 
-        Retour
+        Return
         ------
         dict
             Le dictionnaire des critères de filtrage associés à cette watchlist.
