@@ -250,4 +250,17 @@ def test_get_sel():
         1234,
     )
     assert utilisateur.get_sel() == None
+
+def test_valid_emails():
+    assert Utilisateur.is_valid_email("test@example.com") is True
+    assert Utilisateur.is_valid_email("user.name@domain.co.uk") is True
+    assert Utilisateur.is_valid_email("name@sub.domain.com") is True
+
+def test_invalid_emails():
+    assert Utilisateur.is_valid_email("plainaddress") is False
+    assert Utilisateur.is_valid_email("missing@dotcom") is False
+    assert Utilisateur.is_valid_email("missingdomain@.com") is False
+    assert Utilisateur.is_valid_email("@missingusername.com") is False
+    assert Utilisateur.is_valid_email("username@domain,com") is False
+    assert Utilisateur.is_valid_email("username@domain@domain.com") is False
     

@@ -53,7 +53,7 @@ def test_watchlist_init_succes():
         ),
     ],
 )
-def test_utilisateur_init_echec(
+def test_watchlist_init_echec(
     nom_watchlist , id_utilisateur, list_film , id_watchlist , erreur, message_erreur
 ):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
@@ -78,7 +78,7 @@ def test_get_list_film():
     )
     assert watchlist.get_list_film() == ["film1", "film2"]  
 
-def test_verifier_utilisateur_succès():
+def test_verifier_utilisateur_succes():
     utilisateur = Utilisateur(
         "Dupont",
         "Alice",

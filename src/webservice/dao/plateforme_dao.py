@@ -89,7 +89,7 @@ class PlateformeDAO:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet11.film_plateforme (id_plateforme,id_film) VALUES (%s, %s);",
-                        (id_film, id_plateforme),
+                        (id_plateforme, id_film),
                     )
                     print(f"La relation film ({id_film}) - plateforme ({id_plateforme}) a été ajoutée.")
         except Exception as e:

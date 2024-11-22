@@ -44,6 +44,10 @@ class Film:
         Identifiant du film.
     """
     def __init__(self, id_film: int):
+        if not isinstance(id_film, int):
+            raise TypeError(
+                f"id_film doit être un entier"
+            )
         self.id_film = id_film
         self.image = self.recuperer_image()
         self.streaming = self.recuperer_streaming()
@@ -147,3 +151,7 @@ class Film:
         else :
             streaming =[]
             return streaming
+
+if __name__ == "__main__":
+    film = Film(268)
+    print(film.streaming)

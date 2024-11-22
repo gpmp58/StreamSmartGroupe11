@@ -43,7 +43,6 @@ class CritereService():
         return occurrences_plateformes
 
 
-
     def optimiser_abonnement(self,critere : Critere):
         """
         Optimise le choix d'abonnement en fonction des critères sélectionnés par l'utilisateur.

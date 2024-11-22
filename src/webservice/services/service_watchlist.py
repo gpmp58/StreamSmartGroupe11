@@ -142,14 +142,10 @@ class WatchlistService:
         watchlists = []
         try:
             watchlist_data = WatchlistDao().afficher_watchlist_DAO(id_utilisateur)
-            print(watchlist_data)
-
             for watchlist in watchlist_data:
                 id_watchlist = watchlist['id_watchlist']
                 nom_watchlist = watchlist['nom_watchlist']
                 watchlist = Watchlist(nom_watchlist=nom_watchlist, id_watchlist=id_watchlist,id_utilisateur=id_utilisateur)
-                print(watchlist)
-
                 # Récupérer les films pour cette watchlist
                 films = self.sauvegarder_watchlist(watchlist)  
 
@@ -190,8 +186,7 @@ if __name__ == "__main__":
 
 
     creation1 = WatchlistService().creer_nouvelle_watchlist("favories" ,creationu)
-    creation2 = WatchlistService().creer_nouvelle_watchlist("favories2" ,creationu)
-    test = WatchlistService().trouver_par_id(id_watchlist=1)
+    #creation2 = WatchlistService().creer_nouvelle_watchlist("favories2" ,creationu)
     #print(test.list_film)
     #print(creation1.id_watchlist)
     #delete = WatchlistService().supprimer_watchlist(Watchlist("favories",1,[],1))
@@ -204,17 +199,19 @@ if __name__ == "__main__":
     #ajout = FilmDao().ajouter_film(film)
     ajoutfilm = WatchlistService().ajouter_film(film, creation1)
     ajoutfilm2 = WatchlistService().ajouter_film(film2, creation1)
+    #test = WatchlistService().trouver_par_id(id_watchlist=1)
+    #print(test)
     #present = WatchlistDao().film_deja_present(1,268)
     #present = WatchlistDao().film_deja_present(1,268)
     #print(present)
     #delete = WatchlistService().supprimer_film(film,creation1)
-    liste_film = WatchlistService().sauvegarder_watchlist(creation1)
-    print(liste_film)
+    #liste_film = WatchlistService().sauvegarder_watchlist(creation1)
+    #print(liste_film)
     #plateforme = ServicePlateforme().ajouter_plateforme(film)
 
     #liste_film = WatchlistService().sauvegarder_watchlist(creation1)
     #print(creation1.list_film)
-    #plateforme = ServicePlateforme().ajouter_plateforme(film)
+    plateforme = ServicePlateforme().ajouter_plateforme(film)
     #utilsa = WatchlistDao().afficher_watchlist_DAO(creationu.id_utilisateur)
-    film_w = WatchlistService().afficher_watchlist(creationu.id_utilisateur)
-    print(film_w)
+    #film_w = WatchlistService().afficher_watchlist(creationu.id_utilisateur)
+    #print(film_w)
