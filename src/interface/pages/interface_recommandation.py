@@ -93,9 +93,9 @@ def recuperer_plateformes_film_watchlist(id_utilisateur):
     except Exception as e:
         print(f"Erreur de connexion à l'API : {e}")
 
-def optimiser_abonnement(id_utilisateur):
+def optimiser_et_afficher_abonnement(id_utilisateur):
     """
-    Trouve l'abonnement optimal pour une watchlist sélectionnée par l'utilisateur.
+    Optimise l'abonnement pour une watchlist sélectionnée et affiche les résultats.
     """
     watchlist_id = selectionner_watchlist(id_utilisateur)
     if not watchlist_id:
@@ -103,36 +103,34 @@ def optimiser_abonnement(id_utilisateur):
 
     criteres = demander_criteres()
     data = {"id_watchlist": watchlist_id, "criteres": criteres}
-    try:
-        # Appeler la route pour récupérer l'abonnement optimisé
-        response = requests.post(f"{LIEN_API}/afficher_abonnement_optimise/", json=data)
-        
-        if response.status_code == 200:
-            print("\n=== Résultat : Abonnement Optimal ===")
-            result = response.json().get("abonnement_optimise", None)
 
-            if not result:
-                print("❌ Aucun abonnement optimal trouvé pour les critères sélectionnés.")
-            else:
-                # Afficher les détails de l'abonnement
-                # Modifier le items
-                for abonnement, details in result.items():
-                    print(f"\n🎬 Plateforme : {abonnement}")
-                    for key, value in details.items():
-                        print(f"  {key.capitalize()} : {value}")
+    try:
+        print("\n🔄 Optimisation en cours...")
+        # Étape 1 : Appeler la route pour optimiser l'abonnement
+        response_optimiser = requests.post(f"{LIEN_API}/optimiser_abonnement/", json=data)
+        if response_optimiser.status_code != 200:
+            print(f"❌ Erreur lors de l'optimisation : {response_optimiser.json().get('detail', 'Erreur inconnue')}")
+            return
+
+        # Étape 2 : Appeler la route pour afficher les détails
+        print("\n🔍 Récupération des détails de l'abonnement optimisé...")
+        response_afficher = requests.post(f"{LIEN_API}/afficher_abonnement_optimise/", json=data)
+        if response_afficher.status_code == 200:
+            abonnement_details = response_afficher.json().get("abonnement_optimise", {})
+            print("\n=== Détails de l'abonnement optimisé ===")
+            print(abonnement_details)
         else:
-            print(f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
+            print(f"❌ Erreur lors de l'affichage des détails : {response_afficher.json().get('detail', 'Erreur inconnue')}")
 
     except Exception as e:
         print(f"Erreur de connexion à l'API : {e}")
-
 
 def menu_principal(id_utilisateur):
     """Menu principal de l'application."""
     actions = {
         "1": ("Accéder aux plateformes disponibles dans ma watchlist", lambda: recuperer_plateformes_film_watchlist(id_utilisateur)),
-        "4": ("Trouver mon abonnement optimal", lambda: optimiser_abonnement(id_utilisateur)),
-        "5": ("Retour au menu principal.", lambda: main1()),  # Retour à main1()
+        "2": ("Trouver mon abonnement optimal", lambda: optimiser_et_afficher_abonnement(id_utilisateur)),
+        "3": ("Retour au menu principal", lambda: main1()),
     }
 
     while True:
@@ -141,9 +139,8 @@ def menu_principal(id_utilisateur):
             print(f"{key}. {label}")
 
         choix = input("Choisissez une option : ").strip()
-        if choix == "5":
-            print("Retour au menu principal utilisateur connecté.")
-            main1()  # Retourne au menu utilisateur connecté
+        if choix == "3":
+            main1()
             break
         elif choix in actions:
             actions[choix][1]()
@@ -157,5 +154,4 @@ def main_recommandation():
         menu_principal(id_utilisateur)
 
 if __name__ == "__main__":
-    print("Bienvenue dans le système de recommandation de films et d'abonnements !")
     main_recommandation()
