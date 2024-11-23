@@ -260,68 +260,6 @@ def supprimer_watchlist(id):
         print(f"Erreur de connexion à l'API : {e}")
 
 
-def ajouter_film(id):
-    """Ajoute un film à une watchlist via une sélection."""
-    try:
-        # Récupérer les watchlists de l'utilisateur
-        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id}")
-        response.raise_for_status()
-        watchlists = response.json().get("watchlists", [])
-        if not watchlists:
-            print("\nAucune watchlist trouvée. Veuillez en créer une d'abord.")
-            return
-
-        # Présenter les watchlists à l'utilisateur
-        watchlist_choices = [
-            {
-                "name": f"{wl['nom_watchlist']} (ID : {wl['id_watchlist']})",
-                "value": wl["id_watchlist"],
-            }
-            for wl in watchlists
-        ]
-
-        questions_watchlist = [
-            {
-                "type": "list",
-                "name": "id_watchlist",
-                "message": "Choisissez une watchlist :",
-                "choices": watchlist_choices,
-            },
-        ]
-
-        watchlist_answer = prompt(questions_watchlist)
-        id_watchlist = watchlist_answer["id_watchlist"]
-
-        while True:
-            # Demander l'ID du film
-            questions_film = [
-                {
-                    "type": "input",
-                    "name": "id_film",
-                    "message": "\nEntrez l'ID du film :",
-                    "validate": lambda result: result.isdigit()
-                    or "Veuillez entrer un nombre valide.",
-                }
-            ]
-            film_answer = prompt(questions_film)
-            id_film = film_answer["id_film"]
-
-            # Ajouter le film à la watchlist
-            data = {"id_watchlist": id_watchlist, "id_film": id_film}
-            response = requests.post(f"{LIEN_API}/watchlists/ajouter_film", json=data)
-
-            if response.status_code == 200:
-                print("\n✅ Film ajouté à la watchlist avec succès !")
-                break
-            else:
-                print(
-                    "\nCe film n'est pas dans la watchlist : Veuillez réessayer avec un ID valide. "
-                )
-
-    except requests.exceptions.RequestException as e:
-        print(f"Erreur de connexion à l'API : {e}")
-
-
 def menu_principal(id):
     """Affiche le menu principal des actions disponibles."""
     actions = {
