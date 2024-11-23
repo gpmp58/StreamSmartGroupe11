@@ -1,8 +1,7 @@
 import os
 import subprocess
 import time
-from colorama import Fore, Style, init
-from tqdm import tqdm
+from colorama import Fore, init
 
 # Initialisation de colorama (nécessaire pour Windows)
 init(autoreset=True)
@@ -23,7 +22,6 @@ def install_dependencies():
     """
     print(f"{Fore.RED}=========== Installation des dépendances ============\n")
     subprocess.run(["pip", "install", "--user", "-r", "requirements.txt"], check=True)
-    loading_bar("Installation des dépendances en cours...")
 
 
 def start_webservice():
@@ -36,6 +34,11 @@ def start_webservice():
         ["python", "main_api.py"],
         cwd="src/webservice",
     )
+    time.sleep(1)  # Pause courte pour s'assurer que le processus démarre correctement
+    if webservice_process.poll() is None:
+        print(f"{Fore.GREEN}✅ Webservice démarré avec succès.")
+    else:
+        print(f"{Fore.RED}❌ Échec du démarrage du webservice.")
     return webservice_process
 
 
@@ -60,37 +63,16 @@ def clean_terminal():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-def loading_bar(message):
-    """
-    Affiche une barre de progression pour une étape donnée.
-    """
-    print(f"{Fore.RED}{message}")
-    for _ in tqdm(
-        range(10), desc="Chargement", bar_format="{l_bar}{bar} | {n_fmt}/{total}"
-    ):
-        time.sleep(0.2)
-
-
 if __name__ == "__main__":
     try:
         # Étape 1 : Mise à jour de pip
         update_pip()
 
-        # Pause
-        time.sleep(0.5)
-
         # Étape 2 : Installation des dépendances
         install_dependencies()
 
-        # Pause
-        time.sleep(0.5)
-
         # Étape 3 : Lancement du webservice
         webservice_process = start_webservice()
-
-        # Pause
-        # Nécessaire pour éviter le chevauchement sur l'interface.
-        time.sleep(3)
 
         # Étape 4 : Lancement de l'interface
         start_interface()

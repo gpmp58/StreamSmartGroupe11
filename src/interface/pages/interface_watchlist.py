@@ -202,6 +202,8 @@ def ajouter_film(id):
                 "name": "id_film",
                 "message": "\nEntrez l'ID du film :",
                 "validate": lambda result: result.isdigit()
+                or result.lower() == "retour"
+                or "Veuillez entrer un ID valide ou 'Retour'."
                 or "Veuillez entrer un nombre valide.",
             },
         ]

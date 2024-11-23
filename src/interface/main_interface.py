@@ -1,21 +1,21 @@
 from InquirerPy import prompt
 
-# Importer la fonction depuis le fichier correspondant
-
 # Simulation d'un état de session
 session_state = {"pseudo": None}
 
 
 def main():
     """
-    Page principale de l'application.
+    Page principale de l'application StreamSmart.
     """
-    print("\n=== Application Multi-Page ===")
+    print("\n" + "=" * 40)
+    print("🌟 WELCOME TO STREAMSMART 🌟".center(40))
+    print("=" * 40 + "\n")
     afficher_etat_connexion()
 
     # Navigation en fonction de l'état de connexion
     if not session_state["pseudo"]:
-        print("Vous n'êtes pas connecté.")
+        print("Vous n'êtes pas connecté.\n")
         choix = prompt(
             [
                 {
@@ -23,9 +23,9 @@ def main():
                     "name": "action",
                     "message": "Que souhaitez-vous faire ?",
                     "choices": [
-                        {"name": "Connexion", "value": "connexion"},
-                        {"name": "Création de Compte", "value": "creation"},
-                        {"name": "Quitter", "value": "quitter"},
+                        {"name": "🔑 Connexion", "value": "connexion"},
+                        {"name": "📝 Création de Compte", "value": "creation"},
+                        {"name": "❌ Quitter", "value": "quitter"},
                     ],
                 }
             ]
@@ -42,10 +42,10 @@ def main():
 
             page_creation_compte()
         elif choix == "quitter":
-            print("Merci d'avoir utilisé l'application. À bientôt !")
+            print("\nMerci d'avoir utilisé StreamSmart. À bientôt !")
             return
     else:
-        print(f"🎉 Vous êtes connecté en tant que {session_state['pseudo']}.")
+        print(f"🎉 Vous êtes connecté en tant que {session_state['pseudo']}.\n")
         choix = prompt(
             [
                 {
@@ -53,8 +53,8 @@ def main():
                     "name": "action",
                     "message": "Que souhaitez-vous faire ?",
                     "choices": [
-                        {"name": "Se Déconnecter", "value": "deconnexion"},
-                        {"name": "Quitter", "value": "quitter"},
+                        {"name": "🚪 Se Déconnecter", "value": "deconnexion"},
+                        {"name": "❌ Quitter", "value": "quitter"},
                     ],
                 }
             ]
@@ -63,7 +63,7 @@ def main():
         if choix == "deconnexion":
             se_deconnecter()
         elif choix == "quitter":
-            print("Merci d'avoir utilisé l'application. À bientôt !")
+            print("\nMerci d'avoir utilisé StreamSmart. À bientôt !")
             return
 
 
@@ -101,14 +101,14 @@ def afficher_etat_connexion():
     """
     Afficher l'état de connexion de l'utilisateur.
     """
-    print("\n--- État de Connexion ---")
+    print("📡 --- État de Connexion --- 📡")
     if session_state["pseudo"]:
-        print(f"Utilisateur : {session_state['pseudo']}")
-        print("État : Connecté")
+        print(f"✅ Utilisateur : {session_state['pseudo']}")
+        print("✅ État : Connecté")
     else:
-        print("Utilisateur : Non connecté")
-        print("État : Déconnecté")
-    print("-------------------------\n")
+        print("❌ Utilisateur : Non connecté")
+        print("❌ État : Déconnecté")
+    print("-" * 30 + "\n")
 
 
 if __name__ == "__main__":

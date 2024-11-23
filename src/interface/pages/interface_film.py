@@ -13,6 +13,8 @@ def tronquer_texte(texte, max_longueur):
     return texte
 
 
+<<<<<<< HEAD
+=======
 def selectionner_watchlist():
     """Sélectionne une watchlist à partir des données utilisateur."""
     from src.interface.main_interface import main
@@ -153,6 +155,7 @@ def afficher_details_film(film_id):
         print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
 
 
+>>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb
 def afficher_films_pagination(films):
     """Affiche les résultats de recherche avec pagination."""
     films_items = list(films.items())
@@ -237,6 +240,51 @@ def rechercher_films(nom_film):
             print("Aucun film trouvé avec ce nom.")
     except Exception as e:
         print(f"❌ Une erreur s'est produite lors de la recherche des films : {e}")
+<<<<<<< HEAD
+
+
+def afficher_details_film(film_id):
+    """Affiche les détails d'un film en vérifiant l'existence de son ID."""
+    try:
+        details_url = f"{LIEN_API}/films/{film_id}"
+        response = requests.get(details_url)
+
+        if response.status_code == 404:
+            print(f"❌ Le film avec l'ID {film_id} n'existe pas.")
+            return
+
+        film = response.json()
+
+        print("\n=== Détails du Film ===")
+        print(f"Nom : {film.get('name', 'Titre non disponible')}")
+        print(
+            f"Description : {film.get('description', 'Pas de description disponible.')}"
+        )
+        print(f"Date de sortie : {film.get('date_sortie', 'Date non disponible')}")
+        print(f"Durée : {film.get('duree', 'Durée non disponible')}")
+        print(
+            f"Genres : {', '.join(film.get('genres', ['Pas de genres disponibles']))}"
+        )
+        print("\n")
+
+        questions = [
+            {
+                "type": "confirm",
+                "name": "add_to_watchlist",
+                "message": "Voulez-vous ajouter ce film à votre watchlist ?",
+                "default": False,
+            }
+        ]
+        answers = prompt(questions)
+        if answers["add_to_watchlist"]:
+            ajouter_a_watchlist(film_id)
+        else:
+            print("Retour au menu de recherche de films.")
+            page_recherche_films()
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
+=======
+>>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb
 
 
 def page_recherche_films():
