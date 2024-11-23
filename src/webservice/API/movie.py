@@ -102,7 +102,6 @@ async def obtenir_details_film(id_film: int):
     """
     try:
         film = Film(id_film)
-        print("Détails du film:", film.details)  # Pour débogage
         response = {
             "name": film.details["name"],
             "description": film.details["description"],
