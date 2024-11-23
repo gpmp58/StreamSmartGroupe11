@@ -1,4 +1,6 @@
-from src.webservice.business_object.plateforme import PlateformeStreaming
+from src.webservice.business_object.plateforme import (
+    PlateformeStreaming,
+)
 from src.webservice.dao.plateforme_dao import PlateformeDAO
 from src.webservice.business_object.film import Film
 
@@ -24,16 +26,22 @@ class ServicePlateforme:
                   False si elle existe déjà.
         """
         try:
-            plateforme_existante = PlateformeDAO().verifier_plateforme_existe(
-                id_plateforme, nom_plateforme
+            plateforme_existante = (
+                PlateformeDAO().verifier_plateforme_existe(
+                    id_plateforme, nom_plateforme
+                )
             )
 
             if plateforme_existante:
                 print(f"La plateforme {nom_plateforme} existe déjà.")
                 return False
 
-            nouvelle_plateforme = PlateformeStreaming(nom_plateforme, id_plateforme)
-            return PlateformeDAO().ajouter_plateforme(nouvelle_plateforme)
+            nouvelle_plateforme = PlateformeStreaming(
+                nom_plateforme, id_plateforme
+            )
+            return PlateformeDAO().ajouter_plateforme(
+                nouvelle_plateforme
+            )
 
         except Exception as e:
             print(f"Erreur lors de l'ajout de {nom_plateforme}: {e}")
@@ -54,18 +62,20 @@ class ServicePlateforme:
             for plateforme in streaming_info:
                 id_plateforme = plateforme["id"]
                 nom_plateforme = plateforme["name"]
-
-                print(f"Nom de la plateforme : {nom_plateforme}")
-                print(f"Type de nom_plateforme : {type(nom_plateforme)}")
-
-                success_ajout_plateforme = self.mettre_a_jour_plateforme(
-                    nom_plateforme, id_plateforme
+                success_ajout_plateforme = (
+                    self.mettre_a_jour_plateforme(
+                        nom_plateforme, id_plateforme
+                    )
                 )
 
                 if success_ajout_plateforme:
-                    print(f"La plateforme {nom_plateforme} a été ajoutée.")
+                    logging.info(
+                        f"La plateforme {nom_plateforme} a été ajoutée."
+                    )
                 else:
-                    print(f"La plateforme {nom_plateforme} existe déjà.")
+                    logging.info(
+                        f"La plateforme {nom_plateforme} existe déjà."
+                    )
 
                 PlateformeDAO().ajouter_relation_film_plateforme(
                     film.id_film, id_plateforme
