@@ -18,26 +18,29 @@ class Watchlist:
             Nom de la watchlist.
         id_utilisateur : int
             Identifiant de l'utilisateur associé.
-        list_film : list, optional
-            Liste des films dans la watchlist. Si None, une liste vide sera initialisée.
+        list_film : list
+            Liste des films dans la watchlist.
+            Si None, une liste vide sera initialisée.
         id_watchlist : int, optional
-            Identifiant de la watchlist. Si None, un nouvel identifiant sera généré.
+            Identifiant de la watchlist.
+            Si None, un nouvel identifiant sera généré.
         """
-
-        # Validation des types
         if not isinstance(nom_watchlist, str):
             raise TypeError(
-                f"nom_watchlist doit être une chaîne de caractères, mais reçu {type(nom_watchlist).__name__}"
+                f"nom_watchlist doit être une chaîne de caractères,"
+                f" mais reçu {type(nom_watchlist).__name__}"
             )
 
         if not isinstance(id_utilisateur, int):
             raise TypeError(
-                f"id_utilisateur doit être un entier, mais reçu {type(id_utilisateur).__name__}"
+                f"id_utilisateur doit être un entier,"
+                f" mais reçu {type(id_utilisateur).__name__}"
             )
 
         if not isinstance(list_film, list):
             raise TypeError(
-                f"list_film doit être une liste ou None, mais reçu {type(list_film).__name__}"
+                f"list_film doit être une liste ou None,"
+                f" mais reçu {type(list_film).__name__}"
             )
 
         if (
@@ -45,7 +48,8 @@ class Watchlist:
             and id_watchlist is not None
         ):
             raise TypeError(
-                f"id_watchlist doit être un entier ou None, mais reçu {type(id_watchlist).__name__}"
+                f"id_watchlist doit être un entier ou None,"
+                f" mais reçu {type(id_watchlist).__name__}"
             )
 
         # Initialisation des attributs
@@ -74,7 +78,8 @@ class Watchlist:
 
     def verifier_utilisateur(self, utilisateur: Utilisateur) -> bool:
         """
-        Vérifie si l'utilisateur est une instance de Utilisateur et si c'est le bon utilisateur.
+        Vérifie si l'utilisateur est une instance
+        de Utilisateur et si c'est le bon utilisateur.
 
         Arguments
         ----------
@@ -93,7 +98,7 @@ class Watchlist:
         """
         if not isinstance(utilisateur, Utilisateur):
             raise TypeError(
-                f"utilisateur doit être une instance de Utilisateur"
+                "utilisateur doit être une instance de Utilisateur"
             )
 
         return self.id_utilisateur == utilisateur.id_utilisateur

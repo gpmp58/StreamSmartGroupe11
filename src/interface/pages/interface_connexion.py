@@ -2,7 +2,10 @@ from InquirerPy import prompt
 import requests
 from src.interface.main_interface import main
 from src.interface.pages.interface_utilisateur_connecte import main1
-from src.interface.session_manager import set_session_state, get_session_state
+from src.interface.session_manager import (
+    set_session_state,
+    get_session_state,
+)
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
@@ -35,7 +38,9 @@ def connexion_utilisateur():
 
     try:
         # Appeler l'API pour se connecter
-        response = requests.post(f"{LIEN_API}/utilisateurs/login", json=data)
+        response = requests.post(
+            f"{LIEN_API}/utilisateurs/login", json=data
+        )
 
         if response.status_code == 200:
             # Récupérer l'ID utilisateur
@@ -43,11 +48,15 @@ def connexion_utilisateur():
                 f"{LIEN_API}/utilisateurs/id", json={"pseudo": pseudo}
             )
             if id_response.status_code == 200:
-                id_utilisateur = id_response.json().get("id_utilisateur")
+                id_utilisateur = id_response.json().get(
+                    "id_utilisateur"
+                )
 
                 if id_utilisateur:
                     # Mettre à jour l'état global via session_manager
-                    set_session_state(pseudo=pseudo, id_utilisateur=id_utilisateur)
+                    set_session_state(
+                        pseudo=pseudo, id_utilisateur=id_utilisateur
+                    )
 
                     # Afficher les détails utilisateur
                     utilisateur_response = requests.get(
@@ -60,23 +69,38 @@ def connexion_utilisateur():
                         print(f"🔹 Pseudo : {pseudo}")
                         print(f"🔹 ID Utilisateur : {id_utilisateur}")
                         print(
-                            f"🔹 Nom complet : {utilisateur_info.get('nom')} {utilisateur_info.get('prenom')}"
+                            f"🔹 Nom complet "
+                            f": {utilisateur_info.get('nom')}"
+                            f" {utilisateur_info.get('prenom')}"
                         )
                         print(
-                            f"🔹 Adresse mail : {utilisateur_info.get('adresse_mail')}"
+                            f"🔹 Adresse mail :"
+                            f" {utilisateur_info.get('adresse_mail')}"
                         )
-                        print(f"🔹 Langue préférée : {utilisateur_info.get('langue')}")
+                        print(
+                            f"🔹 Langue préférée :"
+                            f" {utilisateur_info.get('langue')}"
+                        )
                         print("==============================\n")
                     else:
-                        print("\n❌ Impossible de récupérer les détails utilisateur.\n")
+                        print(
+                            "\n❌ Impossible de récupérer les"
+                            " détails utilisateur.\n"
+                        )
                 else:
-                    print("\n❌ Erreur : ID utilisateur non récupéré.\n")
+                    print(
+                        "\n❌ Erreur : ID utilisateur non récupéré.\n"
+                    )
             else:
                 print(
-                    f"\n❌ Erreur : {id_response.json().get('detail', 'Erreur inconnue')}\n"
+                    f"\n❌ Erreur : "
+                    f"{id_response.json().get('detail', 'Erreur inconnue')}\n"
                 )
         else:
-            print(f"\n❌ Erreur : {response.json().get('detail', 'Erreur inconnue')}\n")
+            print(
+                f"\n❌ Erreur : "
+                f"{response.json().get('detail', 'Erreur inconnue')}\n"
+            )
     except requests.exceptions.RequestException as e:
         print(f"\n❌ Erreur de connexion à l'API : {e}\n")
 

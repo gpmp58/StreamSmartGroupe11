@@ -17,7 +17,8 @@ def test_utilisateur_init_succes():
 
 
 @pytest.mark.parametrize(
-    "nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur, erreur, message_erreur",
+    "nom, prenom, pseudo, adresse_mail, mdp, "
+    "id_utilisateur, erreur, message_erreur",
     [
         (
             ["Dupont"],
@@ -132,10 +133,19 @@ def test_utilisateur_init_succes():
     ],
 )
 def test_utilisateur_init_echec(
-    nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur, erreur, message_erreur
+    nom,
+    prenom,
+    pseudo,
+    adresse_mail,
+    mdp,
+    id_utilisateur,
+    erreur,
+    message_erreur,
 ):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
-        Utilisateur(nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur)
+        Utilisateur(
+            nom, prenom, pseudo, adresse_mail, mdp, id_utilisateur
+        )
 
 
 def test_message():
@@ -147,7 +157,10 @@ def test_message():
         "password123",
         1234,
     )
-    assert utilisateur.message() == "Bienvenue Alice sur notre application !"
+    assert (
+        utilisateur.message()
+        == "Bienvenue Alice sur notre application !"
+    )
 
 
 def test_info_utilisateur():
@@ -258,7 +271,9 @@ def test_get_sel():
 
 def test_valid_emails():
     assert Utilisateur.is_valid_email("test@example.com") is True
-    assert Utilisateur.is_valid_email("user.name@domain.co.uk") is True
+    assert (
+        Utilisateur.is_valid_email("user.name@domain.co.uk") is True
+    )
     assert Utilisateur.is_valid_email("name@sub.domain.com") is True
 
 
@@ -268,4 +283,7 @@ def test_invalid_emails():
     assert Utilisateur.is_valid_email("missingdomain@.com") is False
     assert Utilisateur.is_valid_email("@missingusername.com") is False
     assert Utilisateur.is_valid_email("username@domain,com") is False
-    assert Utilisateur.is_valid_email("username@domain@domain.com") is False
+    assert (
+        Utilisateur.is_valid_email("username@domain@domain.com")
+        is False
+    )

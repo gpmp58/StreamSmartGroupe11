@@ -28,12 +28,16 @@ class Abonnement:
             id_abonnement (int) : L'id de l'abonnement renseigné.
 
         Raises:
-            Exception: Si le nom de la plateforme n'est pas une chaîne de caractères.
-            Exception: Si l'identifiant de l'abonnement n'est pas un entier.
+            Exception: Si le nom de la plateforme n'est pas
+                        une chaîne de caractères.
+            Exception: Si l'identifiant de
+                        l'abonnement n'est pas un entier.
         """
 
         if not isinstance(id_abonnement, int):
-            raise Exception("L'identifiant de l'abonnement n'est pas un entier.")
+            raise Exception(
+                "L'identifiant de l'abonnement n'est pas un entier."
+            )
         if not isinstance(nom_plateforme, str):
             raise Exception(
                 "Le nom de la plateforme n'est pas une chaîne de caractère."
@@ -41,10 +45,18 @@ class Abonnement:
 
         self.id_abonnement = id_abonnement
         self.nom_plateforme = nom_plateforme
-        self.qualite = AbonnementDao().get_qualite_abonnement_DAO(id_abonnement)
-        self.prix = AbonnementDao().get_prix_abonnement_DAO(id_abonnement)
-        self.pub = AbonnementDao().get_pub_abonnement_DAO(id_abonnement)
-        self.nom_abonnement = AbonnementDao().get_nom_abonnement_DAO(id_abonnement)
+        self.qualite = AbonnementDao().get_qualite_abonnement_DAO(
+            id_abonnement
+        )
+        self.prix = AbonnementDao().get_prix_abonnement_DAO(
+            id_abonnement
+        )
+        self.pub = AbonnementDao().get_pub_abonnement_DAO(
+            id_abonnement
+        )
+        self.nom_abonnement = AbonnementDao().get_nom_abonnement_DAO(
+            id_abonnement
+        )
 
     def info_abonnement(self) -> dict:
         """
@@ -90,7 +102,8 @@ class Abonnement:
 
     def get_qualite(self):
         """
-        Retourne la qualité, ie la résolution d'ecran proposée par l'abonnement.
+        Retourne la qualité,
+        ie la résolution d'ecran proposée par l'abonnement.
 
         Returns:
             str : Qualité de l'abonnement.
@@ -99,7 +112,8 @@ class Abonnement:
 
     def get_pub(self):
         """
-        Retourne l'agurment pub de l'abonnement, ie si l'abonnement diffuse des pubs ou non.
+        Retourne l'agurment pub de l'abonnement,
+        ie si l'abonnement diffuse des pubs ou non.
 
         Returns:
             bool : Pub de l'abonnement.

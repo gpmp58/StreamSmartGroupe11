@@ -66,7 +66,8 @@ async def rechercher_film(film: RechercheFilmModel):
             ):
                 raise HTTPException(
                     status_code=400,
-                    detail="Il y a des caractères spéciaux dans le film. Veuillez réécrire le nom du film.",
+                    detail="Il y a des caractères spéciaux dans le film."
+                    " Veuillez réécrire le nom du film.",
                 )
 
         # Initialiser le service FilmService avec le nom du film
@@ -88,7 +89,8 @@ async def rechercher_film(film: RechercheFilmModel):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail="Erreur interne du serveur"
+            status_code=500,
+            detail=f"Erreur interne du serveur : {str(e)}",
         )
 
 
@@ -102,7 +104,6 @@ async def obtenir_details_film(id_film: int):
     """
     try:
         film = Film(id_film)
-        print("Détails du film:", film.details)  # Pour débogage
         response = {
             "name": film.details["name"],
             "description": film.details["description"],

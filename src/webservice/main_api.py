@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 import uvicorn
 
-from src.webservice.API import user, movie, watchlist, plateforme, critere
+from src.webservice.API import (
+    user,
+    movie,
+    watchlist,
+    plateforme,
+    critere,
+)
 
 app = FastAPI()
 
@@ -16,9 +22,12 @@ if __name__ == "__main__":
         "main_api:app",
         host="0.0.0.0",
         port=8000,
-        log_level="critical",  # Réduit les logs à seulement les erreurs critiques
-        access_log=False,      # Désactive les logs d'accès (requêtes HTTP)
-        reload=True            # Optionnel : recharge automatique pour le développement
+        log_level="critical",
+        # Réduit les logs à seulement les erreurs critiques
+        access_log=False,
+        # Désactive les logs d'accès (requêtes HTTP)
+        reload=True,
+        # Optionnel : recharge automatique pour le développement
     )
 
 """

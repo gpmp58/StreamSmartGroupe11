@@ -1,11 +1,11 @@
 from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.dao.db_connection import DBConnection
-from src.webservice.utils.securite import verify_mdp
 
 
 class UtilisateurDAO:
     """
-    Classe contenant les méthodes pour accéder aux utilisateurs de la base de données.
+    Classe contenant les méthodes pour
+    accéder aux utilisateurs de la base de données.
     """
 
     def creer_compte_DAO(
@@ -43,7 +43,10 @@ class UtilisateurDAO:
                 cursor.execute(
                     """
                     INSERT INTO projet11.utilisateur (nom, prenom, adresse_mail, mdp, pseudo, langue, sel)
-                    VALUES (%(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s, %(pseudo)s, %(langue)s, %(sel)s)
+                    VALUES (
+                        %(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s,
+                        %(pseudo)s, %(langue)s, %(sel)s
+                    )
                     RETURNING id_utilisateur;
                     """,
                     {
@@ -60,7 +63,9 @@ class UtilisateurDAO:
                 if res:
                     return res["id_utilisateur"]
                 else:
-                    raise ValueError("Erreur lors de la création de l'utilisateur.")
+                    raise ValueError(
+                        "Erreur lors de la création de l'utilisateur."
+                    )
 
     def trouver_par_id(self, id_utilisateur: int) -> Utilisateur:
         """
@@ -73,12 +78,14 @@ class UtilisateurDAO:
 
         Returns:
         --------
-        Utilisateur : Instance de la classe Utilisateur contenant les informations de l'utilisateur.
+        Utilisateur : Instance de la classe Utilisateur
+         contenant les informations de l'utilisateur.
         """
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT * FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s;",
+                    "SELECT * FROM projet11.utilisateur"
+                    " WHERE id_utilisateur = %(id_utilisateur)s;",
                     {"id_utilisateur": id_utilisateur},
                 )
                 res = cursor.fetchone()
@@ -113,7 +120,8 @@ class UtilisateurDAO:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT * FROM projet11.utilisateur WHERE pseudo = %(pseudo)s;",
+                    "SELECT * FROM projet11.utilisateur "
+                    "WHERE pseudo = %(pseudo)s;",
                     {"pseudo": pseudo},
                 )
                 res = cursor.fetchone()
@@ -148,7 +156,8 @@ class UtilisateurDAO:
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "DELETE FROM projet11.utilisateur WHERE id_utilisateur = %(id_utilisateur)s",
+                    "DELETE FROM projet11.utilisateur "
+                    "WHERE id_utilisateur = %(id_utilisateur)s",
                     {"id_utilisateur": id_utilisateur},
                 )
                 res = cursor.rowcount
@@ -215,4 +224,6 @@ class UtilisateurDAO:
         if res:
             return {"id_utilisateur": res["id_utilisateur"]}
         else:
-            raise ValueError(f"Utilisateur avec le pseudo '{pseudo}' introuvable.")
+            raise ValueError(
+                f"Utilisateur avec le pseudo '{pseudo}' introuvable."
+            )

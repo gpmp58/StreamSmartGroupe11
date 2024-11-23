@@ -42,7 +42,8 @@ class Utilisateur:
             prenom (str) : Le prenom renseigné par l'utilisateur.
             pseudo (str) : Le pseudo renseigné par l'utilisateur.
             adresse_mail (str) : L'adresse mail renseignée par l'utilisateur.
-            langue (str) : La langue de renseignée par l'utilisateur, si différente de celle par défaut.
+            langue (str) : La langue de renseignée par l'utilisateur,
+                 si différente de celle par défaut.
             mdp (str) : Le mot de passe renseignée par l'utilisateur.
             id_utilisateur (int) : l'identifiant de l'utilisateur.
             sel (str) : Le sel utilisé pour hacher le mot de passe (optionnel).
@@ -50,8 +51,10 @@ class Utilisateur:
         Raises:
             Exception: Si le nom n'est pas une chaîne de caractères.
             Exception: Si le prenom n'est pas une chaîne de caractères.
-            Exception: Si le pseudo n'est pas une chaîne de caractères ou si il contient des caractères spéciaux.
-            Exception: Si l'adresse mail n'est pas une chaîne de caractères ou si elle n'est pas valide.
+            Exception: Si le pseudo n'est pas une chaîne de caractères
+                        ou si il contient des caractères spéciaux.
+            Exception: Si l'adresse mail n'est pas une chaîne de caractères
+                         ou si elle n'est pas valide.
             Exception: Si la langue n'est pas une chaîne de caractères.
             Exception: Si le mot de passe n'est pas une chaîne de caractères.
             Exception: Si id_utilisateur n'est pas un entier.
@@ -114,13 +117,17 @@ class Utilisateur:
     @staticmethod
     def is_valid_email(adresse_mail: str):
         """
-        Vérifie si l'adresse email fournie est valide selon une expression régulière : une partie avant le "@" suivie d'une partie après le "@", et une extension après un "."
+        Vérifie si l'adresse email fournie est valide selon
+        une expression régulière :
+        une partie avant le "@" suivie d'une partie après le "@",
+        et une extension après un "."
 
         Args :
             adresse_mail (str) : L'adresse email de l'utilisateur à valider.
 
         Returns :
-            bool : Retourne True si l'adresse email respecte le format de base, sinon False.
+            bool : Retourne True
+                    si l'adresse email respecte le format de base, sinon False.
         """
         return (
             re.match(r"[^@]+@[^@]+\.[^@]+", adresse_mail) is not None
@@ -149,7 +156,7 @@ class Utilisateur:
             "Adresse mail": self.adresse_mail,
             "Langue": self.langue,
             "id_utilisateur": self.id_utilisateur,
-            "sel": self.sel,  # Ajout du sel dans le dictionnaire des informations utilisateur
+            "sel": self.sel,
         }
 
     def get_nom(self):
@@ -190,7 +197,9 @@ class Utilisateur:
 
     def get_langue(self):
         """
-        Retourne la langue de l'utilisateur (bien que considérée comme étant le français pour tous les utilisateurs).
+        Retourne la langue de l'utilisateur
+        (bien que considérée comme étant le français
+            pour tous les utilisateurs).
 
         Returns:
             str : Langue de l'utilisateur.
@@ -213,4 +222,4 @@ class Utilisateur:
         Returns:
             str : Sel pour l'utilisateur.
         """
-        return self.sel  # Ajout d'un getter pour récupérer le sel
+        return self.sel

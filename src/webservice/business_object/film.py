@@ -10,13 +10,16 @@ load_dotenv()
 
 def transformer_duree(d=int):
     """
-    Transforme une durée exprimée en minutes en un format lisible heures et minutes.
+    Transforme une durée exprimée en minutes en
+    un format lisible heures et minutes.
 
     Args:
         d (int) : La durée en minutes à convertir.
 
     Returns:
-        str : La durée sous forme de chaîne de caractères au format "X h Y min", où X est le nombre d'heures et Y le nombre de minutes.
+        str : La durée sous forme de chaîne de caractères
+                au format "X h Y min", où X est le nombre d'heures
+                et Y le nombre de minutes.
     """
     h = d // 60
     m = d % 60
@@ -36,7 +39,8 @@ class Film:
     """
     Création de la classe Film.
 
-    Cette classe permet de récupérer les infos du film en fonction de l'ID donné.
+    Cette classe permet de récupérer les infos
+    du film en fonction de l'ID donné.
 
     Attributs
     ----------
@@ -46,7 +50,7 @@ class Film:
 
     def __init__(self, id_film: int):
         if not isinstance(id_film, int):
-            raise TypeError(f"id_film doit être un entier")
+            raise TypeError("id_film doit être un entier")
         self.id_film = id_film
         self.image = self.recuperer_image()
         self.streaming = self.recuperer_streaming()
@@ -54,25 +58,31 @@ class Film:
 
     def afficher_film(self):
         """
-            Récupère les informations d'un film à partir de l'API de The Movie Database (TMDb) en utilisant l'identifiant du film.
+            Récupère les informations d'un film à partir de l'API
+            de The Movie Database (TMDb) en utilisant l'identifiant du film.
 
             Returns:
-                dict : Un dictionnaire contenant les informations du film avec les clés suivantes :
+                dict : Un dictionnaire contenant les informations
+                du film avec les clés suivantes :
                 - "name" : Le titre original du film.
                 - "description" : Un résumé du film.
                 - "vote_average" : La note moyenne du film sur TMDb.
                 - "date_sortie" : La date de sortie du film.
-                - "duree" : La durée du film transformée à l'aide de la méthode transformer_duree.
+                - "duree" : La durée du film transformée à l'aide
+                            de la méthode transformer_duree.
                 - "genres" : Liste des genres du film.
 
         Raises:
-            Exception : Si la requête échoue (code de statut HTTP différent de 200), l'identifiant n'est pas le bon.
+            Exception : Si la requête échoue
+                        (code de statut HTTP différent de 200),
+                        l'identifiant n'est pas le bon.
         """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie = (
-            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
-        )
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
+        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {cle_api}",
+        }
         response = requests.get(url_search_movie, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content)
@@ -81,25 +91,32 @@ class Film:
                 "description": content["overview"],
                 "sortie": content["status"],
                 "vote_average": content["vote_average"],
-                "date_sortie": transformer_date(content["release_date"]),
+                "date_sortie": transformer_date(
+                    content["release_date"]
+                ),
                 "duree": transformer_duree(content["runtime"]),
-                "genres": [genre["name"] for genre in content["genres"]],
+                "genres": [
+                    genre["name"] for genre in content["genres"]
+                ],
             }
 
             return result
 
     def recuperer_image(self):
         """
-        Récupère l'URL de l'image du film à partir de l'API de The Movie Database (TMDb).
+        Récupère l'URL de l'image du film à partir
+        de l'API de The Movie Database (TMDb).
 
         Returns:
-            str: L'URL du poster du film si disponible, sinon le message "Image non disponible".
+            str: L'URL du poster du film si disponible,
+                sinon le message "Image non disponible".
         """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = (
-            f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
-        )
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
+        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {cle_api}",
+        }
         response = requests.get(url_search_movie_2, headers=headers)
         content = json.loads(response.content)
 
@@ -114,17 +131,20 @@ class Film:
 
     def recuperer_streaming(self):
         """
-        Récupère les services de streaming disponibles pour un film en France à partir de l'API de The Movie Database (TMDb).
+        Récupère les services de streaming disponibles pour un film
+        en France à partir de l'API de The Movie Database (TMDb).
 
         Returns:
-            list : Une liste de dictionnaires avec les informations des services de streaming disponibles en France.
+            list : Une liste de dictionnaires avec les informations des
+                   services de streaming disponibles en France.
 
         """
         cle_api = os.environ.get("API_KEY")
-        url_movie_providers = (
-            f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
-        )
-        headers = {"accept": "application/json", "Authorization": f"Bearer {cle_api}"}
+        url_movie_providers = f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {cle_api}",
+        }
 
         response = requests.get(url_movie_providers, headers=headers)
         data = json.loads(response.content)
@@ -144,17 +164,10 @@ class Film:
                             + provider["logo_path"],
                         }
                     )
-                return (
-                    streaming  # Renvoie une liste de services de streaming disponibles
-                )
+                return streaming
             else:
                 streaming = []
                 return streaming
         else:
             streaming = []
             return streaming
-
-
-if __name__ == "__main__":
-    film = Film(268)
-    print(film.streaming)

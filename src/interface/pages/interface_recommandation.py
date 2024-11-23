@@ -17,14 +17,17 @@ def verifier_connexion():
     )  # Récupérer l'ID utilisateur depuis la session
 
     while True:
-        id_utilisateur = input("Entrez votre ID utilisateur : ").strip()
+        id_utilisateur = input(
+            "Entrez votre ID utilisateur : "
+        ).strip()
         if not id_utilisateur:
             print("❌ Erreur : L'ID utilisateur est obligatoire.")
             continue
 
         if str(vrai_id) != id_utilisateur:
             print(
-                "❌ Erreur : L'ID tapé ne correspond pas à votre session. Veuillez réessayer."
+                "❌ Erreur : L'ID tapé ne correspond"
+                " pas à votre session. Veuillez réessayer."
             )
         else:
             return id_utilisateur
@@ -33,12 +36,19 @@ def verifier_connexion():
 def demander_criteres():
     """
     Demande des critères à l'utilisateur.
-    Si prix est coché Yes, rapport quantité/prix sera No automatiquement, et inversement.
+    Si prix est coché Yes,
+    rapport quantité/prix sera No automatiquement, et inversement
+    si les deux criteres sont No , on prends pas en compte
+    le prix comme critère
+    et on cherche que la plateforme qui fournit le nombre
+    de films maximal.
     """
     prix = inquirer.confirm(
         message="Souhaitez-vous le prix le plus bas ?", default=False
     ).execute()
-    rapport_quantite_prix = not prix  # Inverse automatiquement le choix de prix
+    rapport_quantite_prix = (
+        not prix
+    )  # Inverse automatiquement le choix de prix
 
     qualite = inquirer.text(
         message="Qualité (ex: HD, 4K, etc.) :", default=""
@@ -56,9 +66,12 @@ def demander_criteres():
 
 
 def selectionner_watchlist(id_utilisateur):
-    """Permet à l'utilisateur de sélectionner une watchlist parmi celles disponibles."""
+    """Permet à l'utilisateur de sélectionner une
+    watchlist parmi celles disponibles."""
     try:
-        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+        response = requests.get(
+            f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}"
+        )
         if response.status_code != 200:
             print("Erreur lors de la récupération des watchlists.")
             return None
@@ -71,7 +84,10 @@ def selectionner_watchlist(id_utilisateur):
         choix = inquirer.select(
             message="Sélectionnez une watchlist :",
             choices=[
-                {"name": wl["nom_watchlist"], "value": wl["id_watchlist"]}
+                {
+                    "name": wl["nom_watchlist"],
+                    "value": wl["id_watchlist"],
+                }
                 for wl in watchlists
             ],
         ).execute()
@@ -84,7 +100,8 @@ def selectionner_watchlist(id_utilisateur):
 
 def recuperer_plateformes_film_watchlist(id_utilisateur):
     """
-    Récupère les plateformes disponibles dans une watchlist et gère les listes vides.
+    Récupère les plateformes disponibles dans
+    une watchlist et gère les listes vides.
     """
     watchlist_id = selectionner_watchlist(id_utilisateur)
     if not watchlist_id:
@@ -93,21 +110,27 @@ def recuperer_plateformes_film_watchlist(id_utilisateur):
     criteres = demander_criteres()
     data = {"id_watchlist": watchlist_id, "criteres": criteres}
     try:
-        response = requests.post(f"{LIEN_API}/plateformes_film/", json=data)
+        response = requests.post(
+            f"{LIEN_API}/plateformes_film/", json=data
+        )
         if response.status_code == 200:
             result = response.json()
 
             # Gestion des listes vides
             for film_id, plateformes in result.items():
                 if not plateformes:
-                    result[film_id] = ["Pas de Plateforme de Streaming disponible"]
+                    result[film_id] = [
+                        "Pas de Plateforme de Streaming disponible"
+                    ]
 
             print("\n=== Résultat des plateformes disponibles ===")
             for film_id, plateformes in result.items():
                 print(f"Film ID {film_id} : {', '.join(plateformes)}")
 
         else:
-            print(f"Erreur : {response.json().get('detail', 'Erreur inconnue')}")
+            print(
+                f"Erreur : {response.json().get('detail', 'Erreur inconnue')}"
+            )
 
     except Exception as e:
         print(f"Erreur de connexion à l'API : {e}")
@@ -115,7 +138,8 @@ def recuperer_plateformes_film_watchlist(id_utilisateur):
 
 def optimiser_et_afficher_abonnement(id_utilisateur):
     """
-    Optimise l'abonnement pour une watchlist sélectionnée et affiche les résultats.
+    Optimise l'abonnement pour une watchlist
+    sélectionnée et affiche les résultats.
     """
     watchlist_id = selectionner_watchlist(id_utilisateur)
     if not watchlist_id:
@@ -132,22 +156,28 @@ def optimiser_et_afficher_abonnement(id_utilisateur):
         )
         if response_optimiser.status_code != 200:
             print(
-                f"❌ Erreur lors de l'optimisation : {response_optimiser.json().get('detail', 'Erreur inconnue')}"
+                f"❌ Erreur lors de l'optimisation : "
+                f"{response_optimiser.json().get('detail', 'Erreur inconnue')}"
             )
             return
 
         # Étape 2 : Appeler la route pour afficher les détails
-        print("\n🔍 Récupération des détails de l'abonnement optimisé...")
+        print(
+            "\n🔍 Récupération des détails de l'abonnement optimisé..."
+        )
         response_afficher = requests.post(
             f"{LIEN_API}/afficher_abonnement_optimise/", json=data
         )
         if response_afficher.status_code == 200:
-            abonnement_details = response_afficher.json().get("abonnement_optimise", {})
+            abonnement_details = response_afficher.json().get(
+                "abonnement_optimise", {}
+            )
             print("\n=== Détails de l'abonnement optimisé ===")
             print(abonnement_details)
         else:
             print(
-                f"❌ Erreur lors de l'affichage des détails : {response_afficher.json().get('detail', 'Erreur inconnue')}"
+                f"❌ Erreur lors de l'affichage des détails : "
+                f"{response_afficher.json().get('detail', 'Erreur inconnue')}"
             )
 
     except Exception as e:
@@ -159,7 +189,9 @@ def menu_principal(id_utilisateur):
     actions = {
         "1": (
             "Accéder aux plateformes disponibles dans ma watchlist",
-            lambda: recuperer_plateformes_film_watchlist(id_utilisateur),
+            lambda: recuperer_plateformes_film_watchlist(
+                id_utilisateur
+            ),
         ),
         "2": (
             "Trouver mon abonnement optimal",

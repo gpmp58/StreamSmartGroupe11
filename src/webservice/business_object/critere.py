@@ -7,11 +7,15 @@ class Critere:
     id_watchlist : int
 
     criteres : dict
-        Un dictionnaire contenant les critères de filtrage. Chaque clé correspond à un critère et la valeur associée est du type attendu selon ce critère.
+        Un dictionnaire contenant les critères de filtrage.
+        Chaque clé correspond à un critère : prix , qualite ,
+        pub et rapport_quantite_prix
+        la valeur associée est du type attendu selon ce critère.
 
     """
 
     def __init__(self, id_watchlist, criteres):
+        "Initialisation de la classe"
         if not isinstance(id_watchlist, int):
             raise Exception("L'id watchlist n'est pas un entier.")
         if not isinstance(criteres, dict):
@@ -26,11 +30,14 @@ class Critere:
 
         for key, valeur in criteres.items():
             if key not in types_attendus:
-                raise Exception(f"Clé {key} inconnue dans les critères.")
+                raise Exception(
+                    f"Clé {key} inconnue dans les critères."
+                )
             expected_type = types_attendus[key]
             if not isinstance(valeur, expected_type):
                 raise Exception(
-                    f"La valeur de la clé {key} n'est pas du type {expected_type.__name__}."
+                    f"La valeur de la clé {key} n'est pas"
+                    f" du type {expected_type.__name__}."
                 )
 
         self.id_watchlist = id_watchlist
@@ -53,6 +60,8 @@ class Critere:
         Return
         ------
         dict
-            Le dictionnaire des critères de filtrage associés à cette watchlist.
+            Le dictionnaire des critères de filtrage
+            associés à cette watchlist.
+            clés de dict : prix,qualite,pub,rapport_quantite_prix
         """
         return self.criteres

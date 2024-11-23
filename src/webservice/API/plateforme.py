@@ -34,7 +34,8 @@ async def ajouter_plateformes(film_data: FilmModel):
     FilmModel : Informations sur le film. (juste l'id ici)
     """
     logger.info(
-        f"Requête reçue pour ajouter des plateformes au film ID: {film_data.id_film}"
+        f"Requête reçue pour ajouter "
+        f"des plateformes au film ID: {film_data.id_film}"
     )
 
     try:
@@ -52,15 +53,18 @@ async def ajouter_plateformes(film_data: FilmModel):
         service_plateforme.ajouter_plateforme(film)
 
         logger.info(
-            f"Les plateformes pour le film ID: {film_data.id_film} ont été mises à jour avec succès."
+            f"Les plateformes pour le film ID: {film_data.id_film}"
+            f" ont été mises à jour avec succès."
         )
         return {
-            "message": f"Les plateformes pour le film numéro : '{film_data.id_film}' ont été mises à jour avec succès."
+            "message": f"Les plateformes pour le film "
+            f"numéro : '{film_data.id_film}' ont été mises à jour avec succès."
         }
 
     except Exception as e:
         logger.error(
-            f"Erreur lors de l'ajout des plateformes pour le film ID: {film_data.id_film} : {str(e)}"
+            f"Erreur lors de l'ajout des plateformes pour"
+            f" le film ID: {film_data.id_film} : {str(e)}"
         )
         raise HTTPException(
             status_code=500, detail=f"Erreur interne : {str(e)}"

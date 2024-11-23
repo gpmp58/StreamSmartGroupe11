@@ -20,7 +20,9 @@ def main1():
         ).execute()
 
         if choix == "Connexion":
-            from src.interface.pages.interface_connexion import connexion_utilisateur
+            from src.interface.pages.interface_connexion import (
+                connexion_utilisateur,
+            )
 
             connexion_utilisateur()
         elif choix == "Quitter":
@@ -39,15 +41,21 @@ def main1():
         ).execute()
 
         if choix == "Films":
-            from src.interface.pages.interface_film import page_recherche_films
+            from src.interface.pages.interface_film import (
+                page_recherche_films,
+            )
 
-            page_recherche_films()  # Appeler directement la fonction de recherche de films
+            page_recherche_films()
         elif choix == "Watchlist":
-            from src.interface.pages.interface_watchlist import main_watchlist
+            from src.interface.pages.interface_watchlist import (
+                main_watchlist,
+            )
 
-            main_watchlist()  # Rediriger vers l'interface de gestion de watchlist
+            main_watchlist()
         elif choix == "Recommandation de Watchlist":
-            from src.interface.pages.interface_recommandation import main_recommandation
+            from src.interface.pages.interface_recommandation import (
+                main_recommandation,
+            )
 
             main_recommandation()  # Interface de recommandation
         elif choix == "Se déconnecter":

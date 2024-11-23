@@ -13,10 +13,10 @@ class DBConnection:
 
     def __init__(self):
         """
-                Ouverture de la connexion à la base de données PostgreSQL.
-        # à verifier pour raises
-                Raises:
-                    psycopg2.OperationalError: Si la connexion à la base de données échoue.
+        Ouverture de la connexion à la base de données PostgreSQL.
+        Raises:
+            psycopg2.OperationalError: Si la connexion
+            à la base de données échoue.
         """
         dotenv.load_dotenv()
 

@@ -13,8 +13,6 @@ def tronquer_texte(texte, max_longueur):
     return texte
 
 
-<<<<<<< HEAD
-=======
 def selectionner_watchlist():
     """Sélectionne une watchlist à partir des données utilisateur."""
     from src.interface.main_interface import main
@@ -27,22 +25,28 @@ def selectionner_watchlist():
         main()
 
     try:
-        response = requests.get(f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}")
+        response = requests.get(
+            f"{LIEN_API}/watchlists/utilisateur/{id_utilisateur}"
+        )
         response.raise_for_status()
         watchlists = response.json().get("watchlists", [])
 
         if not watchlists:
             print(
-                "❌ Vous n'avez pas encore de watchlists. Créez-en une avant d'ajouter des films."
+                "❌ Vous n'avez pas encore de watchlists."
+                " Créez-en une avant d'ajouter des films."
             )
-            from src.interface.pages.interface_utilisateur_connecte import main1
+            from src.interface.pages.interface_utilisateur_connecte import (
+                main1,
+            )
 
             main1()
 
         print("\n=== Vos Watchlists ===")
         choix_watchlists = [
             {
-                "name": f"ID: {wl['id_watchlist']} - Nom: {wl['nom_watchlist']}",
+                "name": f"ID: {wl['id_watchlist']} -"
+                " Nom: {wl['nom_watchlist']}",
                 "value": wl["id_watchlist"],
             }
             for wl in watchlists
@@ -60,8 +64,12 @@ def selectionner_watchlist():
         return answers["id_watchlist"]
 
     except requests.exceptions.RequestException as e:
-        print(f"❌ Erreur lors de la récupération des watchlists : {e}")
-        from src.interface.pages.interface_utilisateur_connecte import main1
+        print(
+            f"❌ Erreur lors de la récupération des watchlists : {e}"
+        )
+        from src.interface.pages.interface_utilisateur_connecte import (
+            main1,
+        )
 
         main1()
 
@@ -71,7 +79,8 @@ def ajouter_a_watchlist(film_id):
     id_watchlist = selectionner_watchlist()
     if not id_watchlist:
         print(
-            "💡 Astuce : Vous pouvez d'abord créer une watchlist depuis votre interface."
+            "💡 Astuce : Vous pouvez d'abord créer"
+            " une watchlist depuis votre interface."
         )
         from src.interface.main_interface import main
 
@@ -83,34 +92,22 @@ def ajouter_a_watchlist(film_id):
             json={"id_watchlist": id_watchlist, "id_film": film_id},
         )
         if ajout_response.status_code == 200:
-            print(f"✅ Film (ID: {film_id}) ajouté à la watchlist (ID: {id_watchlist}).")
+            print(
+                f"✅ Film (ID: {film_id}) ajouté à"
+                f" la watchlist (ID: {id_watchlist})."
+            )
         else:
             print(
-                f"❌ Erreur lors de l'ajout du film : {ajout_response.json().get('detail', 'Erreur inconnue')}"
+                f"❌ Erreur lors de l'ajout du film :"
+                f" {ajout_response.json().get('detail', 'Erreur inconnue')}"
             )
             return
 
     except requests.exceptions.RequestException as e:
-        print(f"❌ Une erreur s'est produite lors de l'ajout du film : {e}")
-        return
-
-    try:
-        plateformes_response = requests.post(
-            f"{LIEN_API}/films/ajouter_plateformes", json={"id_film": film_id}
-        )
-        if plateformes_response.status_code == 200:
-            print(
-                f"✅ Les plateformes pour le film (ID: {film_id}) ont été associées avec succès."
-            )
-        else:
-            print(
-                f"❌ Erreur lors de l'association des plateformes : {plateformes_response.json().get('detail', 'Erreur inconnue')}"
-            )
-
-    except requests.exceptions.RequestException as e:
         print(
-            f"❌ Une erreur s'est produite lors de l'association des plateformes : {e}"
+            f"❌ Une erreur s'est produite lors de l'ajout du film : {e}"
         )
+        return
 
 
 def afficher_details_film(film_id):
@@ -128,12 +125,17 @@ def afficher_details_film(film_id):
         print("\n=== Détails du Film ===")
         print(f"Nom : {film.get('name', 'Titre non disponible')}")
         print(
-            f"Description : {film.get('description', 'Pas de description disponible.')}"
+            f"Description : "
+            f"{film.get('description', 'Pas de description disponible.')}"
         )
-        print(f"Date de sortie : {film.get('date_sortie', 'Date non disponible')}")
+        print(
+            f"Date de sortie : "
+            f"{film.get('date_sortie', 'Date non disponible')}"
+        )
         print(f"Durée : {film.get('duree', 'Durée non disponible')}")
         print(
-            f"Genres : {', '.join(film.get('genres', ['Pas de genres disponibles']))}"
+            f"Genres : "
+            f"{', '.join(film.get('genres', ['Pas de genres disponibles']))}"
         )
         print("\n")
 
@@ -152,10 +154,12 @@ def afficher_details_film(film_id):
             print("Retour au menu de recherche de films.")
             page_recherche_films()
     except requests.exceptions.RequestException as e:
-        print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
+        print(
+            f"❌ Une erreur s'est produite "
+            f"lors de la récupération des détails : {e}"
+        )
 
 
->>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb
 def afficher_films_pagination(films):
     """Affiche les résultats de recherche avec pagination."""
     films_items = list(films.items())
@@ -169,7 +173,10 @@ def afficher_films_pagination(films):
         end_index = min(start_index + films_par_page, total_films)
         films_page = films_items[start_index:end_index]
 
-        print(f"\n=== Résultats de recherche : Page {page + 1}/{total_pages} ===\n")
+        print(
+            f"\n=== Résultats de recherche : "
+            f"Page {page + 1}/{total_pages} ===\n"
+        )
         for film_id, film_name in films_page:
             print(f"ID: {film_id} | Nom: {film_name}")
 
@@ -204,7 +211,9 @@ def afficher_films_pagination(films):
                 {
                     "type": "input",
                     "name": "film_id",
-                    "message": "Entrez l'ID d'un film pour voir ses détails (ou tapez 'Retour' pour revenir au menu principal) :",
+                    "message": "Entrez l'ID d'un film pour "
+                    "voir ses détails "
+                    "(ou tapez 'Retour' pour revenir au menu principal) :",
                     "validate": lambda result: result.isdigit()
                     or result.lower() == "retour"
                     or "Veuillez entrer un ID valide ou 'Retour'.",
@@ -212,13 +221,17 @@ def afficher_films_pagination(films):
             ]
             film_id_input = prompt(questions)["film_id"]
             if film_id_input.lower() == "retour":
-                from src.interface.pages.interface_utilisateur_connecte import main1
+                from src.interface.pages.interface_utilisateur_connecte import (
+                    main1,
+                )
 
                 main1()
                 return None
             return int(film_id_input)
         elif action == "Retour au menu principal":
-            from src.interface.pages.interface_utilisateur_connecte import main1
+            from src.interface.pages.interface_utilisateur_connecte import (
+                main1,
+            )
 
             main1()
             return None
@@ -239,52 +252,9 @@ def rechercher_films(nom_film):
         else:
             print("Aucun film trouvé avec ce nom.")
     except Exception as e:
-        print(f"❌ Une erreur s'est produite lors de la recherche des films : {e}")
-<<<<<<< HEAD
-
-
-def afficher_details_film(film_id):
-    """Affiche les détails d'un film en vérifiant l'existence de son ID."""
-    try:
-        details_url = f"{LIEN_API}/films/{film_id}"
-        response = requests.get(details_url)
-
-        if response.status_code == 404:
-            print(f"❌ Le film avec l'ID {film_id} n'existe pas.")
-            return
-
-        film = response.json()
-
-        print("\n=== Détails du Film ===")
-        print(f"Nom : {film.get('name', 'Titre non disponible')}")
         print(
-            f"Description : {film.get('description', 'Pas de description disponible.')}"
+            f"❌ Une erreur s'est produite lors de la recherche des films : {e}"
         )
-        print(f"Date de sortie : {film.get('date_sortie', 'Date non disponible')}")
-        print(f"Durée : {film.get('duree', 'Durée non disponible')}")
-        print(
-            f"Genres : {', '.join(film.get('genres', ['Pas de genres disponibles']))}"
-        )
-        print("\n")
-
-        questions = [
-            {
-                "type": "confirm",
-                "name": "add_to_watchlist",
-                "message": "Voulez-vous ajouter ce film à votre watchlist ?",
-                "default": False,
-            }
-        ]
-        answers = prompt(questions)
-        if answers["add_to_watchlist"]:
-            ajouter_a_watchlist(film_id)
-        else:
-            print("Retour au menu de recherche de films.")
-            page_recherche_films()
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
-=======
->>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb
 
 
 def page_recherche_films():
@@ -297,7 +267,8 @@ def page_recherche_films():
                 {
                     "type": "input",
                     "name": "nom_film",
-                    "message": "Entrez le nom du film (ou tapez 'Retour' pour revenir au menu principal) :",
+                    "message": "Entrez le nom du film "
+                    "(ou tapez 'Retour' pour revenir au menu principal) :",
                     "validate": lambda result: len(result) > 0
                     or "Le champ 'Nom du film' est obligatoire.",
                 }
@@ -306,7 +277,9 @@ def page_recherche_films():
             answers = prompt(questions)
             nom_film = answers["nom_film"]
             if nom_film.lower() == "retour":
-                from src.interface.pages.interface_utilisateur_connecte import main1
+                from src.interface.pages.interface_utilisateur_connecte import (
+                    main1,
+                )
 
                 main1()
                 return

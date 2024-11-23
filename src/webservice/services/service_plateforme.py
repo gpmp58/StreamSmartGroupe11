@@ -3,6 +3,7 @@ from src.webservice.business_object.plateforme import (
 )
 from src.webservice.dao.plateforme_dao import PlateformeDAO
 from src.webservice.business_object.film import Film
+import logging
 
 
 class ServicePlateforme:
@@ -49,12 +50,12 @@ class ServicePlateforme:
 
     def ajouter_plateforme(self, film: Film):
         """
-        Ajoute des plateformes de streaming pour un film donné
-        en utilisant les informations récupérées via la méthode
-        recuperer_streaming de l'objet Film.
+        cette méthode mets à jour les tables
+        plateforme_abonnement et plateforme_film
+        une fois un  film ajouté à une watchlist
 
         Args:
-            film (Film): Le film pour lequel les plateformes de streaming
+            Film: Le film pour lequel les plateformes de streaming
                          doivent être ajoutées.
         """
         try:

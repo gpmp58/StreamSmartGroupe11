@@ -1,6 +1,8 @@
 from InquirerPy import prompt
 import requests
-from src.interface.main_interface import main  # Retour au menu principal
+from src.interface.main_interface import (
+    main,
+)  # Retour au menu principal
 from src.interface.session_manager import (
     set_session_state,
 )  # Gestion de session globale
@@ -73,14 +75,23 @@ def page_creation_compte():
 
     # Effectuer l'appel API pour créer un compte
     try:
-        response = requests.post(f"{LIEN_API}/utilisateurs", json=data)
+        response = requests.post(
+            f"{LIEN_API}/utilisateurs", json=data
+        )
         if response.status_code == 200:
-            print(f"✅ Compte créé avec succès pour {answers['pseudo']}.")
+            print(
+                f"✅ Compte créé avec succès pour {answers['pseudo']}."
+            )
             # Mettre à jour l'état de session avec le pseudo
-            set_session_state(pseudo=answers["pseudo"], id_utilisateur=None)
+            set_session_state(
+                pseudo=answers["pseudo"], id_utilisateur=None
+            )
         else:
             response_json = response.json()
-            print(f"❌ Erreur : {response_json.get('detail', 'Erreur inconnue')}")
+            print(
+                f"❌ Erreur "
+                f": {response_json.get('detail', 'Erreur inconnue')}"
+            )
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur de connexion à l'API : {e}")
 

@@ -1,5 +1,5 @@
 from src.webservice.business_object.utilisateur import Utilisateur
-from src.webservice.utils.securite import hash_mdp, verify_mdp
+from src.webservice.utils.securite import hash_mdp
 from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
 
@@ -59,7 +59,8 @@ class UtilisateurService:
         Exceptions :
         ------------
         ValueError
-            Si le pseudo est déjà utilisé ou si une erreur survient lors de la création.
+            Si le pseudo est déjà utilisé ou
+             si une erreur survient lors de la création.
         """
         try:
             # Vérifier si le pseudo existe déjà
@@ -84,7 +85,9 @@ class UtilisateurService:
 
             # Vérifier le succès de la création
             if id_utilisateur is None:
-                raise ValueError("Erreur lors de la création du compte.")
+                raise ValueError(
+                    "Erreur lors de la création du compte."
+                )
 
             # Créer l'objet Utilisateur avec les informations de l'utilisateur
             nouvel_utilisateur = Utilisateur(
@@ -104,7 +107,9 @@ class UtilisateurService:
         except Exception as e:
             # Lever l'exception au lieu de renvoyer un dictionnaire pour
             # permettre une gestion des erreurs cohérente
-            raise ValueError(f"Erreur lors de la création de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la création de l'utilisateur : {e}"
+            )
 
     def supprimer_compte(self, id_utilisateur: int):
         """
@@ -122,12 +127,20 @@ class UtilisateurService:
         """
         try:
             # Utiliser le DAO pour supprimer l'utilisateur
-            succes = UtilisateurDAO().supprimer_compte_DAO(id_utilisateur)
+            succes = UtilisateurDAO().supprimer_compte_DAO(
+                id_utilisateur
+            )
             if not succes:
-                raise ValueError("Utilisateur introuvable ou suppression échouée.")
-            print(f"Compte avec l'id '{id_utilisateur}' supprimé avec succès.")
+                raise ValueError(
+                    "Utilisateur introuvable ou suppression échouée."
+                )
+            print(
+                f"Compte avec l'id '{id_utilisateur}' supprimé avec succès."
+            )
         except Exception as e:
-            raise ValueError(f"Erreur lors de la suppression de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la suppression de l'utilisateur : {e}"
+            )
 
     def se_connecter(self, pseudo: str, mdp: str):
         """
@@ -153,7 +166,9 @@ class UtilisateurService:
         """
         try:
             # Récupérer l'utilisateur par pseudo
-            utilisateur_connecte = UtilisateurDAO().se_connecter_DAO(pseudo)
+            utilisateur_connecte = UtilisateurDAO().se_connecter_DAO(
+                pseudo
+            )
             mdp_stocke = utilisateur_connecte[
                 "mdp"
             ]  # Mot de passe haché stocké dans la db
@@ -171,7 +186,9 @@ class UtilisateurService:
 
             return f"Bienvenue {pseudo} sur notre application"
         except Exception as e:
-            raise ValueError(f"Erreur lors de la connexion de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la connexion de l'utilisateur : {e}"
+            )
 
     def se_deconnecter(self):
         """
@@ -202,7 +219,9 @@ class UtilisateurService:
             Si l'utilisateur n'est pas trouvé dans la base de données.
         """
         try:
-            utilisateur = UtilisateurDAO().trouver_par_id(id_utilisateur)
+            utilisateur = UtilisateurDAO().trouver_par_id(
+                id_utilisateur
+            )
 
             if utilisateur:
                 utilisateur_info = {
@@ -217,7 +236,8 @@ class UtilisateurService:
                 raise ValueError("Utilisateur introuvable.")
         except Exception as e:
             raise ValueError(
-                f"Erreur lors de l'affichage des informations de l'utilisateur : {e}"
+                f"Erreur lors de l'affichage des "
+                f"informations de l'utilisateur : {e}"
             )
 
     def verifier_pseudo(self, pseudo: str) -> bool:
@@ -243,7 +263,9 @@ class UtilisateurService:
             existe = UtilisateurDAO().existe_pseudo_DAO(pseudo)
             return existe
         except Exception as e:
-            raise ValueError(f"Erreur lors de la vérification du pseudo : {e}")
+            raise ValueError(
+                f"Erreur lors de la vérification du pseudo : {e}"
+            )
 
     def get_id_utilisateur(self, pseudo: str) -> dict:
         """
@@ -261,4 +283,12 @@ class UtilisateurService:
         try:
             return UtilisateurDAO().get_id_utilisateur_DAO(pseudo)
         except ValueError as e:
-            raise ValueError(f"Erreur lors de la récupération de l'utilisateur : {e}")
+            raise ValueError(
+                f"Erreur lors de la récupération de l'utilisateur : {e}"
+            )
+
+
+if __name__ == "__main__":
+    utilisateur = UtilisateurService().creer_compte(
+        "kaka", "kouki", "Karouma", "ikram@gmail.com", "12312"
+    )

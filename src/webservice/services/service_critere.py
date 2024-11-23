@@ -3,41 +3,55 @@ from src.webservice.business_object.film import Film
 from src.webservice.services.service_watchlist import WatchlistService
 from src.webservice.dao.abonnement_dao import AbonnementDao
 from src.webservice.business_object.abonnement import Abonnement
-import logging
 
 
 class CritereService:
     def recuperer_plateformes_film(self, critere: Critere):
         id_watchlist = critere.id_watchlist
-        watchlist_critere = WatchlistService().trouver_par_id(id_watchlist)
-        films = WatchlistService().sauvegarder_watchlist(watchlist_critere)
+        watchlist_critere = WatchlistService().trouver_par_id(
+            id_watchlist
+        )
+        films = WatchlistService().sauvegarder_watchlist(
+            watchlist_critere
+        )
         id_films = [film["id_film"] for film in films]
         films_et_plateformes = {}
 
         for id_film in id_films:
             film_critere = Film(id_film)
             plateformes = film_critere.recuperer_streaming()
-            nom_plateformes = [plateforme["name"] for plateforme in plateformes]
+            nom_plateformes = [
+                plateforme["name"] for plateforme in plateformes
+            ]
             films_et_plateformes[id_film] = nom_plateformes
 
         return films_et_plateformes
 
     def filtrer_abonnement(self, critere: Critere):
         preferences = critere.criteres
-        abonnement_filtrees = AbonnementDao().abonnement_filtrés(preferences)
+        abonnement_filtrees = AbonnementDao().abonnement_filtrés(
+            preferences
+        )
         return abonnement_filtrees
 
     def calculer_occurrences_plateformes(self, criteres: Critere):
         abonnements_filtres = self.filtrer_abonnement(criteres)
-        films_et_plateformes = self.recuperer_plateformes_film(criteres)
+        films_et_plateformes = self.recuperer_plateformes_film(
+            criteres
+        )
         occurrences_plateformes = {}
         plateformes_filtrees = {
-            abonnement["nom_plateforme"] for abonnement in abonnements_filtres
+            abonnement["nom_plateforme"]
+            for abonnement in abonnements_filtres
         }
         for (
             plateformes
-        ) in films_et_plateformes.values():  # Récupère les listes de plateformes
-            for plateforme in plateformes:  # Parcourt chaque plateforme
+        ) in (
+            films_et_plateformes.values()
+        ):  # Récupère les listes de plateformes
+            for (
+                plateforme
+            ) in plateformes:  # Parcourt chaque plateforme
                 if plateforme in plateformes_filtrees:
                     if plateforme not in occurrences_plateformes:
                         occurrences_plateformes[plateforme] = 0
@@ -47,12 +61,14 @@ class CritereService:
 
     def optimiser_abonnement(self, critere: Critere):
         """
-        Optimise le choix d'abonnement en fonction des critères sélectionnés par l'utilisateur.
+        Optimise le choix d'abonnement en fonction
+        des critères sélectionnés par l'utilisateur.
 
         """
         abonnements_filtres = self.filtrer_abonnement(critere)
-        films_et_plateformes = self.recuperer_plateformes_film(critere)
-        occurrences_plateformes = self.calculer_occurrences_plateformes(critere)
+        occurrences_plateformes = (
+            self.calculer_occurrences_plateformes(critere)
+        )
         preferences = critere.criteres
         if preferences.get("prix", False):
             # Cas où on utilise le critère de prix et d'occurrences > 0
@@ -63,8 +79,12 @@ class CritereService:
                         (
                             abonnement["prix"]
                             for abonnement in abonnements_filtres
-                            if abonnement["nom_plateforme"] == x["nom_plateforme"]
-                            and occurrences_plateformes.get(x["nom_plateforme"], 0) > 0
+                            if abonnement["nom_plateforme"]
+                            == x["nom_plateforme"]
+                            and occurrences_plateformes.get(
+                                x["nom_plateforme"], 0
+                            )
+                            > 0
                         ),
                         float("inf"),
                     )
@@ -85,9 +105,12 @@ class CritereService:
                     prix_plateforme = next(
                         abonnement["prix"]
                         for abonnement in abonnements_filtres
-                        if abonnement["nom_plateforme"] == nom_plateforme
+                        if abonnement["nom_plateforme"]
+                        == nom_plateforme
                     )
-                    quantite_films = occurrences_plateformes[nom_plateforme]
+                    quantite_films = occurrences_plateformes[
+                        nom_plateforme
+                    ]
                     rapport = prix_plateforme / quantite_films
 
                     if rapport < meilleur_rapport:
@@ -97,7 +120,9 @@ class CritereService:
         else:
             plateforme_optimisee = max(
                 abonnements_filtres,
-                key=lambda x: occurrences_plateformes.get(x["nom_plateforme"], 0),
+                key=lambda x: occurrences_plateformes.get(
+                    x["nom_plateforme"], 0
+                ),
             )
         abonnement_optimise = Abonnement(
             id_abonnement=plateforme_optimisee["id_abonnement"],
@@ -116,6 +141,7 @@ class CritereService:
                 f"Abonnement optimisé :\n"
                 f"- Plateforme : {abonnement.nom_plateforme}\n"
                 f"- ID de l'abonnement : {abonnement.id_abonnement}\n"
+                f"- Nom de l'abonnement : {abonnement.nom_abonnement}\n"
                 f"- Prix : {abonnement.prix:.2f} €"
             )
         else:

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from src.webservice.business_object.utilisateur import Utilisateur
 from src.webservice.services.service_utilisateur import (
     UtilisateurService,
 )
@@ -71,7 +70,8 @@ async def delete_utilisateur(id_utilisateur: str):
             id_utilisateur=id_utilisateur
         )
         return {
-            "message": f"Utilisateur avec id '{id_utilisateur}' supprimé avec succès"
+            "message": f"Utilisateur avec id '{id_utilisateur}'"
+            f" supprimé avec succès"
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

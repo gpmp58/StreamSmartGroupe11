@@ -22,7 +22,8 @@ def test_service_film_init_succes():
         (
             "J@oker",
             Exception,
-            "Il y a des caratères spéciaux dans le film, Veuillez réécrire le nom du film",
+            "Il y a des caratères spéciaux dans le film,"
+            " Veuillez réécrire le nom du film",
         ),
     ],
 )

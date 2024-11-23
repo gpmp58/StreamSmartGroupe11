@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import patch
-from src.webservice.business_object.abonnement import Abonnement
 from src.webservice.dao.abonnement_dao import AbonnementDao
-from src.webservice.business_object.plateforme import PlateformeStreaming
-from src.webservice.services.service_abonnement import AbonnementService
+from src.webservice.services.service_abonnement import (
+    AbonnementService,
+)
 
 
 @pytest.fixture
@@ -62,7 +62,10 @@ def test_qualite_abonnement(mock_get_qualite_abonnement_DAO):
 @patch.object(AbonnementDao, "get_nom_abonnement_DAO")
 def test_recherche_abonnement(mock_get_nom_abonnement_DAO):
     # Configuration du mock pour la liste d'abonnements
-    mock_get_nom_abonnement_DAO.return_value = ["Abonnement 1", "Abonnement 2"]
+    mock_get_nom_abonnement_DAO.return_value = [
+        "Abonnement 1",
+        "Abonnement 2",
+    ]
     service = AbonnementService()
 
     # Appel de la méthode à tester

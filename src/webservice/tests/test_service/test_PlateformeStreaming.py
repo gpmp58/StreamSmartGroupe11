@@ -2,7 +2,9 @@ import re
 
 import pytest
 
-from src.webservice.business_object.plateforme import PlateformeStreaming
+from src.webservice.business_object.plateforme import (
+    PlateformeStreaming,
+)
 
 
 def test_PlateformeStreaming_init_succes():
@@ -24,7 +26,8 @@ def test_PlateformeStreaming_init_succes():
             1230,
             {"logo_plateforme"},
             Exception,
-            "Le logo de la plateforme n'est pas une chaîne de caractères ou n'est pas égal à None.",
+            "Le logo de la plateforme n'est pas une chaîne "
+            "de caractères ou n'est pas égal à None.",
         ),
         (
             "Netflix",
@@ -36,14 +39,22 @@ def test_PlateformeStreaming_init_succes():
     ],
 )
 def test_PlateformeStreaming_init_echec(
-    nom_plateforme, logo_plateforme, id_plateforme, erreur, message_erreur
+    nom_plateforme,
+    logo_plateforme,
+    id_plateforme,
+    erreur,
+    message_erreur,
 ):
     with pytest.raises(erreur, match=re.escape(message_erreur)):
-        PlateformeStreaming(nom_plateforme, logo_plateforme, id_plateforme)
+        PlateformeStreaming(
+            nom_plateforme, logo_plateforme, id_plateforme
+        )
 
 
 def test_info_plateforme():
-    plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
+    plateforme = PlateformeStreaming(
+        "Netflix", 1230, "logo_plateforme"
+    )
     assert plateforme.info_plateforme() == {
         "Nom_plateforme": "Netflix",
         "id_plateforme": 1230,
@@ -52,15 +63,21 @@ def test_info_plateforme():
 
 
 def test_get_nom_plateforme():
-    plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
+    plateforme = PlateformeStreaming(
+        "Netflix", 1230, "logo_plateforme"
+    )
     assert plateforme.get_nom_plateforme() == "Netflix"
 
 
 def test_get_logo_plateforme():
-    plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
+    plateforme = PlateformeStreaming(
+        "Netflix", 1230, "logo_plateforme"
+    )
     assert plateforme.get_logo_plateforme() == "logo_plateforme"
 
 
 def test_get_id_plateforme():
-    plateforme = PlateformeStreaming("Netflix", 1230, "logo_plateforme")
+    plateforme = PlateformeStreaming(
+        "Netflix", 1230, "logo_plateforme"
+    )
     assert plateforme.get_id_plateforme() == 1230

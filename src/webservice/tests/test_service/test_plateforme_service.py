@@ -1,11 +1,5 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from src.webservice.business_object.plateforme import (
-    PlateformeStreaming,
-)
-from src.webservice.dao.plateforme_dao import PlateformeDAO
-from src.webservice.dao.film_dao import FilmDao
-from src.webservice.services.service_film import FilmService
 from src.webservice.business_object.film import Film
 from src.webservice.services.service_plateforme import (
     ServicePlateforme,
@@ -13,10 +7,12 @@ from src.webservice.services.service_plateforme import (
 
 
 @patch(
-    "src.webservice.dao.plateforme_dao.PlateformeDAO.verifier_plateforme_existe"
+    "src.webservice.dao.plateforme_dao.PlateformeDAO."
+    "verifier_plateforme_existe"
 )
 @patch(
-    "src.webservice.dao.plateforme_dao.PlateformeDAO.ajouter_plateforme"
+    "src.webservice.dao.plateforme_dao.PlateformeDAO."
+    "ajouter_plateforme"
 )
 def test_mettre_a_jour_plateforme_plateforme_non_existante(
     mock_ajouter_plateforme, mock_verifier_plateforme_existe
@@ -28,13 +24,14 @@ def test_mettre_a_jour_plateforme_plateforme_non_existante(
     service = ServicePlateforme()
     resultat = service.mettre_a_jour_plateforme("Netflix", 1)
 
-    assert resultat == True
+    assert resultat is True
     mock_verifier_plateforme_existe.assert_called_with(1, "Netflix")
     mock_ajouter_plateforme.assert_called_once()
 
 
 @patch(
-    "src.webservice.dao.plateforme_dao.PlateformeDAO.verifier_plateforme_existe"
+    "src.webservice.dao.plateforme_dao.PlateformeDAO."
+    "verifier_plateforme_existe"
 )
 def test_mettre_a_jour_plateforme_plateforme_existante(
     mock_verifier_plateforme_existe,
@@ -45,12 +42,13 @@ def test_mettre_a_jour_plateforme_plateforme_existante(
     service = ServicePlateforme()
     resultat = service.mettre_a_jour_plateforme("Netflix", 1)
 
-    assert resultat == False
+    assert resultat is False
     mock_verifier_plateforme_existe.assert_called_with(1, "Netflix")
 
 
 @patch(
-    "src.webservice.dao.plateforme_dao.PlateformeDAO.verifier_plateforme_existe"
+    "src.webservice.dao.plateforme_dao.PlateformeDAO."
+    "verifier_plateforme_existe"
 )
 @patch(
     "src.webservice.dao.plateforme_dao.PlateformeDAO.ajouter_plateforme"
@@ -66,7 +64,7 @@ def test_mettre_a_jour_plateforme_exception(
     service = ServicePlateforme()
     resultat = service.mettre_a_jour_plateforme("Netflix", 1)
 
-    assert resultat == False
+    assert resultat is False
     mock_verifier_plateforme_existe.assert_called_with(1, "Netflix")
 
 
@@ -106,7 +104,8 @@ def mock_recuperer_streaming():
 @pytest.fixture
 def mock_mettre_a_jour_plateforme():
     with patch(
-        "src.webservice.services.service_plateforme.ServicePlateforme.mettre_a_jour_plateforme"
+        "src.webservice.services.service_plateforme."
+        "ServicePlateforme.mettre_a_jour_plateforme"
     ) as mock:
         yield mock
 
@@ -114,7 +113,8 @@ def mock_mettre_a_jour_plateforme():
 @pytest.fixture
 def mock_ajouter_relation_film_plateforme():
     with patch(
-        "src.webservice.dao.plateforme_dao.PlateformeDAO.ajouter_relation_film_plateforme"
+        "src.webservice.dao.plateforme_dao.PlateformeDAO."
+        "ajouter_relation_film_plateforme"
     ) as mock:
         yield mock
 
@@ -130,101 +130,16 @@ def test_ajouter_plateforme_success(
         {
             "id": 381,
             "name": "Canal+",
-            "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
+            "logo": "https://image.tmdb.org/t/p/"
+            "w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
         },
         {
             "id": 1899,
             "name": "Max",
-            "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
+            "logo": "https://image.tmdb.org/t/"
+            "p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
         },
     ]
     mock_mettre_a_jour_plateforme.return_value = True
 
     mock_service_plateforme.ajouter_plateforme(mock_film)
-
-
-"""
-@patch(
-    "src.webservice.services.service_plateforme.ServicePlateforme.mettre_a_jour_plateforme"
-)
-@patch("src.webservice.business_object.film.Film.recuperer_streaming")
-def test_ajouter_plateforme_success(
-    mock_mettre_a_jour_plateforme,
-    mock_recuperer_streaming,
-):
-
-    film_mock = Film(268)
-    mock_recuperer_streaming.return_value = [
-        {
-            "id": 381,
-            "name": "Canal+",
-            "logo": "https://image.tmdb.org/t/p/w780/eBXzkFEupZjKaIKY7zBUaSdCY8I.jpg",
-        },
-        {
-            "id": 1899,
-            "name": "Max",
-            "logo": "https://image.tmdb.org/t/p/w780/fksCUZ9QDWZMUwL2LgMtLckROUN.jpg",
-        },
-    ]
-    mock_mettre_a_jour_plateforme.return_value = True
-    service_plateforme = ServicePlateforme()
-    service_plateforme.ajouter_plateforme(film_mock)
-    mock_mettre_a_jour_plateforme.assert_any_call("Canal+", 381)
-    mock_mettre_a_jour_plateforme.assert_any_call("Max", 1899)
-    mock_ajouter_relation_film_plateforme.assert_any_call(
-        film_mock.id_film, 381
-    )
-    #mock_ajouter_relation_film_plateforme.assert_any_call(
-        film_mock.id_film, 1899
-    )
-
-"""
-"""
-    @patch("src.services.service_plateforme.ServicePlateforme.mettre_a_jour_plateforme")
-    @patch("src.webservice.dao.plateforme_dao.PlateformeDAO.ajouter_relation_film_plateforme")
-    def test_ajouter_plateforme_plateforme_existante(self, mock_ajouter_relation_film_plateforme, mock_mettre_a_jour_plateforme):
-        # Création d'un film mock
-        film_mock = MagicMock(spec=Film)
-        film_mock.recuperer_streaming.return_value = [
-            {"id": 1, "name": "Netflix"},
-            {"id": 2, "name": "Amazon Prime"}
-        ]
-        
-        # Simuler que l'une des plateformes existe déjà
-        mock_mettre_a_jour_plateforme.side_effect = [True, False]  # La première plateforme est ajoutée, la deuxième échoue
-
-        service_plateforme = ServicePlateforme()
-
-        # Appel de la méthode à tester
-        service_plateforme.ajouter_plateforme(film_mock)
-
-        # Vérifications pour la plateforme qui existe déjà
-        mock_mettre_a_jour_plateforme.assert_any_call("Netflix", 1)
-        mock_mettre_a_jour_plateforme.assert_any_call("Amazon Prime", 2)
-        mock_ajouter_relation_film_plateforme.assert_any_call(film_mock.id_film, 1)
-        mock_ajouter_relation_film_plateforme.assert_any_call(film_mock.id_film, 2)
-
-    @patch("src.services.service_plateforme.ServicePlateforme.mettre_a_jour_plateforme")
-    @patch("src.webservice.dao.plateforme_dao.PlateformeDAO.ajouter_relation_film_plateforme")
-    def test_ajouter_plateforme_exception(self, mock_ajouter_relation_film_plateforme, mock_mettre_a_jour_plateforme):
-        # Création d'un film mock
-        film_mock = MagicMock(spec=Film)
-        film_mock.recuperer_streaming.return_value = [
-            {"id": 1, "name": "Netflix"},
-            {"id": 2, "name": "Amazon Prime"}
-        ]
-        
-        # Simuler une exception dans la méthode mettre_a_jour_plateforme
-        mock_mettre_a_jour_plateforme.side_effect = Exception("Erreur lors de l'ajout de la plateforme")
-
-        service_plateforme = ServicePlateforme()
-
-        # Appel de la méthode à tester, cette fois-ci une exception est levée
-        service_plateforme.ajouter_plateforme(film_mock)
-
-        # Vérification que l'exception a bien été gérée et que rien ne s'est passé d'anormal
-        mock_mettre_a_jour_plateforme.assert_any_call("Netflix", 1)
-        mock_mettre_a_jour_plateforme.assert_any_call("Amazon Prime", 2)
-        mock_ajouter_relation_film_plateforme.assert_not_called()  # La méthode ajouter_relation_film_plateforme ne doit pas être appelée
-
-"""
