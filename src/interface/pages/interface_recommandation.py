@@ -36,20 +36,39 @@ def verifier_connexion():
 def demander_criteres():
     """
     Demande des critères à l'utilisateur.
-    Si prix est coché Yes,
-    rapport quantité/prix sera No automatiquement, et inversement
-    si les deux criteres sont No , on prends pas en compte
-    le prix comme critère
-    et on cherche que la plateforme qui fournit le nombre
-    de films maximal.
+    - Si prix est coché Yes, rapport quantité/prix sera No automatiquement.
+    - Si les deux (prix et rapport quantité/prix) sont No :
+    le critère prix est ignoré.
+    On cherche ainsi uniquement la plateforme qui fournit
+    le nombre maximal de films.
     """
+    # Demander le critère prix
     prix = inquirer.confirm(
         message="Souhaitez-vous le prix le plus bas ?", default=False
     ).execute()
-    rapport_quantite_prix = (
-        not prix
-    )  # Inverse automatiquement le choix de prix
 
+    # Si prix est "No", demander rapport quantité/prix
+    rapport_quantite_prix = False
+    if not prix:
+        rapport_quantite_prix = inquirer.confirm(
+            message="Voulez-vous un bon rapport quantité/prix ?", default=False
+        ).execute()
+
+    # Si les deux sont "No", ignorer le critère prix
+    if not prix and not rapport_quantite_prix:
+        print(
+            "\n💡 Aucun critère prix sélectionné. "
+            "Seules les plateformes avec le nombre maximal"
+            "de films seront considérées.\n"
+            )
+        return {
+            "prix": False,
+            "qualite": None,
+            "pub": None,
+            "rapport_quantite_prix": False,
+        }
+
+    # Demander les autres critères
     qualite = inquirer.text(
         message="Qualité (ex: HD, 4K, etc.) :", default=""
     ).execute()
@@ -98,44 +117,6 @@ def selectionner_watchlist(id_utilisateur):
         return None
 
 
-def recuperer_plateformes_film_watchlist(id_utilisateur):
-    """
-    Récupère les plateformes disponibles dans
-    une watchlist et gère les listes vides.
-    """
-    watchlist_id = selectionner_watchlist(id_utilisateur)
-    if not watchlist_id:
-        return
-
-    criteres = demander_criteres()
-    data = {"id_watchlist": watchlist_id, "criteres": criteres}
-    try:
-        response = requests.post(
-            f"{LIEN_API}/plateformes_film/", json=data
-        )
-        if response.status_code == 200:
-            result = response.json()
-
-            # Gestion des listes vides
-            for film_id, plateformes in result.items():
-                if not plateformes:
-                    result[film_id] = [
-                        "Pas de Plateforme de Streaming disponible"
-                    ]
-
-            print("\n=== Résultat des plateformes disponibles ===")
-            for film_id, plateformes in result.items():
-                print(f"Film ID {film_id} : {', '.join(plateformes)}")
-
-        else:
-            print(
-                f"Erreur : {response.json().get('detail', 'Erreur inconnue')}"
-            )
-
-    except Exception as e:
-        print(f"Erreur de connexion à l'API : {e}")
-
-
 def optimiser_et_afficher_abonnement(id_utilisateur):
     """
     Optimise l'abonnement pour une watchlist
@@ -182,6 +163,59 @@ def optimiser_et_afficher_abonnement(id_utilisateur):
 
     except Exception as e:
         print(f"Erreur de connexion à l'API : {e}")
+
+
+def recuperer_plateformes_film_watchlist(id_utilisateur):
+    """
+    Affiche les plateformes disponibles pour les films d'une watchlist.
+    """
+    watchlist_id = selectionner_watchlist(id_utilisateur)
+    if not watchlist_id:
+        return
+
+    try:
+        # Dictionnaire de critères vide
+        criteres = {
+            "prix": None,
+            "qualite": None,
+            "pub": None,
+            "rapport_quantite_prix": None,
+        }
+
+        # Données pour la requête
+        data = {
+            "id_watchlist": watchlist_id,
+            "criteres": criteres,
+        }
+
+        # Requête POST vers la route `/plateformes_film/`
+        response = requests.post(f"{LIEN_API}/plateformes_film/", json=data)
+
+        if response.status_code == 200:
+            # Résultat des plateformes par film
+            plateformes_par_film = response.json()
+
+            if not plateformes_par_film:
+                print("\nAucune plateforme trouvée pour cette watchlist.")
+                return
+
+            print("\n=== Plateformes disponibles par film ===")
+            for film_id, plateformes in plateformes_par_film.items():
+                plateformes_display = (
+                    ", ".join(plateformes)
+                    if plateformes
+                    else "Aucune plateforme disponible"
+                )
+                print(f"- Film ID {film_id} : {plateformes_display}")
+
+        else:
+            print(
+                f"❌ Erreur : {response.json().get('detail', 'Inconnue')}"
+            )
+
+    except Exception as e:
+        print(f"Erreur de connexion à l'API : {e}")
+
 
 
 def menu_principal(id_utilisateur):

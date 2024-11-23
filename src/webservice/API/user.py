@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from src.webservice.services.service_utilisateur import (
-    UtilisateurService,
-)
+from src.webservice.services.service_utilisateur import UtilisateurService
 from src.webservice.dao.utilisateur_dao import UtilisateurDAO
 
 # Création du router FastAPI
@@ -23,8 +21,8 @@ class UtilisateurModel(BaseModel):
     langue: str = "français"
 
 
-# Modèle de données pour afficher les informations d'un utilisateur sans
-# le mot de passe
+# Modèle de données pour afficher les informations d'un utilisateur
+# sans le mot de passe
 class UtilisateurDisplayModel(BaseModel):
     nom: str
     prenom: str
@@ -52,8 +50,8 @@ async def create_utilisateur(utilisateur: UtilisateurModel):
             mdp=utilisateur.mdp,
             langue=utilisateur.langue,
         )
-        # Retourner l'objet UtilisateurDisplayModel avec les informations
-        # nécessaires
+        # Retourner l'objet UtilisateurDisplayModel
+        # avec les informations nécessaires
         return nouvel_utilisateur
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -66,13 +64,10 @@ async def delete_utilisateur(id_utilisateur: str):
     Supprime un utilisateur basé sur son identifiant.
     """
     try:
-        utilisateur_service.supprimer_compte(
-            id_utilisateur=id_utilisateur
-        )
+        utilisateur_service.supprimer_compte(id_utilisateur=id_utilisateur)
         return {
-            "message": f"Utilisateur avec id '{id_utilisateur}'"
-            f" supprimé avec succès"
-        }
+            "message": f"Utilisateur '{id_utilisateur}' supprimé avec succès"
+            }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -91,18 +86,19 @@ async def login_utilisateur(credentials: LoginModel):
     try:
         message = utilisateur_service.se_connecter(
             pseudo=credentials.pseudo, mdp=credentials.mdp
-        )
+            )
         return {"message": message}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# 4. GET /utilisateurs/{id_utilisateur}/afficher :
+# Afficher les infos d'un utilisateur
 
-# 4. GET /utilisateurs/{id_utilisateur}/afficher : Afficher les infos d'un
-# utilisateur
+
 @router.get(
     "/utilisateurs/{id_utilisateur}/afficher",
-    response_model=UtilisateurDisplayModel,
-)
+    response_model=UtilisateurDisplayModel
+        )
 async def afficher_utilisateur(id_utilisateur: str):
     """
     Affiche les informations d'un utilisateur basé sur son id.
@@ -110,7 +106,7 @@ async def afficher_utilisateur(id_utilisateur: str):
     try:
         utilisateur_info = utilisateur_service.afficher(
             id_utilisateur=id_utilisateur
-        )
+            )
 
         # Construire le modèle de réponse à partir de l'utilisateur récupéré
         return UtilisateurDisplayModel(
@@ -134,15 +130,13 @@ async def obtenir_id_utilisateur(data: UtilisateurPseudoModel):
     try:
         utilisateur = utilisateur_service.get_id_utilisateur(
             pseudo=data.pseudo
-        )
+            )
         if utilisateur:
-            return {
-                "id_utilisateur": utilisateur.get("id_utilisateur")
-            }
+            return {"id_utilisateur": utilisateur.get("id_utilisateur")}
         else:
             raise HTTPException(
                 status_code=404, detail="Utilisateur introuvable."
-            )
+                )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:

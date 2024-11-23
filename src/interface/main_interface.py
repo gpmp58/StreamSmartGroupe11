@@ -32,7 +32,9 @@ def main():
         )["action"]
 
         if choix == "connexion":
-            from src.interface.pages.interface_connexion import connexion_utilisateur
+            from src.interface.pages.interface_connexion import (
+                connexion_utilisateur
+            )
 
             connexion_utilisateur()
         elif choix == "creation":

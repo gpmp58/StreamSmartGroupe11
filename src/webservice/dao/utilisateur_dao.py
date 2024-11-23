@@ -42,7 +42,9 @@ class UtilisateurDAO:
             with connection.cursor() as cursor:
                 cursor.execute(
                     """
-                    INSERT INTO projet11.utilisateur (nom, prenom, adresse_mail, mdp, pseudo, langue, sel)
+                    INSERT INTO projet11.utilisateur (
+                    nom, prenom, adresse_mail, mdp, pseudo, langue, sel
+                    )
                     VALUES (
                         %(nom)s, %(prenom)s, %(adresse_mail)s, %(mdp)s,
                         %(pseudo)s, %(langue)s, %(sel)s

@@ -1,10 +1,8 @@
 from InquirerPy import prompt
 import requests
-from src.interface.main_interface import main
 from src.interface.pages.interface_utilisateur_connecte import main1
 from src.interface.session_manager import (
     set_session_state,
-    get_session_state,
 )
 
 # URL de base de l'API FastAPI

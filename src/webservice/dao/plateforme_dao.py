@@ -116,7 +116,6 @@ class PlateformeDAO:
     """def ajouter_relation_film_plateforme(
         self, id_film, id_plateforme
     ):
-        
         Ajoute la relation entre un film et une
         plateforme dans la table `film_plateforme`.
 
@@ -124,7 +123,6 @@ class PlateformeDAO:
             id_film (int): L'identifiant du film.
             id_plateforme (int): L'identifiant
                             de la plateforme.
-        
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:

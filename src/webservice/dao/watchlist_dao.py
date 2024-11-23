@@ -117,7 +117,9 @@ class WatchlistDao:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO projet11.film_watchlist (id_watchlist, id_film)
+                        INSERT INTO projet11.film_watchlist (
+                        id_watchlist, id_film
+                        )
                         VALUES (%(id_watchlist)s, %(id_film)s);
                         """,
                         {

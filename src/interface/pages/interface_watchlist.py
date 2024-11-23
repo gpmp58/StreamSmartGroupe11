@@ -117,8 +117,7 @@ def supprimer_film(id_utilisateur):
             print("✅ Film supprimé avec succès.")
         else:
             print(
-                f"❌ Erreur : "
-                f"{response_delete.json().get('detail','Erreur lors de la suppression du film.')}"
+                "❌ Erreur : lors de la suppression du Film."
             )
 
     except requests.exceptions.RequestException as e:
@@ -144,8 +143,7 @@ def afficher_watchlists(id):
                         "pour voir son contenu :",
                         "choices": [
                             {
-                                "name": f"{wl['nom_watchlist']}"
-                                " (ID : {wl['id_watchlist']})",
+                                "name": f"{wl['nom_watchlist']}",
                                 "value": wl["id_watchlist"],
                             }
                             for wl in watchlists
@@ -251,7 +249,7 @@ def ajouter_film(id):
         if response.status_code == 200:
             print("\n✅ Film ajouté à la watchlist avec succès !")
         else:
-            print("\nErreur : Film introuvable")
+            print("\nErreur : Film introuvable ou déjà présent !")
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur de connexion à l'API : {e}")
 

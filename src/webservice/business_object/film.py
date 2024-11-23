@@ -78,7 +78,8 @@ class Film:
                         l'identifiant n'est pas le bon.
         """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}?language=fr-FR"
+        BASE_URL = "https://api.themoviedb.org/3/movie"
+        url_search_movie = f"{BASE_URL}/{str(self.id_film)}?language=fr-FR"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}",
@@ -112,7 +113,8 @@ class Film:
                 sinon le message "Image non disponible".
         """
         cle_api = os.environ.get("API_KEY")
-        url_search_movie_2 = f"https://api.themoviedb.org/3/movie/{str(self.id_film)}/images"
+        BASE_URL = "https://api.themoviedb.org/3/movie"
+        url_search_movie_2 = f"{BASE_URL}/{str(self.id_film)}/images"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}",
@@ -140,7 +142,8 @@ class Film:
 
         """
         cle_api = os.environ.get("API_KEY")
-        url_movie_providers = f"https://api.themoviedb.org/3/movie/{self.id_film}/watch/providers"
+        BASE_URL = "https://api.themoviedb.org/3/movie"
+        url_movie_providers = f"{BASE_URL}/{self.id_film}/watch/providers"
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}",

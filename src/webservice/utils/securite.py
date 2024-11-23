@@ -2,10 +2,6 @@ import hashlib
 import secrets
 
 
-import hashlib
-import secrets
-
-
 def hash_mdp(password: str, sel: str = None) -> tuple:
     """
     Hachage du mot de passe avec un sel aléatoire.

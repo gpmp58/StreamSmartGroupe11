@@ -1,9 +1,6 @@
 from InquirerPy import inquirer
-from src.interface.session_manager import (
-    get_session_state,
-    set_session_state,
-    clear_session_state,
-)
+from src.interface.session_manager import get_session_state
+from src.interface.session_manager import clear_session_state
 import os
 
 
@@ -34,7 +31,7 @@ def main1():
             choices=[
                 "Films",
                 "Watchlist",
-                "Recommandation de Watchlist",
+                "Recommendation de Watchlist",
                 "Se déconnecter",
                 "Quitter",
             ],
@@ -52,7 +49,7 @@ def main1():
             )
 
             main_watchlist()
-        elif choix == "Recommandation de Watchlist":
+        elif choix == "Recommendation de Watchlist":
             from src.interface.pages.interface_recommandation import (
                 main_recommandation,
             )

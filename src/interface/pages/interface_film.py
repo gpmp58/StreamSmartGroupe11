@@ -45,8 +45,8 @@ def selectionner_watchlist():
         print("\n=== Vos Watchlists ===")
         choix_watchlists = [
             {
-                "name": f"ID: {wl['id_watchlist']} -"
-                " Nom: {wl['nom_watchlist']}",
+                "name": f" {wl['nom_watchlist']}",
+                "Nom": f" Nom: {wl['nom_watchlist']}",
                 "value": wl["id_watchlist"],
             }
             for wl in watchlists
@@ -94,7 +94,7 @@ def ajouter_a_watchlist(film_id):
         if ajout_response.status_code == 200:
             print(
                 f"✅ Film (ID: {film_id}) ajouté à"
-                f" la watchlist (ID: {id_watchlist})."
+                f" la watchlist !"
             )
         else:
             print(

@@ -56,7 +56,10 @@ class FilmService:
             titres originaux (en tant que valeurs).
         """
         cle_api = os.environ.get("API_KEY")
-        url_recherche_film = f"https://api.themoviedb.org/3/search/movie?query={self.nom_film}&include_adult=false&language=en-US&page=1"
+        url_recherche_film = (
+            f"https://api.themoviedb.org/3/search/movie?"
+            f"query={self.nom_film}&include_adult=false&language=en-US&page=1"
+        )
         headers = {
             "accept": "application/json",
             "Authorization": f"Bearer {cle_api}",
