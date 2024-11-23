@@ -13,8 +13,6 @@ def tronquer_texte(texte, max_longueur):
     return texte
 
 
-<<<<<<< HEAD
-=======
 def selectionner_watchlist():
     """Sélectionne une watchlist à partir des données utilisateur."""
     from src.interface.main_interface import main
@@ -155,7 +153,6 @@ def afficher_details_film(film_id):
         print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
 
 
->>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb
 def afficher_films_pagination(films):
     """Affiche les résultats de recherche avec pagination."""
     films_items = list(films.items())
@@ -240,7 +237,6 @@ def rechercher_films(nom_film):
             print("Aucun film trouvé avec ce nom.")
     except Exception as e:
         print(f"❌ Une erreur s'est produite lors de la recherche des films : {e}")
-<<<<<<< HEAD
 
 
 def afficher_details_film(film_id):
@@ -283,8 +279,6 @@ def afficher_details_film(film_id):
             page_recherche_films()
     except requests.exceptions.RequestException as e:
         print(f"❌ Une erreur s'est produite lors de la récupération des détails : {e}")
-=======
->>>>>>> a73b05db2e8e2645eb8c912745b3cb85574b99eb
 
 
 def page_recherche_films():
