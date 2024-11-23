@@ -1,6 +1,6 @@
 # StreamSmart
 <p align="center">
-    <img src="logo_streamsmart/logo_streamsmart.PNG" width="100%">
+    <img src="logo_streamsmart/logo_streamsmart.PNG" width="50%">
 </p>
 
 
@@ -9,11 +9,6 @@
 
 
 This project aims to develop a tool to give you the best Provider for a watchlist of films based on your film's tastes.
-
-
-<p align="center">
-    <img src="logo streamsmart" width="100%">
-</p>
 
 ## Main Features
 
