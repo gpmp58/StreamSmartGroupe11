@@ -2,6 +2,7 @@ import os
 import subprocess
 import time
 from colorama import Fore, init
+from tqdm import tqdm  # Pour afficher une barre de progression
 
 # Initialisation de colorama (nécessaire pour Windows)
 init(autoreset=True)
@@ -9,25 +10,35 @@ init(autoreset=True)
 
 def update_pip():
     """
-    Met à jour `pip` à la dernière version disponible.
+    Met à jour `pip` à la dernière version disponible avec un écran de chargement.
     """
     print(f"{Fore.RED}=========== Mise à jour de pip ============\n")
-    subprocess.run(
-        ["python", "-m", "pip", "install", "--upgrade", "pip"],
-        check=True
-    )
+    with open(os.devnull, 'w') as fnull:
+        with tqdm(total=1, desc="Mise à jour de pip", ncols=80) as pbar:
+            subprocess.run(
+                ["python", "-m", "pip", "install", "--upgrade", "pip"],
+                stdout=fnull,
+                stderr=fnull,
+                check=True
+            )
+            pbar.update(1)
 
 
 def install_dependencies():
     """
-    Installe les dépendances nécessaires pour le projet
-    à partir du fichier requirements.txt en utilisant l'option --user.
+    Installe les dépendances nécessaires pour le projet à partir du fichier requirements.txt.
+    Affiche une barre de progression pendant le processus.
     """
     print(f"{Fore.RED}=========== Installation des dépendances ============\n")
-    subprocess.run(
-        ["pip", "install", "--user", "-r", "requirements.txt"],
-        check=True
-    )
+    with open(os.devnull, 'w') as fnull:
+        with tqdm(total=1, desc="Installation des packages", ncols=80) as pbar:
+            subprocess.run(
+                ["pip", "install", "--user", "-r", "requirements.txt"],
+                stdout=fnull,
+                stderr=fnull,
+                check=True
+            )
+            pbar.update(1)
 
 
 def start_webservice():
@@ -39,6 +50,8 @@ def start_webservice():
     webservice_process = subprocess.Popen(
         ["python", "main_api.py"],
         cwd="src/webservice",
+        stdout=subprocess.DEVNULL,  # Cache les logs du webservice
+        stderr=subprocess.DEVNULL
     )
     time.sleep(1)  # Pause courte pour s'assurer que le processus démarre
     if webservice_process.poll() is None:
@@ -52,11 +65,8 @@ def start_interface():
     """
     Lance l'interface utilisateur dans le terminal.
     Processus démarré dans le répertoire 'src/interface'.
-    La fonction ne termine qu'à la fermeture de l'interface.
     """
-    print(
-        f"{Fore.RED}========= Démarrage de l'interface utilisateur =========\n"
-    )
+    print(f"{Fore.RED}========= Démarrage de l'interface utilisateur =========\n")
     subprocess.run(
         ["python", "main_interface.py"],
         cwd="src/interface",

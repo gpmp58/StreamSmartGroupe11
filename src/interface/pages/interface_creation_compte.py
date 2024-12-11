@@ -1,5 +1,7 @@
 from InquirerPy import prompt
 import requests
+import os
+import platform
 from src.interface.main_interface import (
     main,
 )  # Retour au menu principal
@@ -9,6 +11,14 @@ from src.interface.session_manager import (
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
+
+
+def clear_terminal():
+    """Nettoie le terminal en fonction du système d'exploitation."""
+    if platform.system() == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
 
 
 # Fonction principale pour la création de compte
@@ -97,6 +107,7 @@ def page_creation_compte():
 
     # Retourner au menu principal
     print("\nRedirection vers le menu principal...")
+    clear_terminal()  # Nettoie le terminal avant d'appeler main()
     main()
 
 

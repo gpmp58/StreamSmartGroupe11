@@ -1,9 +1,15 @@
 from InquirerPy import prompt
 import requests
+import os  # Import nécessaire pour nettoyer le terminal (peut être supprimé si non utilisé)
 from src.interface.session_manager import get_session_state
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
+
+
+def clear_terminal():
+    """Nettoie le terminal."""
+    os.system("cls" if os.name == "nt" else "clear")
 
 
 def verifier_connexion():
@@ -206,6 +212,7 @@ def ajouter_film(id):
                 "\n❌ Aucune watchlist trouvée. Veuillez en créer une d'abord."
             )
             print("\nRetour au menu principal.")
+            # clear_terminal()  # Nettoyage supprimé
             main1()
             return
 
@@ -229,17 +236,28 @@ def ajouter_film(id):
                 "type": "input",
                 "name": "id_film",
                 "message": "\nEntrez l'ID du film :",
-                "validate": lambda result: result.isdigit()
-                or result.lower() == "retour"
-                or "Veuillez entrer un ID valide ou 'Retour'."
-                or "Veuillez entrer un nombre valide.",
+                "validate": lambda result: (
+                    result.isdigit()
+                    or result.lower() == "retour"
+                ) or "Veuillez entrer un ID valide ou 'Retour'.",
             },
         ]
 
         answers = prompt(questions)
+        id_film = answers["id_film"]
+
+        if id_film.lower() == "retour":
+            # clear_terminal()  # Nettoyage supprimé
+            main1()
+            return
+
+        if not id_film.isdigit():
+            print("Veuillez entrer un nombre valide.")
+            return
+
         data = {
             "id_watchlist": answers["id_watchlist"],
-            "id_film": answers["id_film"],
+            "id_film": id_film,
         }
 
         # Envoyer la requête pour ajouter un film à la watchlist
@@ -290,7 +308,7 @@ def supprimer_watchlist(id):
             f"{LIEN_API}/watchlists/{watchlist_id}"
         )
         if response.status_code == 200:
-            print("\n Watchlist supprimée avec succès.")
+            print("\nWatchlist supprimée avec succès.")
         else:
             print(
                 f"Erreur : {response.json().get('detail', 'Erreur inconnue')}"
@@ -332,7 +350,7 @@ def menu_principal(id):
             from src.interface.pages.interface_utilisateur_connecte import (
                 main1,
             )
-
+            # clear_terminal()  # Nettoyage supprimé
             main1()
             break
         elif choix in actions:

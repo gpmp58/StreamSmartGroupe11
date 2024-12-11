@@ -1,9 +1,19 @@
 from InquirerPy import prompt
 import requests
+import os
+import platform
 from src.interface.session_manager import get_session_state
 
 # URL de base de l'API FastAPI
 LIEN_API = "http://127.0.0.1:8000"
+
+
+def clear_terminal():
+    """Nettoie le terminal en fonction du système d'exploitation."""
+    if platform.system() == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
 
 
 def tronquer_texte(texte, max_longueur):
@@ -16,6 +26,7 @@ def tronquer_texte(texte, max_longueur):
 def selectionner_watchlist():
     """Sélectionne une watchlist à partir des données utilisateur."""
     from src.interface.main_interface import main
+    from src.interface.pages.interface_utilisateur_connecte import main1
 
     session_state = get_session_state()
     id_utilisateur = session_state.get("id_utilisateur")
@@ -36,10 +47,7 @@ def selectionner_watchlist():
                 "❌ Vous n'avez pas encore de watchlists."
                 " Créez-en une avant d'ajouter des films."
             )
-            from src.interface.pages.interface_utilisateur_connecte import (
-                main1,
-            )
-
+            clear_terminal()
             main1()
 
         print("\n=== Vos Watchlists ===")
@@ -56,7 +64,7 @@ def selectionner_watchlist():
             {
                 "type": "list",
                 "name": "id_watchlist",
-                "message": "Choisissez une watchlist :",
+                "message": "Choisissez une watchlist :\n",
                 "choices": choix_watchlists,
             }
         ]
@@ -67,23 +75,20 @@ def selectionner_watchlist():
         print(
             f"❌ Erreur lors de la récupération des watchlists : {e}"
         )
-        from src.interface.pages.interface_utilisateur_connecte import (
-            main1,
-        )
-
+        clear_terminal()
         main1()
 
 
 def ajouter_a_watchlist(film_id):
     """Ajoute un film à une watchlist."""
+    from src.interface.main_interface import main
+
     id_watchlist = selectionner_watchlist()
     if not id_watchlist:
         print(
             "💡 Astuce : Vous pouvez d'abord créer"
             " une watchlist depuis votre interface."
         )
-        from src.interface.main_interface import main
-
         main()
 
     try:
@@ -93,25 +98,26 @@ def ajouter_a_watchlist(film_id):
         )
         if ajout_response.status_code == 200:
             print(
-                f"✅ Film (ID: {film_id}) ajouté à"
-                f" la watchlist !"
+                f"✅ Film ajouté à"
+                f" la watchlist !\n"
             )
         else:
             print(
-                f"❌ Erreur lors de l'ajout du film :"
-                f" {ajout_response.json().get('detail', 'Erreur inconnue')}"
+                "❌ Erreur lors de l'ajout du film :"
+                " Ce film existe déjà dans la watchlist !"
             )
             return
 
     except requests.exceptions.RequestException as e:
         print(
-            f"❌ Une erreur s'est produite lors de l'ajout du film : {e}"
+            "Ce film n'existe pas ! "
         )
         return
 
 
 def afficher_details_film(film_id):
     """Affiche les détails d'un film en vérifiant l'existence de son ID."""
+
     try:
         details_url = f"{LIEN_API}/films/{film_id}"
         response = requests.get(details_url)
@@ -155,13 +161,14 @@ def afficher_details_film(film_id):
             page_recherche_films()
     except requests.exceptions.RequestException as e:
         print(
-            f"❌ Une erreur s'est produite "
-            f"lors de la récupération des détails : {e}"
+            "Impossible de récupérer les détails de ce film."
         )
 
 
 def afficher_films_pagination(films):
     """Affiche les résultats de recherche avec pagination."""
+    from src.interface.pages.interface_utilisateur_connecte import main1
+
     films_items = list(films.items())
     total_films = len(films_items)
     films_par_page = 5
@@ -221,18 +228,12 @@ def afficher_films_pagination(films):
             ]
             film_id_input = prompt(questions)["film_id"]
             if film_id_input.lower() == "retour":
-                from src.interface.pages.interface_utilisateur_connecte import (
-                    main1,
-                )
-
+                clear_terminal()
                 main1()
                 return None
             return int(film_id_input)
         elif action == "Retour au menu principal":
-            from src.interface.pages.interface_utilisateur_connecte import (
-                main1,
-            )
-
+            clear_terminal()
             main1()
             return None
 
@@ -259,6 +260,8 @@ def rechercher_films(nom_film):
 
 def page_recherche_films():
     """Page principale pour rechercher un film."""
+    from src.interface.pages.interface_utilisateur_connecte import main1
+
     print("=== Recherche de films ===")
 
     while True:
@@ -277,10 +280,7 @@ def page_recherche_films():
             answers = prompt(questions)
             nom_film = answers["nom_film"]
             if nom_film.lower() == "retour":
-                from src.interface.pages.interface_utilisateur_connecte import (
-                    main1,
-                )
-
+                clear_terminal()
                 main1()
                 return
 
