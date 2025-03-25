@@ -69,7 +69,7 @@ This project aims to develop a tool to give you the best Provider for a watchlis
    ```
 3. Clone this repository:
    ```bash
-   https://github.com/gpmp58/Groupe11.git
+   https://github.com/gpmp58/StreamSmartGroupe11.git
    ```
 
 ### Configure Environment
